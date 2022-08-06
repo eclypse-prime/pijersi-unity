@@ -47,11 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderer: {fileID: 6635543005554627831}
-  posX: 0
-  posY: 0
-  pieces:
-  - {fileID: 0}
-  - {fileID: 0}
+  x: 0
+  y: 0
+  pieces: []
 --- !u!64 &8697810548411029849
 MeshCollider:
   m_ObjectHideFlags: 0

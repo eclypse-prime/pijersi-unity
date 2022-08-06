@@ -537,6 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightColor: {r: 0.47521874, g: 0.9622642, b: 0.4221253, a: 1}
+  selectionColor: {r: 1, g: 0.86978406, b: 0, a: 0}
 --- !u!4 &1128725154
 Transform:
   m_ObjectHideFlags: 0
@@ -607,34 +608,33 @@ MonoBehaviour:
   - {fileID: 1036739809}
   pieceCounts: 04000000040000000400000002000000
   starter:
-  - {x: 0, y: 0}
-  - {x: 0, y: 3}
-  - {x: 1, y: 2}
-  - {x: 1, y: 5}
-  - {x: 0, y: 1}
-  - {x: 0, y: 4}
-  - {x: 1, y: 0}
-  - {x: 1, y: 6}
-  - {x: 0, y: 2}
-  - {x: 0, y: 5}
-  - {x: 1, y: 1}
-  - {x: 1, y: 4}
-  - {x: 1, y: 3}
-  - {x: 1, y: 3}
-  - {x: 5, y: 1}
-  - {x: 5, y: 4}
-  - {x: 6, y: 2}
-  - {x: 6, y: 5}
-  - {x: 5, y: 0}
-  - {x: 5, y: 6}
-  - {x: 6, y: 1}
-  - {x: 6, y: 4}
-  - {x: 5, y: 2}
-  - {x: 5, y: 5}
   - {x: 6, y: 0}
   - {x: 6, y: 3}
+  - {x: 5, y: 2}
+  - {x: 5, y: 5}
+  - {x: 6, y: 1}
+  - {x: 6, y: 4}
+  - {x: 5, y: 0}
+  - {x: 5, y: 6}
+  - {x: 6, y: 2}
+  - {x: 6, y: 5}
+  - {x: 5, y: 1}
+  - {x: 5, y: 4}
   - {x: 5, y: 3}
   - {x: 5, y: 3}
+  - {x: 1, y: 1}
+  - {x: 1, y: 4}
+  - {x: 0, y: 2}
+  - {x: 0, y: 5}
+  - {x: 1, y: 0}
+  - {x: 1, y: 6}
+  - {x: 0, y: 1}
+  - {x: 0, y: 4}
+  - {x: 1, y: 2}
+  - {x: 1, y: 5}
+  - {x: 0, y: 0}
+  - {x: 0, y: 3}
+  - {x: 1, y: 3}
+  - {x: 1, y: 3}
   m_dark: {fileID: 2100000, guid: 69804ae592d5ff44b9a1fdd9d30e728a, type: 2}
   m_black: {fileID: 2100000, guid: 7f1df19406a228a44a99cbc6a3d9c3b6, type: 2}
-  highlightColor: {r: 0, g: 0, b: 0, a: 0}

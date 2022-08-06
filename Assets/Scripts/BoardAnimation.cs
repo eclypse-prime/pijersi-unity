@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoardAnimation : MonoBehaviour
 {
     [SerializeField] private Color highlightColor;
+    [SerializeField] private Color selectionColor;
 
     private Cell highlightedCell;
 
@@ -16,11 +17,14 @@ public class BoardAnimation : MonoBehaviour
         if (highlightedCell != null)
             highlightedCell.ResetColor();
 
-        if (transform != null)
-        {
-            highlightedCell = transform.GetComponent<Cell>();
-            highlightedCell.SetColor(highlightColor);
-        }
+        highlightedCell = transform.GetComponent<Cell>();
+        highlightedCell.SetColor(highlightColor);
+    }
+
+    public void NewSelection(Cell cell)
+    {
+        highlightedCell = null;
+        cell.SetColor(selectionColor);
     }
     #endregion
 }
