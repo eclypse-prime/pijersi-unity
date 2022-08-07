@@ -8,7 +8,7 @@ public class Board : MonoBehaviour
     private const int cellCountZ        = 7;
     private const float stepX           = 2f;
     private const float stepZ           = 1.73f;
-    private const float PieceHeight     = .5f;
+    private const float PieceHeight     = 1f;
     private readonly char[] letters     = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
     private readonly string[] darkCells = { "C2", "C3", "D2", "D4", "E2", "E3" };
 
@@ -22,6 +22,7 @@ public class Board : MonoBehaviour
 
     private new Transform transform;
     private Cell[][] cells;
+    private Piece[] pieces;
 
     private void Awake()
     {
@@ -47,7 +48,7 @@ public class Board : MonoBehaviour
             stepXOffset     = halfStepX - stepXOffset;
             countXOffest    = -1 - countXOffest;
             int lineSize    = cellCountX + countXOffest;
-            int x = cellCountZ - 1 - i;
+            int x           = cellCountZ - 1 - i;
             cells[x]        = new Cell[lineSize];
             for (int j = 0; j < lineSize; j++) // axe X
             {
@@ -67,6 +68,7 @@ public class Board : MonoBehaviour
 
     private void BuildTeams()
     {
+        pieces = new Piece[starter.Length];
         int pieceId = 0;
         for (int i = 0; i < teams.Length; i++) // équipes
         {
@@ -74,18 +76,27 @@ public class Board : MonoBehaviour
             {
                 for (int k = 0; k < pieceCounts[j]; k++) // copies
                 {
-                    Vector2Int pos      = starter[pieceId++];
-                    Vector3 position    = cells[pos.x][pos.y].transform.position;
-                    Piece piece         = Instantiate(piecePrefabs[j], position, Quaternion.identity, teams[i]).GetComponent<Piece>();
+                    Vector2Int pos      = starter[pieceId];
+                    Piece piece         = Instantiate(piecePrefabs[j], Vector3.zero, Quaternion.identity, teams[i]).GetComponent<Piece>();
                     piece.team          = i;
 
-                    if (cells[pos.x][pos.y].isEmpty)
-                        cells[pos.x][pos.y].pieces[0] = piece;
+                    pieces[pieceId] = piece;
+                    Cell cell = cells[pos.x][pos.y];
+                    if (cell.isEmpty)
+                    {
+                        piece.MoveTo(cell);
+                        cell.pieces[0] = piece;
+                    }
                     else
-                        cells[pos.x][pos.y].pieces[1] = piece;
+                    {
+                        piece.MoveTo(cell, PieceHeight);
+                        cell.pieces[1] = piece;
+                    }
 
                     if (i > 0)
                         piece.GetComponentInChildren<MeshRenderer>().material = m_black;
+
+                    pieceId++;
                 }
             }
         }
@@ -104,27 +115,56 @@ public class Board : MonoBehaviour
     #endregion
 
     #region Piece
-    public void MovePiece(Cell start, Cell destination)
+    public void Move(Cell start, Cell end)
     {
-        destination.pieces = start.pieces;
+        end.pieces = start.pieces;
         start.pieces = new Piece[2];
 
-        Vector3 position = destination.transform.position;
-        destination.pieces[0].transform.position = new Vector3(position.x, destination.pieces[0].transform.position.y, position.z);
+        end.pieces[0].MoveTo(end);
+        end.pieces[1]?.MoveTo(end, PieceHeight);
+    }
 
-        if (destination.isFull)
-            destination.pieces[1].transform.position = new Vector3(position.x, destination.pieces[1].transform.position.y, position.z);
+    public void Attack(Cell start, Cell end)
+    {
+        end.pieces[0].gameObject.SetActive(false);
+        end.pieces[1]?.gameObject.SetActive(false);
+
+        Move(start, end);
+    }
+
+    public void StackUnstask(Cell start, Cell end)
+    {
+        int startId = start.isFull ? 1 : 0;
+        int endId = end.isEmpty ? 0 : 1;
+        end.pieces[endId] = start.pieces[startId];
+        start.pieces[startId] = null;
+
+        end.pieces[endId].MoveTo(end, endId);
     }
     #endregion
 
     #region get
-    public List<Cell> GetValideMoves(Cell cell)
+    public Dictionary<ActionType, List<Cell>> GetValideMoves(Cell origin, bool canMove, bool canStack)
     {
-        List<Cell> result = GetNeighbours(cell);
-        foreach (Cell neighbour in result.ToArray())
+        Dictionary<ActionType, List<Cell>> result = new Dictionary<ActionType, List<Cell>>();
+        result.Add(ActionType.move, new List<Cell>());
+        result.Add(ActionType.attack, new List<Cell>());
+        result.Add(ActionType.stack, new List<Cell>());
+        result.Add(ActionType.unstack, new List<Cell>());
+
+        List<Cell> targets = GetNeighbours(origin);
+        foreach (Cell target in targets.ToArray())
         {
-            if (!neighbour.isEmpty)
-                result.Remove(neighbour);
+            if (canMove && target.isEmpty)
+            {
+                result[ActionType.move].Add(target);
+                if (target.isFull)
+                    result[ActionType.unstack].Add(target);
+            }
+            else if (canMove && target.pieces[0].team != origin.pieces[0].team && target.lastPiece.type != PieceType.Wise && target.lastPiece.type == origin.lastPiece.prey)
+                result[ActionType.attack].Add(target);
+            else if (canStack && !target.isFull)
+                result[ActionType.stack].Add(target);
         }
 
         return result;

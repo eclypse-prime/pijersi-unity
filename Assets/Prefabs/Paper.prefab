@@ -47,8 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   type: 1
-  x: 0
-  y: 0
+  prey: 0
 --- !u!1001 &2796020126222538095
 PrefabInstance:
   m_ObjectHideFlags: 0

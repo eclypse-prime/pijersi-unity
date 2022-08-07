@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1768032899325711300}
   - component: {fileID: -5956554293315543147}
   m_Layer: 0
-  m_Name: Infinite
+  m_Name: Wise
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,8 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   type: 3
-  x: 0
-  y: 0
+  prey: 0
 --- !u!1001 &6949621437920192953
 PrefabInstance:
   m_ObjectHideFlags: 0

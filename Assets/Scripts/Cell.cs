@@ -15,6 +15,7 @@ public class Cell : MonoBehaviour
 
     public bool isEmpty => pieces[0] == null;
     public bool isFull => pieces[1] != null;
+    public Piece lastPiece => isFull ? pieces[1] : pieces[0];
 
 
     private void Awake()
@@ -26,11 +27,6 @@ public class Cell : MonoBehaviour
     private void Start()
     {
         baseColor = renderer.material.color;
-    }
-
-    private bool Compare(Cell cell)
-    {
-        return x == cell.x && y == cell.y;
     }
 
     public void SetColor(Color color)
