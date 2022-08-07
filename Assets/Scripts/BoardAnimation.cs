@@ -1,15 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
-public class BoardAnimation : SerializedMonoBehaviour
+public class BoardAnimation : MonoBehaviour
 {
     [SerializeField] private Color highlightColor;
     [SerializeField] private Color selectionColor;
-    [SerializeField] private Dictionary<ActionType, Color> actionColors = new Dictionary<ActionType, Color>();
+    [SerializeField] private ActionType[] actions;
+    [SerializeField] private Color[] colors;
 
+    private Dictionary<ActionType, Color> actionColors = new Dictionary<ActionType, Color>();
     private Cell highlightedCell;
+
+    private void Awake()
+    {
+        for (int i = 0; i < actions.Length; i++)
+            actionColors.Add(actions[i], colors[i]);
+    }
 
     #region cell
     public void UpdateHighlight(Cell cell, Color color)
