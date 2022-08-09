@@ -8,7 +8,18 @@ public class Pijersi : MonoBehaviour
     [SerializeField] private Board board;
     [SerializeField] private new BoardAnimation animation;
     [SerializeField] private LayerMask cellLayer;
-    
+
+    private State state;
+    private new Camera camera;
+    private bool isPauseOn = false;
+    private Cell pointedCell;
+    private Cell selectedCell;
+    private int currentTeam = 1;
+    private bool canMove;
+    private bool canStack;
+    private Dictionary<ActionType, List<Cell>> valideMoves;
+
+    public static Pijersi Instance;
     private enum State
     {
         Turn,
@@ -16,19 +27,9 @@ public class Pijersi : MonoBehaviour
         Selection,
         Move,
         Attack,
-        Stack
+        Stack,
+        End
     }
-
-    private State state;
-    private new Camera camera;
-    private Cell pointedCell;
-    private Cell selectedCell;
-    private Dictionary<ActionType, List<Cell>> valideMoves;
-    private int currentTeam = 1;
-    private bool canMove;
-    private bool canStack;
-
-    public static Pijersi Instance;
 
     #region base
     private void Awake()
@@ -72,6 +73,9 @@ public class Pijersi : MonoBehaviour
             case State.Stack:
                 OnEnterStack();
                 break;
+            case State.End:
+                OnEnterEnd();
+                break;
             default:
                 Debug.Log($"état non implémenté: {state}");
                 break;
@@ -98,6 +102,9 @@ public class Pijersi : MonoBehaviour
                 break;
             case State.Stack:
                 OnExitStack();
+                break;
+            case State.End:
+                OnExitEnd();
                 break;
             default:
                 Debug.Log($"état non implémenté: {state}");
@@ -126,6 +133,9 @@ public class Pijersi : MonoBehaviour
             case State.Stack:
                 OnUpdateStack();
                 break;
+            case State.End:
+                OnUpdateEnd();
+                break;
             default:
                 Debug.Log($"état non implémenté: {state}");
                 break;
@@ -145,8 +155,8 @@ public class Pijersi : MonoBehaviour
     private void OnEnterTurn()
     {
         currentTeam = 1 - currentTeam;
-        canMove = true;
-        canStack = true;
+        canMove     = true;
+        canStack    = true;
     }
     private void OnExitTurn() { }
     private void OnUpdateTurn()
@@ -160,6 +170,13 @@ public class Pijersi : MonoBehaviour
     private void OnExitReady() { }
     private void OnUpdateReady()
     {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            isPauseOn = !isPauseOn;
+            return;
+        }
+        if (isPauseOn) return;
+
         if (!CheckPointedCell()) return;
 
         if (Mouse.current.leftButton.wasPressedThisFrame && pointedCell.pieces[0]?.team == currentTeam)
@@ -176,7 +193,7 @@ public class Pijersi : MonoBehaviour
     private void OnEnterSelection()
     {
         selectedCell = pointedCell;
-        valideMoves = board.GetValideMoves(selectedCell, canMove, canStack);
+        valideMoves  = board.GetValideMoves(selectedCell, canMove, canStack);
         animation.NewSelection(selectedCell);
     }
 
@@ -197,6 +214,33 @@ public class Pijersi : MonoBehaviour
 
         ActionType action = FindCellAction();
 
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            switch (action)
+            {
+                case ActionType.none:
+                    if (canMove && canStack)
+                        ChangeState(State.Ready);
+                    else if (pointedCell == selectedCell)
+                        ChangeState(State.Turn);
+                    break;
+                case ActionType.stack:
+                case ActionType.unstack:
+                    ChangeState(State.Stack);
+                    break;
+                case ActionType.move:
+                    ChangeState(State.Move);
+                    break;
+                case ActionType.attack:
+                    ChangeState(State.Attack);
+                    break;
+                default:
+                    break;
+            }
+
+            return;
+        }
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             switch (action)
@@ -204,6 +248,8 @@ public class Pijersi : MonoBehaviour
                 case ActionType.none:
                     if (canMove && canStack)
                         ChangeState(State.Ready);
+                    else if (pointedCell == selectedCell)
+                        ChangeState(State.Turn);
                     break;
                 case ActionType.move:
                     ChangeState(State.Move);
@@ -237,6 +283,12 @@ public class Pijersi : MonoBehaviour
     private void OnExitMove() { }
     private void OnUpdateMove()
     {
+        if (board.IsWin(pointedCell))
+        {
+            ChangeState(State.End);
+            return;
+        }
+
         if (canStack)
         {
             ChangeState(State.Selection);
@@ -256,6 +308,12 @@ public class Pijersi : MonoBehaviour
     private void OnExitAttack() { }
     private void OnUpdateAttack()
     {
+        if (board.IsWin(pointedCell))
+        {
+            ChangeState(State.End);
+            return;
+        }
+
         if (canStack)
         {
             ChangeState(State.Selection);
@@ -275,6 +333,12 @@ public class Pijersi : MonoBehaviour
     private void OnExitStack() { }
     private void OnUpdateStack()
     {
+        if (board.IsWin(pointedCell))
+        {
+            ChangeState(State.End);
+            return;
+        }
+
         if (canMove)
         {
             ChangeState(State.Selection);
@@ -283,6 +347,18 @@ public class Pijersi : MonoBehaviour
 
         ChangeState(State.Turn);
     }
+    #endregion
+
+    #region End
+    private void OnEnterEnd()
+    {
+        Debug.Log("End");
+    }
+    private void OnExitEnd()
+    {
+        currentTeam = 1;
+    }
+    private void OnUpdateEnd() { }
     #endregion
 
     /*
@@ -304,7 +380,7 @@ public class Pijersi : MonoBehaviour
             return false;
         }
 
-        pointedCell = hit.transform.GetComponent<Cell>();
+        pointedCell = hit.transform.GetComponentInParent<Cell>();
         return true;
     }
 
