@@ -30,6 +30,7 @@ public class Pijersi : MonoBehaviour
         Move,
         Attack,
         Stack,
+        Unstack,
         End
     }
 
@@ -77,6 +78,9 @@ public class Pijersi : MonoBehaviour
             case State.Stack:
                 OnEnterStack();
                 break;
+            case State.Unstack:
+                OnEnterUnstack();
+                break;
             case State.End:
                 OnEnterEnd();
                 break;
@@ -85,6 +89,7 @@ public class Pijersi : MonoBehaviour
                 break;
         }
     }
+
     private void OnStateExit()
     {
         switch (state)
@@ -107,6 +112,9 @@ public class Pijersi : MonoBehaviour
             case State.Stack:
                 OnExitStack();
                 break;
+            case State.Unstack:
+                OnExitUnstack();
+                break;
             case State.End:
                 OnExitEnd();
                 break;
@@ -115,6 +123,7 @@ public class Pijersi : MonoBehaviour
                 break;
         }
     }
+
     private void OnStateUpdate()
     {
         switch (state)
@@ -137,6 +146,9 @@ public class Pijersi : MonoBehaviour
             case State.Stack:
                 OnUpdateStack();
                 break;
+            case State.Unstack:
+                OnUpdateUnstack();
+                break;
             case State.End:
                 OnUpdateEnd();
                 break;
@@ -153,7 +165,6 @@ public class Pijersi : MonoBehaviour
         OnStateEnter();
     }
     #endregion
-
 
     #region Turn
     private void OnEnterTurn()
@@ -222,8 +233,10 @@ public class Pijersi : MonoBehaviour
                         ChangeState(State.Turn);
                     break;
                 case ActionType.stack:
-                case ActionType.unstack:
                     ChangeState(State.Stack);
+                    break;
+                case ActionType.unstack:
+                    ChangeState(State.Unstack);
                     break;
                 case ActionType.move:
                     ChangeState(State.Move);
@@ -255,8 +268,10 @@ public class Pijersi : MonoBehaviour
                     ChangeState(State.Attack);
                     break;
                 case ActionType.stack:
-                case ActionType.unstack:
                     ChangeState(State.Stack);
+                    break;
+                case ActionType.unstack:
+                    ChangeState(State.Unstack);
                     break;
                 default:
                     break;
@@ -335,13 +350,41 @@ public class Pijersi : MonoBehaviour
     private void OnEnterStack()
     {
         canStack = false;
-        board.StackUnstask(selectedCell, pointedCell);
+        board.Stack(selectedCell, pointedCell);
     }
     private void OnExitStack()
     {
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.stack, canMove);
     }
     private void OnUpdateStack()
+    {
+        if (IsWin(pointedCell))
+        {
+            ChangeState(State.End);
+            return;
+        }
+
+        if (canMove)
+        {
+            ChangeState(State.Selection);
+            return;
+        }
+
+        ChangeState(State.Turn);
+    }
+    #endregion
+
+    #region Unstack
+    private void OnEnterUnstack()
+    {
+        canStack = false;
+        board.Unstack(selectedCell, pointedCell);
+    }
+    private void OnExitUnstack()
+    {
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.stack, canMove);
+    }
+    private void OnUpdateUnstack()
     {
         if (IsWin(pointedCell))
         {

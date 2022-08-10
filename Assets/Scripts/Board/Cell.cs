@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 [SelectionBase]
 public class Cell : MonoBehaviour
@@ -13,7 +12,7 @@ public class Cell : MonoBehaviour
     public new Transform transform { get; private set; }
     [HideInInspector] public int x;
     [HideInInspector] public int y;
-    [ShowInInspector] public Cell[] nears { get; private set; }
+    public Cell[] nears { get; private set; }
     [HideInInspector] public Piece[] pieces = new Piece[2];
 
     public bool isEmpty => pieces[0] == null;

@@ -203,14 +203,28 @@ public class Board : MonoBehaviour
         Move(start, end);
     }
 
-    public void StackUnstask(Cell start, Cell end)
+    public void Stack(Cell start, Cell end)
     {
         int startId = start.isFull ? 1 : 0;
-        int endId = end.isEmpty ? 0 : 1;
-        end.pieces[endId] = start.pieces[startId];
+        end.pieces[1] = start.pieces[startId];
         start.pieces[startId] = null;
 
-        end.pieces[endId].MoveTo(end, columnStep, PlacementRng, endId);
+        end.pieces[1].MoveTo(end, columnStep, PlacementRng, PieceHeight);
+    }
+
+    public void Unstack(Cell start, Cell end)
+    {
+        if (!end.isEmpty)
+        {
+            end.pieces[0].gameObject.SetActive(false);
+            end.pieces[1]?.gameObject.SetActive(false);
+        }
+
+        int endId = end.isEmpty ? 0 : 1;
+        end.pieces[endId] = start.pieces[1];
+        start.pieces[1] = null;
+
+        end.pieces[endId].MoveTo(end, columnStep, PlacementRng, PieceHeight * endId);
     }
     #endregion
 }

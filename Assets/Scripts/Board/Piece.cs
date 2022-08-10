@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class Piece : MonoBehaviour
 {
     private const int maxRotationOffset = 20;
