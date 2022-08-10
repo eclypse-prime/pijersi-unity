@@ -5,13 +5,14 @@ using UnityEngine.InputSystem;
 
 public class Pijersi : MonoBehaviour
 {
+    [SerializeField] private PijersiUI UI;
     [SerializeField] private Board board;
     [SerializeField] private new BoardAnimation animation;
     [SerializeField] private LayerMask cellLayer;
 
     private State state;
+    private bool isPauseOn;
     private new Camera camera;
-    private bool isPauseOn = false;
     private Cell pointedCell;
     private Cell selectedCell;
     private int currentTeam = 1;
@@ -20,6 +21,7 @@ public class Pijersi : MonoBehaviour
     private Dictionary<ActionType, List<Cell>> valideMoves;
 
     public static Pijersi Instance;
+
     private enum State
     {
         Turn,
@@ -46,6 +48,8 @@ public class Pijersi : MonoBehaviour
 
     private void Update()
     {
+        if (CheckPause()) return;
+
         OnStateUpdate();
     }
     #endregion
@@ -170,13 +174,6 @@ public class Pijersi : MonoBehaviour
     private void OnExitReady() { }
     private void OnUpdateReady()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            isPauseOn = !isPauseOn;
-            return;
-        }
-        if (isPauseOn) return;
-
         if (!CheckPointedCell()) return;
 
         if (Mouse.current.leftButton.wasPressedThisFrame && pointedCell.pieces[0]?.team == currentTeam)
@@ -193,7 +190,7 @@ public class Pijersi : MonoBehaviour
     private void OnEnterSelection()
     {
         selectedCell = pointedCell;
-        valideMoves  = board.GetValideMoves(selectedCell, canMove, canStack);
+        valideMoves = selectedCell.lastPiece.GetValideMoves(canMove, canStack);
         animation.NewSelection(selectedCell);
     }
 
@@ -280,10 +277,15 @@ public class Pijersi : MonoBehaviour
         canMove = false;
         board.Move(selectedCell, pointedCell);
     }
-    private void OnExitMove() { }
+
+    private void OnExitMove()
+    {
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.move, canStack);
+    }
+
     private void OnUpdateMove()
     {
-        if (board.IsWin(pointedCell))
+        if (IsWin(pointedCell))
         {
             ChangeState(State.End);
             return;
@@ -305,10 +307,15 @@ public class Pijersi : MonoBehaviour
         canMove = false;
         board.Attack(selectedCell, pointedCell);
     }
-    private void OnExitAttack() { }
+
+    private void OnExitAttack()
+    {
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.attack, canStack);
+    }
+
     private void OnUpdateAttack()
     {
-        if (board.IsWin(pointedCell))
+        if (IsWin(pointedCell))
         {
             ChangeState(State.End);
             return;
@@ -330,10 +337,13 @@ public class Pijersi : MonoBehaviour
         canStack = false;
         board.StackUnstask(selectedCell, pointedCell);
     }
-    private void OnExitStack() { }
+    private void OnExitStack()
+    {
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.stack, canMove);
+    }
     private void OnUpdateStack()
     {
-        if (board.IsWin(pointedCell))
+        if (IsWin(pointedCell))
         {
             ChangeState(State.End);
             return;
@@ -369,7 +379,7 @@ public class Pijersi : MonoBehaviour
         #endregion
     */
 
-    #region common
+    #region check
     private bool CheckPointedCell()
     {
         RaycastHit hit;
@@ -384,6 +394,18 @@ public class Pijersi : MonoBehaviour
         return true;
     }
 
+    private bool CheckPause()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            TogglePause();
+        }
+
+        return isPauseOn;
+    }
+    #endregion
+
+    #region common
     private ActionType FindCellAction()
     {
         foreach (KeyValuePair<ActionType, List<Cell>> actionCells in valideMoves)
@@ -393,6 +415,21 @@ public class Pijersi : MonoBehaviour
         }
 
         return ActionType.none;
+    }
+
+    private bool IsWin(Cell cell)
+    {
+        if (cell.x == board.LineCount - 1 && cell.pieces[0].team == 0 || cell.x == 0 && cell.pieces[0].team == 1)
+            return true;
+
+        return false;
+    }
+
+    public void TogglePause()
+    {
+        isPauseOn = !isPauseOn;
+        Time.timeScale = 1 - Time.timeScale;
+        UI.SetPauseMenu(isPauseOn);
     }
     #endregion
 }

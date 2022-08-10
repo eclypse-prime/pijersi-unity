@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    private const int cellCountX        = 7;
-    private const int cellCountY        = 7;
-    private const float stepX           = 2f;
-    private const float stepY           = 1.73f;
+    private const int columnCount       = 7;
+    private const int lineCount         = 7;
+    private const float columnStep      = 2f;
+    private const float lineStep        = 1.73f;
     private const float PieceHeight     = 1f;
     private readonly char[] letters     = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
     private readonly string[] darkCells = { "C2", "C3", "D2", "D4", "E2", "E3" };
@@ -17,14 +17,19 @@ public class Board : MonoBehaviour
     [SerializeField] private Transform[] teams;
     [SerializeField] private int[] pieceCounts;
     [SerializeField] private Vector2Int[] starter;
+    [Range(0f, 1f)]
+    [SerializeField] private float PlacementRng;
     [SerializeField] private Material m_dark;
     [SerializeField] private Material m_black;
     [SerializeField] private Material m_white;
 
     private new Transform transform;
-    private Cell[][] cells;
+    private Cell[] cells;
     private Piece[] pieces;
 
+    public int LineCount => lineCount;
+
+    #region base
     private void Awake()
     {
         transform = base.transform;
@@ -36,35 +41,88 @@ public class Board : MonoBehaviour
         BuildTeams();
 
     }
+    #endregion
 
     #region build
     private void BuildBoard()
     {
-        float halfStepX     = stepX / 2;
-        float stepXOffset   = 0f;
-        int countXOffest    = 0;
-        cells               = new Cell[cellCountY][];
-        for (int i = 0; i < cellCountY; i++) // axe Z
+        float halfColumnStep     = columnStep / 2;
+        float columnStepOffset   = 0f;
+        int columnOffset    = 0;
+        List<Cell> cells = new List<Cell>();
+        for (int i = lineCount - 1; i >= 0; i--) // line
         {
-            stepXOffset     = halfStepX - stepXOffset;
-            countXOffest    = -1 - countXOffest;
-            int lineSize    = cellCountX + countXOffest;
-            int x           = cellCountY - 1 - i;
-            cells[x]        = new Cell[lineSize];
-            for (int j = 0; j < lineSize; j++) // axe X
+            columnStepOffset    = halfColumnStep - columnStepOffset;
+            columnOffset   = -1 - columnOffset;
+            int lineSize        = columnCount + columnOffset;
+            for (int j = 0; j < lineSize; j++) // column
             {
-                Vector3 position = new Vector3(stepX * j + stepXOffset, 0f, stepY * i);
+                Vector3 position = new Vector3(columnStep * j + columnStepOffset, 0f, lineStep * i);
                 Cell cell        = Instantiate(cellPrefab, position, Quaternion.identity, transform).GetComponent<Cell>();
-                cell.x           = x;
+                cell.x           = i;
                 cell.y           = j;
                 cell.name        = letters[i] + j.ToString();
 
-                if (i == 0 || i == cellCountY - 1 || j == 0 || j == lineSize - 1 || IsDarkCell(cell.name))
+                if (i == 0 || i == lineCount - 1 || j == 0 || j == lineSize - 1 || IsDarkCell(cell.name))
                     cell.renderer.material = m_dark;
 
-                cells[cell.x][cell.y] = cell;
+                cells.Add(cell);
             }
         }
+
+        // set cells neighbours
+        columnOffset = 0;
+        int cellId = 0;
+        for (int i = 0; i < lineCount; i++)
+        {
+            int nextLineSize = columnCount + columnOffset;
+            columnOffset = -1 - columnOffset;
+            int lineSize = columnCount + columnOffset;
+            for (int j = 0; j < lineSize; j++)
+            {
+                Cell[] nears = new Cell[6];
+                if (j > 0)
+                    nears[2] = cells[CoordsToIndex(i, j - 1)];
+                if (j < lineSize - 1)
+                    nears[3] = cells[CoordsToIndex(i, j + 1)];
+                if (lineSize > nextLineSize)
+                {
+                    if (i > 0)
+                    {
+                        if (j > 0)
+                            nears[0] = cells[CoordsToIndex(i - 1, j - 1)];
+                        if (j < nextLineSize)
+                            nears[1] = cells[CoordsToIndex(i - 1, j)];
+                    }
+                    if (i < lineCount - 1)
+                    {
+                        if (j > 0)
+                            nears[4] = cells[CoordsToIndex(i + 1, j - 1)];
+                        if (j < nextLineSize)
+                            nears[5] = cells[CoordsToIndex(i + 1, j)];
+                    }
+                }
+                else
+                {
+                    if (i > 0)
+                    {
+                        nears[0] = cells[CoordsToIndex(i - 1, j)];
+                        if (j < nextLineSize - 1)
+                            nears[1] = cells[CoordsToIndex(i - 1, j + 1)];
+                    }
+                    if (i < lineCount - 1)
+                    {
+                        nears[4] = cells[CoordsToIndex(i + 1, j)];
+                        if (j < nextLineSize - 1)
+                            nears[5] = cells[CoordsToIndex(i + 1, j + 1)];
+                    }
+                }
+
+                cells[cellId++].SetNears(nears);
+            }
+        }
+
+        this.cells = cells.ToArray();
     }
 
     private void BuildTeams()
@@ -82,16 +140,16 @@ public class Board : MonoBehaviour
                     piece.team      = i;
 
                     pieces[pieceId] = piece;
-                    Cell cell = cells[pos.x][pos.y];
+                    Cell cell = cells[CoordsToIndex(pos.x, pos.y)];
                     if (cell.isEmpty)
                     {
-                        piece.MoveTo(cell);
                         cell.pieces[0] = piece;
+                        piece.MoveTo(cell, columnStep, PlacementRng);
                     }
                     else
                     {
-                        piece.MoveTo(cell, PieceHeight);
                         cell.pieces[1] = piece;
+                        piece.MoveTo(cell, columnStep, PlacementRng, PieceHeight);
                     }
 
                     if (i > 0)
@@ -117,6 +175,14 @@ public class Board : MonoBehaviour
 
         return false;
     }
+
+    private int CoordsToIndex(int x, int y)
+    {
+        if (x % 2 == 0)
+            return (columnCount * 2 - 1) * x / 2 + y;
+
+        return (columnCount * 2 - 1) * (x - 1) / 2 + columnCount - 1 + y;
+    }
     #endregion
 
     #region Action
@@ -125,8 +191,8 @@ public class Board : MonoBehaviour
         end.pieces = start.pieces;
         start.pieces = new Piece[2];
 
-        end.pieces[0].MoveTo(end);
-        end.pieces[1]?.MoveTo(end, PieceHeight);
+        end.pieces[0].MoveTo(end, columnStep, PlacementRng);
+        end.pieces[1]?.MoveTo(end, columnStep, PlacementRng, PieceHeight);
     }
 
     public void Attack(Cell start, Cell end)
@@ -144,37 +210,7 @@ public class Board : MonoBehaviour
         end.pieces[endId] = start.pieces[startId];
         start.pieces[startId] = null;
 
-        end.pieces[endId].MoveTo(end, endId);
+        end.pieces[endId].MoveTo(end, columnStep, PlacementRng, endId);
     }
     #endregion
-
-    #region get
-    public Dictionary<ActionType, List<Cell>> GetValideMoves(Cell cell, bool canMove, bool canStack)
-    {
-        Cell[] neighbours = GetNeighbours(cell);
-        return cell.lastPiece.GetValideMoves(neighbours, canMove, canStack);
-    }
-
-    public Cell[] GetNeighbours(Cell cell)
-    {
-        List<Cell> result = new List<Cell>();
-        foreach (Vector2Int pos in cell.GetPossibleNeighbours())
-        {
-            if (pos.x < 0 || pos.y < 0 || pos.x >= cells.Length || pos.y >= cells[pos.x].Length)
-                continue;
-
-            result.Add(cells[pos.x][pos.y]);
-        }
-
-        return result.ToArray();
-    }
-    #endregion
-
-    public bool IsWin(Cell cell)
-    {
-        if (cell.x == cellCountX && cell.pieces[0].team == 0 || cell.x == 0 && cell.pieces[0].team == 1)
-            return true;
-
-        return false;
-    }
 }
