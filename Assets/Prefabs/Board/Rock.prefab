@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2178533794059796687}
   - component: {fileID: 4886684154580422136}
   m_Layer: 0
-  m_Name: Cylinder_2
+  m_Name: Cercle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1826078707678702155}
   m_LocalRotation: {x: -0.49999854, y: -0.5, z: 0.5, w: 0.5000015}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.55, z: 0.25}
+  m_LocalScale: {x: 0.25, y: 5.5, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7785220805300374473}
@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1826078707678702155}
-  m_Mesh: {fileID: 4300000, guid: 17c5ee1f6298f174fac2eaafcda45973, type: 3}
+  m_Mesh: {fileID: 4300000, guid: ac1662dcde6d71845b2122252445d909, type: 3}
 --- !u!23 &4886684154580422136
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 686600140600943844}
   - component: {fileID: 5360932276006178526}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Cercle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 5712096926287717375}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.55, z: 0.25}
+  m_LocalScale: {x: 0.25, y: 5.5, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7785220805300374473}
@@ -123,7 +123,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5712096926287717375}
-  m_Mesh: {fileID: 4300000, guid: 17c5ee1f6298f174fac2eaafcda45973, type: 3}
+  m_Mesh: {fileID: 4300000, guid: ac1662dcde6d71845b2122252445d909, type: 3}
 --- !u!23 &5360932276006178526
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 5390496428944365422}
   - component: {fileID: 5042766440524625637}
   m_Layer: 0
-  m_Name: Cylinder_1
+  m_Name: Cercle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,7 +193,7 @@ Transform:
   m_GameObject: {fileID: 6569439234701307432}
   m_LocalRotation: {x: -0, y: -0, z: 0.70710576, w: 0.70710784}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.55, z: 0.25}
+  m_LocalScale: {x: 0.25, y: 5.5, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7785220805300374473}
@@ -206,7 +206,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6569439234701307432}
-  m_Mesh: {fileID: 4300000, guid: 17c5ee1f6298f174fac2eaafcda45973, type: 3}
+  m_Mesh: {fileID: 4300000, guid: ac1662dcde6d71845b2122252445d909, type: 3}
 --- !u!23 &5042766440524625637
 MeshRenderer:
   m_ObjectHideFlags: 0
