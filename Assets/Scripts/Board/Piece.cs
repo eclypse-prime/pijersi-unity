@@ -6,7 +6,7 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     private const int maxRotationOffset = 20;
-    private const float maxPositionOffset = .1f;
+    private const float maxPositionOffset = .2f;
 
     public new Transform transform { get; private set; }
     public MeshRenderer mainRenderer;
@@ -25,13 +25,13 @@ public class Piece : MonoBehaviour
         baseRotation = transform.rotation;
     }
 
-    public void MoveTo(Cell cell, float stepX, float rng, float y = 0f)
+    public void MoveTo(Cell cell, float rng, float y = 0f)
     {
         this.cell = cell;
 
         Vector3 position = cell.pieces[0] != this ? cell.pieces[0].transform.position : cell.transform.position;
 
-        Vector2 randPosition    = Random.insideUnitCircle * stepX * maxPositionOffset * rng;
+        Vector2 randPosition    = Random.insideUnitCircle * maxPositionOffset * rng;
         Vector3 positionOffset  = new Vector3(randPosition.x, 0f, randPosition.y);
         float angleOffset       = Mathf.Lerp(-maxRotationOffset, maxRotationOffset, Random.value);
 
