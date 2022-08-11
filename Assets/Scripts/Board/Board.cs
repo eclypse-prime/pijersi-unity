@@ -46,15 +46,15 @@ public class Board : MonoBehaviour
     #region build
     private void BuildBoard()
     {
-        float halfColumnStep     = columnStep / 2;
-        float columnStepOffset   = 0f;
-        int columnOffset    = 0;
+        float halfColumnStep    = columnStep / 2;
+        float columnStepOffset  = 0f;
+        int columnOffset        = 0;
         List<Cell> cells = new List<Cell>();
         for (int i = lineCount - 1; i >= 0; i--) // line
         {
-            columnStepOffset    = halfColumnStep - columnStepOffset;
-            columnOffset   = -1 - columnOffset;
-            int lineSize        = columnCount + columnOffset;
+            columnStepOffset = halfColumnStep - columnStepOffset;
+            columnOffset     = -1 - columnOffset;
+            int lineSize     = columnCount + columnOffset;
             for (int j = 0; j < lineSize; j++) // column
             {
                 Vector3 position = new Vector3(columnStep * j + columnStepOffset, 0f, lineStep * i);
@@ -76,8 +76,8 @@ public class Board : MonoBehaviour
         for (int i = 0; i < lineCount; i++)
         {
             int nextLineSize = columnCount + columnOffset;
-            columnOffset = -1 - columnOffset;
-            int lineSize = columnCount + columnOffset;
+            columnOffset     = -1 - columnOffset;
+            int lineSize     = columnCount + columnOffset;
             for (int j = 0; j < lineSize; j++)
             {
                 Cell[] nears = new Cell[6];
@@ -188,7 +188,7 @@ public class Board : MonoBehaviour
     #region Action
     public void Move(Cell start, Cell end)
     {
-        end.pieces = start.pieces;
+        end.pieces   = start.pieces;
         start.pieces = new Piece[2];
 
         end.pieces[0].MoveTo(end, columnStep, PlacementRng);
@@ -199,13 +199,12 @@ public class Board : MonoBehaviour
     {
         end.pieces[0].gameObject.SetActive(false);
         end.pieces[1]?.gameObject.SetActive(false);
-
         Move(start, end);
     }
 
     public void Stack(Cell start, Cell end)
     {
-        int startId = start.isFull ? 1 : 0;
+        int startId   = start.isFull ? 1 : 0;
         end.pieces[1] = start.pieces[startId];
         start.pieces[startId] = null;
 
@@ -220,11 +219,11 @@ public class Board : MonoBehaviour
             end.pieces[1]?.gameObject.SetActive(false);
         }
 
-        int endId = end.isEmpty ? 0 : 1;
-        end.pieces[endId] = start.pieces[1];
+        end.pieces[0]   = start.pieces[1];
+        end.pieces[1]   = null;
         start.pieces[1] = null;
 
-        end.pieces[endId].MoveTo(end, columnStep, PlacementRng, PieceHeight * endId);
+        end.pieces[0].MoveTo(end, columnStep, PlacementRng);
     }
     #endregion
 }

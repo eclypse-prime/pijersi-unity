@@ -13,6 +13,8 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private GameObject pause;
     [SerializeField] private TextMeshProUGUI record;
 
+    private bool isLastColumn;
+
     private void Start()
     {
         ResetUI();
@@ -26,28 +28,22 @@ public class PijersiUI : MonoBehaviour
     public void UpdateRecord(Cell start, Cell end, ActionType action, bool isNewturn)
     {
         string newRecord = isNewturn ? start.name : "";
-        switch (action)
-        {
-            case ActionType.none:
-                break;
-            case ActionType.move:
-                newRecord += end.isFull ? stackMoveSign : moveSign;
-                newRecord += end.name;
-                break;
-            case ActionType.attack:
-                newRecord += end.isFull ? stackMoveSign : moveSign;
-                newRecord += end.name + attackSign;
-                break;
-            case ActionType.stack:
-            case ActionType.unstack:
-                newRecord += moveSign + end.name;
-                break;
-            default:
-                break;
-        }
+
+        if (action == ActionType.Move || action == ActionType.Attack)
+            newRecord += end.isFull ? stackMoveSign : moveSign;
+        else
+            newRecord += moveSign;
+
+        newRecord += end.name;
+
+        if (action == ActionType.Attack)
+            newRecord += attackSign;
 
         if (!isNewturn)
-            newRecord += "\n";
+        {
+            newRecord += isLastColumn ? "\n" : "\t";
+            isLastColumn = !isLastColumn;
+        }
 
         record.text = record.text + newRecord;
     }

@@ -8,9 +8,9 @@ public enum PieceType
 
 public enum ActionType
 {
-    none,
-    move,
-    attack,
-    stack,
-    unstack
+    None,
+    Move,
+    Attack,
+    Stack,
+    Unstack
 }

@@ -39,52 +39,54 @@ public class Piece : MonoBehaviour
         transform.rotation = Quaternion.Euler(baseRotation.eulerAngles + Vector3.up * angleOffset * rng);
     }
 
-    public virtual Dictionary<ActionType, List<Cell>> GetValideMoves(bool canMove, bool canStack)
+    public virtual Dictionary<Cell, List<ActionType>> GetValideMoves(bool canMove, bool canStack)
     {
-        Dictionary<ActionType, List<Cell>> result = new Dictionary<ActionType, List<Cell>>();
-        result.Add(ActionType.move, new List<Cell>());
-        result.Add(ActionType.attack, new List<Cell>());
-        result.Add(ActionType.stack, new List<Cell>());
-        result.Add(ActionType.unstack, new List<Cell>());
+        Dictionary<Cell, List<ActionType>> valideMoves = new Dictionary<Cell, List<ActionType>>();
 
-        foreach (Cell target in cell.nears)
+        foreach (Cell near in cell.nears)
         {
-            if (target == null) continue;
+            if (near == null) continue;
+
+            List<ActionType> valideActions = new List<ActionType>();
 
             if (canMove)
             {
-                if (target.isEmpty)
-                    result[ActionType.move].Add(target);
-                else if (target.pieces[0].team != team && target.lastPiece.type == prey)
-                {
-                    result[ActionType.attack].Add(target);
-                }
+                if (near.isEmpty)
+                    valideActions.Add(ActionType.Move);
+                else if (near.pieces[0].team != team && near.lastPiece.type == prey)
+                    valideActions.Add(ActionType.Attack);
             }
 
             if (canStack)
             {
-                if (cell.isFull && (target.isEmpty || target.pieces[0].team != team))
-                    result[ActionType.unstack].Add(target);
-                else if (!target.isEmpty && !target.isFull && target.pieces[0].team == team)
-                    result[ActionType.stack].Add(target);
+                if (cell.isFull && (near.isEmpty || near.pieces[0].team != team))
+                    valideActions.Add(ActionType.Unstack);
+                else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team)
+                    valideActions.Add(ActionType.Stack);
             }
+
+            if (valideActions.Count > 0)
+                valideMoves.Add(near, valideActions);
         }
 
         if (!canMove)
-            return result;
+            return valideMoves;
 
-        foreach (Cell target in cell.GetFarNears())
+        foreach (Cell farNear in cell.GetFarNears())
         {
-            if (target == null) continue;
+            if (farNear == null) continue;
 
-            if (target.isEmpty)
-                result[ActionType.move].Add(target);
-            else if (target.pieces[0].team != team && target.lastPiece.type == prey)
-            {
-                result[ActionType.attack].Add(target);
-            }
+            List<ActionType> valideActions = new List<ActionType>();
+
+            if (farNear.isEmpty)
+                valideActions.Add(ActionType.Move);
+            else if (farNear.pieces[0].team != team && farNear.lastPiece.type == prey)
+                valideActions.Add(ActionType.Attack);
+
+            if (valideActions.Count > 0)
+                valideMoves.Add(farNear, valideActions);
         }
 
-        return result;
+        return valideMoves;
     }
 }

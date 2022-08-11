@@ -18,7 +18,8 @@ public class Pijersi : MonoBehaviour
     private int currentTeam = 1;
     private bool canMove;
     private bool canStack;
-    private Dictionary<ActionType, List<Cell>> valideMoves;
+    private Dictionary<Cell, List<ActionType>> valideMoves;
+    private bool isUnstackAttack;
 
     public static Pijersi Instance;
 
@@ -203,6 +204,9 @@ public class Pijersi : MonoBehaviour
         selectedCell = pointedCell;
         valideMoves = selectedCell.lastPiece.GetValideMoves(canMove, canStack);
         animation.NewSelection(selectedCell);
+
+        if (valideMoves.Count == 0)
+            ChangeState(State.Turn);
     }
 
     private void OnExitSelection()
@@ -215,74 +219,84 @@ public class Pijersi : MonoBehaviour
     {
         if (!CheckPointedCell())
         {
-            if (canMove && canStack && Mouse.current.leftButton.wasPressedThisFrame)
-                ChangeState(State.Ready);
+            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                if (canMove && canStack)
+                   ChangeState(State.Ready);
+            }
+
             return;
         }
 
-        ActionType action = FindCellAction();
+        if (!valideMoves.ContainsKey(pointedCell) || valideMoves[pointedCell].Count == 0)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                if (canMove && canStack)
+                    ChangeState(State.Ready);
+                else if (pointedCell == selectedCell)
+                    ChangeState(State.Turn);
+
+                return;
+            }
+
+            if (pointedCell != selectedCell)
+                animation.UpdateHighlight(pointedCell, ActionType.None);
+            return;
+        }
+
+        ActionType[] orderedActions;
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            switch (action)
+            orderedActions = new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
+            State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Attack };
+
+            for (int i = 0; i < orderedActions.Length; i++)
             {
-                case ActionType.none:
-                    if (canMove && canStack)
-                        ChangeState(State.Ready);
-                    else if (pointedCell == selectedCell)
-                        ChangeState(State.Turn);
-                    break;
-                case ActionType.stack:
-                    ChangeState(State.Stack);
-                    break;
-                case ActionType.unstack:
-                    ChangeState(State.Unstack);
-                    break;
-                case ActionType.move:
-                    ChangeState(State.Move);
-                    break;
-                case ActionType.attack:
-                    ChangeState(State.Attack);
-                    break;
-                default:
-                    break;
+                if (valideMoves[pointedCell].Contains(orderedActions[i]))
+                {
+                    ChangeState(orderedState[i]);
+                    return;
+                }
             }
+
+            if (canMove && canStack)
+                ChangeState(State.Ready);
+            else if (pointedCell == selectedCell)
+                ChangeState(State.Turn);
 
             return;
         }
+        
+        orderedActions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
+        int actionId = -1;
+        for (int i = 0; i < orderedActions.Length; i++)
+        {
+            if (valideMoves[pointedCell].Contains(orderedActions[i]))
+            {
+                actionId = i;
+                break;
+            }
+        }
+
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            switch (action)
-            {
-                case ActionType.none:
-                    if (canMove && canStack)
-                        ChangeState(State.Ready);
-                    else if (pointedCell == selectedCell)
-                        ChangeState(State.Turn);
-                    break;
-                case ActionType.move:
-                    ChangeState(State.Move);
-                    break;
-                case ActionType.attack:
-                    ChangeState(State.Attack);
-                    break;
-                case ActionType.stack:
-                    ChangeState(State.Stack);
-                    break;
-                case ActionType.unstack:
-                    ChangeState(State.Unstack);
-                    break;
-                default:
-                    break;
-            }
+            State[] orderedState = { State.Move, State.Attack, State.Stack, State.Unstack };
+
+            ChangeState(orderedState[actionId]);
+            if (canMove && canStack)
+                ChangeState(State.Ready);
+            else if (pointedCell == selectedCell)
+                ChangeState(State.Turn);
 
             return;
         }
 
         // highlights
         if (pointedCell != selectedCell)
-            animation.UpdateHighlight(pointedCell, action);
+            animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : orderedActions[actionId]);
     }
     #endregion
 
@@ -295,7 +309,7 @@ public class Pijersi : MonoBehaviour
 
     private void OnExitMove()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.move, canStack);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Move, canStack);
     }
 
     private void OnUpdateMove()
@@ -325,7 +339,7 @@ public class Pijersi : MonoBehaviour
 
     private void OnExitAttack()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.attack, canStack);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack, canStack);
     }
 
     private void OnUpdateAttack()
@@ -354,7 +368,7 @@ public class Pijersi : MonoBehaviour
     }
     private void OnExitStack()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.stack, canMove);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack, canMove);
     }
     private void OnUpdateStack()
     {
@@ -378,11 +392,12 @@ public class Pijersi : MonoBehaviour
     private void OnEnterUnstack()
     {
         canStack = false;
+        isUnstackAttack = !pointedCell.isEmpty;
         board.Unstack(selectedCell, pointedCell);
     }
     private void OnExitUnstack()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.stack, canMove);
+        UI.UpdateRecord(selectedCell, pointedCell, isUnstackAttack ? ActionType.Attack : ActionType.Unstack, canMove);
     }
     private void OnUpdateUnstack()
     {
@@ -449,17 +464,6 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region common
-    private ActionType FindCellAction()
-    {
-        foreach (KeyValuePair<ActionType, List<Cell>> actionCells in valideMoves)
-        {
-            if (actionCells.Value.Contains(pointedCell))
-                return actionCells.Key;
-        }
-
-        return ActionType.none;
-    }
-
     private bool IsWin(Cell cell)
     {
         if (cell.x == board.LineCount - 1 && cell.pieces[0].team == 0 || cell.x == 0 && cell.pieces[0].team == 1)

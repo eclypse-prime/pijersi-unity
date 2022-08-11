@@ -36,7 +36,7 @@ public class BoardAnimation : MonoBehaviour
 
     public void UpdateHighlight(Cell cell, ActionType type)
     {
-        if (type == ActionType.none)
+        if (type == ActionType.None)
         {
             UpdateHighlight(cell);
             return;
