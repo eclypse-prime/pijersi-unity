@@ -55,15 +55,6 @@ public class Pijersi : MonoBehaviour
 
         OnStateUpdate();
     }
-
-    public void ResetMatch()
-    {
-        currentTeam = 1;
-        ChangeState(State.Turn);
-
-        board.ResetBoard();
-        UI.ResetUI();
-    }
     #endregion
 
     #region State Machine
@@ -430,11 +421,11 @@ public class Pijersi : MonoBehaviour
     #region End
     private void OnEnterEnd()
     {
-        Debug.Log("End");
+        UI.UpdateRecord(currentTeam);
     }
     private void OnExitEnd()
     {
-        currentTeam = 1;
+        ResetMatch(true);
     }
     private void OnUpdateEnd() { }
     #endregion
@@ -474,6 +465,19 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region common
+    public void ResetMatch(bool isMatchEnd = false)
+    {
+        currentTeam = 1;
+        if (!isMatchEnd)
+        {
+            ChangeState(State.Turn);
+            TogglePause();
+        }
+
+        board.ResetBoard();
+        UI.ResetUI();
+    }
+
     private bool IsWin(Cell cell)
     {
         if (cell.x == board.LineCount - 1 && cell.pieces[0].team == 0 || cell.x == 0 && cell.pieces[0].team == 1)
@@ -486,7 +490,7 @@ public class Pijersi : MonoBehaviour
     {
         isPauseOn = !isPauseOn;
         Time.timeScale = 1 - Time.timeScale;
-        UI.SetPauseMenu(isPauseOn);
+        UI.SetActivePause(isPauseOn);
     }
     #endregion
 }

@@ -20,7 +20,7 @@ public class PijersiUI : MonoBehaviour
         ResetUI();
     }
 
-    public void SetPauseMenu(bool value)
+    public void SetActivePause(bool value)
     {
         pause.SetActive(value);
     }
@@ -46,6 +46,12 @@ public class PijersiUI : MonoBehaviour
         }
 
         record.text = record.text + newRecord;
+    }
+
+    public void UpdateRecord(int teamId)
+    {
+        string teamName = teamId == 0 ? "White" : "Black";
+        record.text += $"\n{teamName} Win !";
     }
 
     public void ResetUI()
