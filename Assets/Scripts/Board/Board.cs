@@ -141,16 +141,8 @@ public class Board : MonoBehaviour
 
                     pieces[pieceId] = piece;
                     Cell cell = cells[CoordsToIndex(pos.x, pos.y)];
-                    if (cell.isEmpty)
-                    {
-                        cell.pieces[0] = piece;
-                        piece.MoveTo(cell, columnStep, PlacementRng);
-                    }
-                    else
-                    {
-                        cell.pieces[1] = piece;
-                        piece.MoveTo(cell, columnStep, PlacementRng, PieceHeight);
-                    }
+
+                    MovePieceToCell(piece, cell);
 
                     if (i > 0)
                     {
@@ -163,6 +155,21 @@ public class Board : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ResetBoard()
+    {
+        foreach (Piece piece in pieces)
+            piece.cell.pieces = new Piece[2];
+
+        for (int i = 0; i < pieces.Length; i++)
+            MovePieceToCell(pieces[i], cells[CoordsToIndex(starter[i].x, starter[i].y)]);
+    }
+
+    private void MovePieceToCell(Piece piece, Cell cell)
+    {
+        cell.pieces[cell.isEmpty ? 0 : 1] = piece;
+        piece.MoveTo(cell, PlacementRng, cell.isFull ? PieceHeight : 0);
     }
 
     private bool IsDarkCell(string name)
@@ -191,8 +198,8 @@ public class Board : MonoBehaviour
         end.pieces   = start.pieces;
         start.pieces = new Piece[2];
 
-        end.pieces[0].MoveTo(end, columnStep, PlacementRng);
-        end.pieces[1]?.MoveTo(end, columnStep, PlacementRng, PieceHeight);
+        end.pieces[0].MoveTo(end, PlacementRng);
+        end.pieces[1]?.MoveTo(end, PlacementRng, PieceHeight);
     }
 
     public void Attack(Cell start, Cell end)
@@ -208,7 +215,7 @@ public class Board : MonoBehaviour
         end.pieces[1] = start.pieces[startId];
         start.pieces[startId] = null;
 
-        end.pieces[1].MoveTo(end, columnStep, PlacementRng, PieceHeight);
+        end.pieces[1].MoveTo(end, PlacementRng, PieceHeight);
     }
 
     public void Unstack(Cell start, Cell end)
@@ -223,7 +230,7 @@ public class Board : MonoBehaviour
         end.pieces[1]   = null;
         start.pieces[1] = null;
 
-        end.pieces[0].MoveTo(end, columnStep, PlacementRng);
+        end.pieces[0].MoveTo(end, PlacementRng);
     }
     #endregion
 }

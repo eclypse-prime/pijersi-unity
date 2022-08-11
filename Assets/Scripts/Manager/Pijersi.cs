@@ -15,7 +15,7 @@ public class Pijersi : MonoBehaviour
     private new Camera camera;
     private Cell pointedCell;
     private Cell selectedCell;
-    private int currentTeam = 1;
+    private int currentTeam;
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> valideMoves;
@@ -43,8 +43,9 @@ public class Pijersi : MonoBehaviour
 
     private void Start()
     {
-        camera  = Camera.main;
-        state   = State.Turn;
+        camera      = Camera.main;
+        state       = State.Turn;
+        currentTeam = 1;
         OnStateEnter();
     }
 
@@ -53,6 +54,15 @@ public class Pijersi : MonoBehaviour
         if (CheckPause()) return;
 
         OnStateUpdate();
+    }
+
+    public void ResetMatch()
+    {
+        currentTeam = 1;
+        ChangeState(State.Turn);
+
+        board.ResetBoard();
+        UI.ResetUI();
     }
     #endregion
 

@@ -52,4 +52,12 @@ public class PijersiUI : MonoBehaviour
     {
         record.text = "";
     }
+
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+    }
 }
