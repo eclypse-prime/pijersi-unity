@@ -1226,7 +1226,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 350391759820118947, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
       propertyPath: m_text
-      value: Restart
+      value: Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 1091527695387582076, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
       propertyPath: m_Interactable

@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using PijersiEngine;
 
 public class Pijersi : MonoBehaviour
 {
+    [SerializeField] private PijersiConfig config;
     [SerializeField] private PijersiUI UI;
     [SerializeField] private Board board;
     [SerializeField] private new BoardAnimation animation;
@@ -13,20 +15,20 @@ public class Pijersi : MonoBehaviour
     private State state;
     private bool isPauseOn;
     private new Camera camera;
+    private PijersiEngine.Board engine;
     private Cell pointedCell;
     private Cell selectedCell;
     private int currentTeam;
     private bool canMove;
     private bool canStack;
-    private Dictionary<Cell, List<ActionType>> valideMoves;
+    private Dictionary<Cell, List<ActionType>> validMoves;
     private bool isUnstackAttack;
-
-    public static Pijersi Instance;
 
     private enum State
     {
         Turn,
-        Ready,
+        PlayerTurn,
+        AiTurn,
         Selection,
         Move,
         Attack,
@@ -38,7 +40,12 @@ public class Pijersi : MonoBehaviour
     #region base
     private void Awake()
     {
-        Instance = this;
+        if (config.gameType != GameType.PlayerVsPlayer)
+        {
+            engine = new PijersiEngine.Board();
+            engine.init();
+        }
+        
     }
 
     private void Start()
@@ -46,6 +53,7 @@ public class Pijersi : MonoBehaviour
         camera      = Camera.main;
         state       = State.Turn;
         currentTeam = 1;
+            
         OnStateEnter();
     }
 
@@ -65,8 +73,11 @@ public class Pijersi : MonoBehaviour
             case State.Turn:
                 OnEnterTurn();
                 break;
-            case State.Ready:
-                OnEnterReady();
+            case State.PlayerTurn:
+                OnEnterPlayerTurn();
+                break;
+            case State.AiTurn:
+                OnEnterAiTurn();
                 break;
             case State.Selection:
                 OnEnterSelection();
@@ -99,8 +110,11 @@ public class Pijersi : MonoBehaviour
             case State.Turn:
                 OnExitTurn();
                 break;
-            case State.Ready:
-                OnExitReady();
+            case State.PlayerTurn:
+                OnExitPlayerTurn();
+                break;
+            case State.AiTurn:
+                OnExitAiTurn();
                 break;
             case State.Selection:
                 OnExitSelection();
@@ -133,8 +147,11 @@ public class Pijersi : MonoBehaviour
             case State.Turn:
                 OnUpdateTurn();
                 break;
-            case State.Ready:
-                OnUpdateReady();
+            case State.PlayerTurn:
+                OnUpdatePlayerTurn();
+                break;
+            case State.AiTurn:
+                OnUpdateAiTurn();
                 break;
             case State.Selection:
                 OnUpdateSelection();
@@ -178,14 +195,20 @@ public class Pijersi : MonoBehaviour
     private void OnExitTurn() { }
     private void OnUpdateTurn()
     {
-        ChangeState(State.Ready);
+        if (config.gameType == GameType.PlayerVsPlayer || currentTeam == config.playerId)
+        {
+            ChangeState(State.PlayerTurn);
+            return;
+        }
+
+        ChangeState(State.AiTurn);
     }
     #endregion
 
-    #region Ready
-    private void OnEnterReady() { }
-    private void OnExitReady() { }
-    private void OnUpdateReady()
+    #region PlayerTurn
+    private void OnEnterPlayerTurn() { }
+    private void OnExitPlayerTurn() { }
+    private void OnUpdatePlayerTurn()
     {
         if (!CheckPointedCell()) return;
 
@@ -199,20 +222,28 @@ public class Pijersi : MonoBehaviour
     }
     #endregion
 
+    #region AiTurn
+    private void OnEnterAiTurn()
+    {
+    }
+    private void OnExitAiTurn() { }
+    private void OnUpdateAiTurn() { }
+    #endregion
+
     #region Selection
     private void OnEnterSelection()
     {
         selectedCell = pointedCell;
-        valideMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
+        validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
         animation.NewSelection(selectedCell);
 
-        if (valideMoves.Count == 0)
+        if (validMoves.Count == 0)
             ChangeState(State.Turn);
     }
 
     private void OnExitSelection()
     {
-        valideMoves = null;
+        validMoves = null;
         selectedCell.ResetColor();
     }
 
@@ -223,18 +254,18 @@ public class Pijersi : MonoBehaviour
             if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
             {
                 if (canMove && canStack)
-                   ChangeState(State.Ready);
+                   ChangeState(State.PlayerTurn);
             }
 
             return;
         }
 
-        if (!valideMoves.ContainsKey(pointedCell) || valideMoves[pointedCell].Count == 0)
+        if (!validMoves.ContainsKey(pointedCell) || validMoves[pointedCell].Count == 0)
         {
             if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
             {
                 if (canMove && canStack)
-                    ChangeState(State.Ready);
+                    ChangeState(State.PlayerTurn);
                 else if (pointedCell == selectedCell)
                     ChangeState(State.Turn);
 
@@ -255,7 +286,7 @@ public class Pijersi : MonoBehaviour
 
             for (int i = 0; i < orderedActions.Length; i++)
             {
-                if (valideMoves[pointedCell].Contains(orderedActions[i]))
+                if (validMoves[pointedCell].Contains(orderedActions[i]))
                 {
                     ChangeState(orderedState[i]);
                     return;
@@ -263,7 +294,7 @@ public class Pijersi : MonoBehaviour
             }
 
             if (canMove && canStack)
-                ChangeState(State.Ready);
+                ChangeState(State.PlayerTurn);
             else if (pointedCell == selectedCell)
                 ChangeState(State.Turn);
 
@@ -274,7 +305,7 @@ public class Pijersi : MonoBehaviour
         int actionId = -1;
         for (int i = 0; i < orderedActions.Length; i++)
         {
-            if (valideMoves[pointedCell].Contains(orderedActions[i]))
+            if (validMoves[pointedCell].Contains(orderedActions[i]))
             {
                 actionId = i;
                 break;
@@ -288,7 +319,7 @@ public class Pijersi : MonoBehaviour
 
             ChangeState(orderedState[actionId]);
             if (canMove && canStack)
-                ChangeState(State.Ready);
+                ChangeState(State.PlayerTurn);
             else if (pointedCell == selectedCell)
                 ChangeState(State.Turn);
 

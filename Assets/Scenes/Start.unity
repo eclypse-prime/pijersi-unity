@@ -1141,6 +1141,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1897173531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3325981463439244711, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
+  m_PrefabInstance: {fileID: 1253448093}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1906823924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,7 +1358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1897173531}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1952874726
@@ -1566,7 +1571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
