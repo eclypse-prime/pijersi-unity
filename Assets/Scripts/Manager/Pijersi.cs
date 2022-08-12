@@ -203,7 +203,7 @@ public class Pijersi : MonoBehaviour
     private void OnEnterSelection()
     {
         selectedCell = pointedCell;
-        valideMoves = selectedCell.lastPiece.GetValideMoves(canMove, canStack);
+        valideMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
         animation.NewSelection(selectedCell);
 
         if (valideMoves.Count == 0)
@@ -393,6 +393,7 @@ public class Pijersi : MonoBehaviour
     private void OnEnterUnstack()
     {
         canStack = false;
+        canMove = false;
         isUnstackAttack = !pointedCell.isEmpty;
         board.Unstack(selectedCell, pointedCell);
     }
@@ -405,12 +406,6 @@ public class Pijersi : MonoBehaviour
         if (IsWin(pointedCell))
         {
             ChangeState(State.End);
-            return;
-        }
-
-        if (canMove)
-        {
-            ChangeState(State.Selection);
             return;
         }
 
