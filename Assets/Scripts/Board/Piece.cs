@@ -39,54 +39,54 @@ public class Piece : MonoBehaviour
         transform.rotation = Quaternion.Euler(baseRotation.eulerAngles + Vector3.up * angleOffset * rng);
     }
 
-    public virtual Dictionary<Cell, List<ActionType>> GetValideMoves(bool canMove, bool canStack)
+    public virtual Dictionary<Cell, List<ActionType>> GetValidMoves(bool canMove, bool canStack)
     {
-        Dictionary<Cell, List<ActionType>> valideMoves = new Dictionary<Cell, List<ActionType>>();
+        Dictionary<Cell, List<ActionType>> validMoves = new Dictionary<Cell, List<ActionType>>();
 
         foreach (Cell near in cell.nears)
         {
             if (near == null) continue;
 
-            List<ActionType> valideActions = new List<ActionType>();
+            List<ActionType> validActions = new List<ActionType>();
 
             if (canMove)
             {
                 if (near.isEmpty)
-                    valideActions.Add(ActionType.Move);
+                    validActions.Add(ActionType.Move);
                 else if (near.pieces[0].team != team && near.lastPiece.type == prey)
-                    valideActions.Add(ActionType.Attack);
+                    validActions.Add(ActionType.Attack);
             }
 
             if (canStack)
             {
                 if (cell.isFull && (near.isEmpty || near.pieces[0].team != team))
-                    valideActions.Add(ActionType.Unstack);
+                    validActions.Add(ActionType.Unstack);
                 else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team)
-                    valideActions.Add(ActionType.Stack);
+                    validActions.Add(ActionType.Stack);
             }
 
-            if (valideActions.Count > 0)
-                valideMoves.Add(near, valideActions);
+            if (validActions.Count > 0)
+                validMoves.Add(near, validActions);
         }
 
         if (!canMove)
-            return valideMoves;
+            return validMoves;
 
         foreach (Cell farNear in cell.GetFarNears())
         {
             if (farNear == null) continue;
 
-            List<ActionType> valideActions = new List<ActionType>();
+            List<ActionType> validActions = new List<ActionType>();
 
             if (farNear.isEmpty)
-                valideActions.Add(ActionType.Move);
+                validActions.Add(ActionType.Move);
             else if (farNear.pieces[0].team != team && farNear.lastPiece.type == prey)
-                valideActions.Add(ActionType.Attack);
+                validActions.Add(ActionType.Attack);
 
-            if (valideActions.Count > 0)
-                valideMoves.Add(farNear, valideActions);
+            if (validActions.Count > 0)
+                validMoves.Add(farNear, validActions);
         }
 
-        return valideMoves;
+        return validMoves;
     }
 }
