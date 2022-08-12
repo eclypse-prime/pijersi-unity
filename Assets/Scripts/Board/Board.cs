@@ -160,7 +160,10 @@ public class Board : MonoBehaviour
     public void ResetBoard()
     {
         foreach (Piece piece in pieces)
+        {
             piece.cell.pieces = new Piece[2];
+            piece.gameObject.SetActive(true);
+        }
 
         for (int i = 0; i < pieces.Length; i++)
             MovePieceToCell(pieces[i], cells[CoordsToIndex(starter[i].x, starter[i].y)]);
