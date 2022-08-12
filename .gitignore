@@ -75,3 +75,6 @@ crashlytics-build.properties
 
 # Pijersi engine
 /[Aa]ssets/PijersiEngine*
+
+# Test Scenes
+/[Aa]ssets/[Ss]cenes/[Tt]est*
