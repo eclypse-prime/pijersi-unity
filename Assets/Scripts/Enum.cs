@@ -1,3 +1,10 @@
+public enum GameType
+{
+    PlayerVsPlayer,
+    PlayerVsAi,
+    AiVsAi
+}
+
 public enum PieceType
 {
     Rock,
