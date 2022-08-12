@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using PijersiEngine;
 
 public class Pijersi : MonoBehaviour
 {
@@ -45,7 +44,6 @@ public class Pijersi : MonoBehaviour
             engine = new PijersiEngine.Board();
             engine.init();
         }
-        
     }
 
     private void Start()
@@ -192,7 +190,13 @@ public class Pijersi : MonoBehaviour
         canMove     = true;
         canStack    = true;
     }
-    private void OnExitTurn() { }
+
+    private void OnExitTurn()
+    {
+        UI.UpdateGameState(currentTeam, state == State.AiTurn);
+        UI.AddRecordColumnLine(currentTeam);
+    }
+
     private void OnUpdateTurn()
     {
         if (config.gameType == GameType.PlayerVsPlayer || currentTeam == config.playerId)
@@ -447,7 +451,7 @@ public class Pijersi : MonoBehaviour
     #region End
     private void OnEnterEnd()
     {
-        UI.UpdateRecord(currentTeam);
+        UI.UpdateGameState();
     }
     private void OnExitEnd()
     {

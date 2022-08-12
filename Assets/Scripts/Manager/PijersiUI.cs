@@ -11,20 +11,36 @@ public class PijersiUI : MonoBehaviour
     private const char attackSign = '!';
 
     [SerializeField] private GameObject pause;
+    [SerializeField] private TextMeshProUGUI gameState;
     [SerializeField] private TextMeshProUGUI record;
 
     private bool isLastColumn;
 
+    #region base
     private void Start()
     {
         ResetUI();
     }
+    #endregion
 
     public void SetActivePause(bool value)
     {
         pause.SetActive(value);
     }
 
+    #region game state
+    public void UpdateGameState(int teamId, bool isAi)
+    {
+        gameState.text = (teamId == 0 ? "white" : "black") + (isAi ? " (AI)" : "");
+    }
+
+    public void UpdateGameState()
+    {
+        gameState.text += " win !";
+    }
+    #endregion
+
+    #region record
     public void UpdateRecord(Cell start, Cell end, ActionType action, bool isNewturn)
     {
         string newRecord = isNewturn ? start.name : "";
@@ -39,23 +55,20 @@ public class PijersiUI : MonoBehaviour
         if (action == ActionType.Attack)
             newRecord += attackSign;
 
-        if (!isNewturn)
-        {
-            newRecord += isLastColumn ? "\n" : "\t";
-            isLastColumn = !isLastColumn;
-        }
-
-        record.text = record.text + newRecord;
+        record.text += newRecord;
     }
 
-    public void UpdateRecord(int teamId)
+    public void AddRecordColumnLine(int teamId)
     {
-        string teamName = teamId == 0 ? "White" : "Black";
-        record.text += $"\n{teamName} Win !";
+        if (record.text.Length == 0) return;
+
+        record.text += teamId == 0 ? "\n" : "\t";
     }
+    #endregion
 
     public void ResetUI()
     {
+        gameState.text = "";
         record.text = "";
     }
 
