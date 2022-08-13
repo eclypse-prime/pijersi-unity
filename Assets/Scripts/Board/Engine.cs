@@ -45,6 +45,11 @@ class Engine : IEngine
         board.setState(arrayColours.cast(), arrayTops.cast(), arrayBottoms.cast());
     }
 
+    public int Evaluate()
+    {
+        return board.evaluate();
+    }
+
     public override string ToString()
     {
         return board.toString();
