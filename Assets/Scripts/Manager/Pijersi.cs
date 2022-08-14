@@ -22,6 +22,7 @@ public class Pijersi : MonoBehaviour
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
     private bool isUnstackAttack;
+    private int[] teamWinCounts;
 
     private enum State
     {
@@ -48,10 +49,10 @@ public class Pijersi : MonoBehaviour
 
     private void Start()
     {
-        camera      = Camera.main;
-        state       = State.Turn;
-        currentTeam = 1;
-            
+        camera = Camera.main;
+        state  = State.Turn;
+
+        ResetMatch();
         OnStateEnter();
     }
 
@@ -227,9 +228,7 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region AiTurn
-    private void OnEnterAiTurn()
-    {
-    }
+    private void OnEnterAiTurn() { }
     private void OnExitAiTurn() { }
     private void OnUpdateAiTurn() { }
     #endregion
@@ -451,13 +450,21 @@ public class Pijersi : MonoBehaviour
     #region End
     private void OnEnterEnd()
     {
-        UI.UpdateGameState();
+        teamWinCounts[currentTeam]++;
+        UI.ShowEnd(currentTeam, teamWinCounts, config.winRound);
+        TogglePause();
     }
     private void OnExitEnd()
     {
-        ResetMatch(true);
+        currentTeam = 1;
+        board.ResetBoard();
+        UI.ResetUI();
     }
-    private void OnUpdateEnd() { }
+    private void OnUpdateEnd()
+    {
+        if (teamWinCounts[currentTeam] < config.winRound)
+            ChangeState(State.Turn);
+    }
     #endregion
 
     /*
@@ -495,15 +502,10 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region common
-    public void ResetMatch(bool isMatchEnd = false)
+    public void ResetMatch()
     {
-        currentTeam = 1;
-        if (!isMatchEnd)
-        {
-            ChangeState(State.Turn);
-            TogglePause();
-        }
-
+        teamWinCounts = new int[2];
+        currentTeam   = 1;
         board.ResetBoard();
         UI.ResetUI();
     }
@@ -518,7 +520,7 @@ public class Pijersi : MonoBehaviour
 
     public void TogglePause()
     {
-        isPauseOn = !isPauseOn;
+        isPauseOn      = !isPauseOn;
         Time.timeScale = 1 - Time.timeScale;
         UI.SetActivePause(isPauseOn);
     }

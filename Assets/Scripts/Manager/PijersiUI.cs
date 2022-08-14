@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class PijersiUI : MonoBehaviour
 {
@@ -11,10 +11,13 @@ public class PijersiUI : MonoBehaviour
     private const char attackSign = '!';
 
     [SerializeField] private GameObject pause;
+    [SerializeField] private GameObject resume;
+    [SerializeField] private TMP_Text Title;
+    [SerializeField] private TMP_Text Display;
     [SerializeField] private TextMeshProUGUI gameState;
     [SerializeField] private TextMeshProUGUI record;
 
-    private bool isLastColumn;
+    private string[] teamName = {"White", "Black"};
 
     #region base
     private void Start()
@@ -23,20 +26,34 @@ public class PijersiUI : MonoBehaviour
     }
     #endregion
 
+    #region pauseEnd
     public void SetActivePause(bool value)
     {
         pause.SetActive(value);
     }
 
+    public void ShowEnd(int winTeamId, int[] teamWinCounts, int maxWinRound)
+    {
+        pause.SetActive(true);
+        if (teamWinCounts[winTeamId] == maxWinRound)
+            resume.SetActive(false);
+        Title.text = $"{teamName[winTeamId]} win !";
+        Display.text = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
+    }
+
+    public void HideEnd()
+    {
+        pause.SetActive(false);
+        resume.SetActive(true);
+        Title.text = "Pause";
+        Display.text = "";
+    }
+    #endregion
+
     #region game state
     public void UpdateGameState(int teamId, bool isAi)
     {
         gameState.text = (teamId == 0 ? "white" : "black") + (isAi ? " (AI)" : "");
-    }
-
-    public void UpdateGameState()
-    {
-        gameState.text += " win !";
     }
     #endregion
 
@@ -70,6 +87,7 @@ public class PijersiUI : MonoBehaviour
     {
         gameState.text = "";
         record.text = "";
+        HideEnd();
     }
 
     public void MainMenu()

@@ -7,4 +7,5 @@ public class PijersiConfig : ScriptableObject
 {
     public GameType gameType;
     public int playerId;
+    public int winRound;
 }

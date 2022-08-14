@@ -33,13 +33,8 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         transform = base.transform;
-    }
-
-    private void Start()
-    {
         BuildBoard();
         BuildTeams();
-
     }
     #endregion
 
