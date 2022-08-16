@@ -21,7 +21,7 @@ public class NewPijersi : MonoBehaviour
 
     private void UpdateOptions()
     {
-        teamSelect.interactable = (GameType) typeSelect.value != GameType.PlayerVsPlayer;
+        teamSelect.interactable = (GameType) typeSelect.value != GameType.HumanVsHuman;
     }
 
     public void StartPijersi()

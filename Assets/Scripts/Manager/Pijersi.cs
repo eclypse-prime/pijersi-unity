@@ -22,7 +22,8 @@ public class Pijersi : MonoBehaviour
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
     private bool isUnstackAttack;
-    private int[] teamWinCounts;
+    private int[] playerScores;
+    private string[] playerNames;
 
     private enum State
     {
@@ -40,7 +41,7 @@ public class Pijersi : MonoBehaviour
     #region base
     private void Awake()
     {
-        if (config.gameType != GameType.PlayerVsPlayer)
+        if (config.gameType != GameType.HumanVsHuman)
         {
             engine = new PijersiEngine.Board();
             engine.init();
@@ -194,13 +195,13 @@ public class Pijersi : MonoBehaviour
 
     private void OnExitTurn()
     {
-        UI.UpdateGameState(currentTeam, state == State.AiTurn);
+        UI.UpdateGameState(currentTeam, playerNames[currentTeam]);
         UI.AddRecordColumnLine(currentTeam);
     }
 
     private void OnUpdateTurn()
     {
-        if (config.gameType == GameType.PlayerVsPlayer || currentTeam == config.playerId)
+        if (config.gameType == GameType.HumanVsHuman || currentTeam == config.playerId)
         {
             ChangeState(State.PlayerTurn);
             return;
@@ -450,19 +451,27 @@ public class Pijersi : MonoBehaviour
     #region End
     private void OnEnterEnd()
     {
-        teamWinCounts[currentTeam]++;
-        UI.ShowEnd(currentTeam, teamWinCounts, config.winRound);
+        playerScores[currentTeam]++;
+        UI.ShowEnd(currentTeam, playerScores, config.winRound);
         TogglePause();
     }
     private void OnExitEnd()
     {
+        string firstName = playerNames[0];
+        playerNames[0] = playerNames[1];
+        playerNames[1] = firstName;
+
+        int firstScore = playerScores[0];
+        playerScores[0] = playerScores[1];
+        playerScores[1] = firstScore;
+
         currentTeam = 1;
         board.ResetBoard();
         UI.ResetUI();
     }
     private void OnUpdateEnd()
     {
-        if (teamWinCounts[currentTeam] < config.winRound)
+        if (playerScores[currentTeam] < config.winRound)
             ChangeState(State.Turn);
     }
     #endregion
@@ -504,7 +513,30 @@ public class Pijersi : MonoBehaviour
     #region common
     public void ResetMatch()
     {
-        teamWinCounts = new int[2];
+        playerNames = new string[2];
+        switch (config.gameType)
+        {
+            case GameType.HumanVsHuman:
+                playerNames[0] = "Player #1";
+                playerNames[1] = "Player #2";
+                break;
+            case GameType.HumanVsAi:
+                playerNames[0] = "Player";
+                playerNames[1] = "AI";
+                break;
+            case GameType.AiVsHuman:
+                playerNames[0] = "AI";
+                playerNames[1] = "Player";
+                break;
+            case GameType.AiVsAi:
+                playerNames[0] = "AI #1";
+                playerNames[1] = "AI #2";
+                break;
+            default:
+                break;
+        }
+
+        playerScores = new int[2];
         currentTeam   = 1;
         board.ResetBoard();
         UI.ResetUI();

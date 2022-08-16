@@ -17,7 +17,7 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameState;
     [SerializeField] private TextMeshProUGUI record;
 
-    private string[] teamName = {"White", "Black"};
+    private string[] teamColor = {"White", "Black"};
 
     #region base
     private void Start()
@@ -37,7 +37,7 @@ public class PijersiUI : MonoBehaviour
         pause.SetActive(true);
         if (teamWinCounts[winTeamId] == maxWinRound)
             resume.SetActive(false);
-        Title.text = $"{teamName[winTeamId]} win !";
+        Title.text = $"{teamColor[winTeamId]} win !";
         Display.text = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
     }
 
@@ -51,9 +51,9 @@ public class PijersiUI : MonoBehaviour
     #endregion
 
     #region game state
-    public void UpdateGameState(int teamId, bool isAi)
+    public void UpdateGameState(int teamId, string teamName)
     {
-        gameState.text = (teamId == 0 ? "white" : "black") + (isAi ? " (AI)" : "");
+        gameState.text = (teamId == 0 ? "white" : "black") + " : " + teamName;
     }
     #endregion
 

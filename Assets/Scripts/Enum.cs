@@ -1,7 +1,8 @@
 public enum GameType
 {
-    PlayerVsPlayer,
-    PlayerVsAi,
+    HumanVsHuman,
+    HumanVsAi,
+    AiVsHuman,
     AiVsAi
 }
 
