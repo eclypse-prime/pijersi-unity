@@ -341,11 +341,11 @@ public class Pijersi : MonoBehaviour
     {
         canMove = false;
         board.Move(selectedCell, pointedCell);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Move, canStack);
     }
 
     private void OnExitMove()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Move, canStack);
     }
 
     private void OnUpdateMove()
@@ -373,11 +373,11 @@ public class Pijersi : MonoBehaviour
     {
         canMove = false;
         board.Attack(selectedCell, pointedCell);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack, canStack);
     }
 
     private void OnExitAttack()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack, canStack);
     }
 
     private void OnUpdateAttack()
@@ -405,20 +405,16 @@ public class Pijersi : MonoBehaviour
     {
         canStack = false;
         board.Stack(selectedCell, pointedCell);
-    }
-    private void OnExitStack()
-    {
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack, canMove);
     }
+
+    private void OnExitStack()
+    {
+    }
+
     private void OnUpdateStack()
     {
         if (board.UpdateMove(pointedCell)) return;
-
-        if (IsWin(pointedCell))
-        {
-            ChangeState(State.End);
-            return;
-        }
 
         if (canMove)
         {
@@ -434,14 +430,16 @@ public class Pijersi : MonoBehaviour
     private void OnEnterUnstack()
     {
         canStack = false;
-        canMove = false;
         isUnstackAttack = !pointedCell.isEmpty;
         board.Unstack(selectedCell, pointedCell);
+        UI.UpdateRecord(selectedCell, pointedCell, isUnstackAttack ? ActionType.Attack : ActionType.Unstack, canMove);
+        canMove = false;
     }
+
     private void OnExitUnstack()
     {
-        UI.UpdateRecord(selectedCell, pointedCell, isUnstackAttack ? ActionType.Attack : ActionType.Unstack, canMove);
     }
+
     private void OnUpdateUnstack()
     {
         if (board.UpdateMove(pointedCell)) return;
