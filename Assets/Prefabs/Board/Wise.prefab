@@ -2494,6 +2494,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf50538d4794d34aa929f7132cd5a23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0000024414621
+      inSlope: 1.9999951
+      outSlope: 1.9999951
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: -0.0000024437904
+      outSlope: -0.0000024437904
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2
+      outSlope: -2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   mainRenderer: {fileID: 1696801267835336128}
   SignRenderer:
   - {fileID: 8345784462350420099}

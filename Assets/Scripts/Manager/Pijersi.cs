@@ -350,6 +350,8 @@ public class Pijersi : MonoBehaviour
 
     private void OnUpdateMove()
     {
+        if (board.UpdateMove(pointedCell)) return;
+
         if (IsWin(pointedCell))
         {
             ChangeState(State.End);
@@ -380,6 +382,8 @@ public class Pijersi : MonoBehaviour
 
     private void OnUpdateAttack()
     {
+        if (board.UpdateMove(pointedCell)) return;
+
         if (IsWin(pointedCell))
         {
             ChangeState(State.End);
@@ -408,6 +412,8 @@ public class Pijersi : MonoBehaviour
     }
     private void OnUpdateStack()
     {
+        if (board.UpdateMove(pointedCell)) return;
+
         if (IsWin(pointedCell))
         {
             ChangeState(State.End);
@@ -438,6 +444,8 @@ public class Pijersi : MonoBehaviour
     }
     private void OnUpdateUnstack()
     {
+        if (board.UpdateMove(pointedCell)) return;
+
         if (IsWin(pointedCell))
         {
             ChangeState(State.End);

@@ -7,7 +7,9 @@ public class Piece : MonoBehaviour
 {
     private const int maxRotationOffset = 20;
     private const float maxPositionOffset = .2f;
+    private const float moveDuration = 1f;
 
+    [SerializeField] private AnimationCurve jumpCurve;
     public new Transform transform { get; private set; }
     public MeshRenderer mainRenderer;
     public MeshRenderer[] SignRenderer;
@@ -17,12 +19,51 @@ public class Piece : MonoBehaviour
     [HideInInspector] public int team;
     [HideInInspector] public Cell cell;
 
-    private Quaternion baseRotation;
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+    public Vector3 endPosition { get; private set; }
+    private Quaternion endRotation;
+    private float startTime;
+    private bool isJump;
 
     private void Awake()
     {
         transform = base.transform;
-        baseRotation = transform.rotation;
+    }
+
+    public void InitMove(Cell cell, float rng, float y = float.NaN)
+    {
+        this.cell = cell;
+        isJump = !float.IsNaN(y);
+
+        Vector3 position = cell.pieces[0] != this ? cell.pieces[0].endPosition : cell.transform.position;
+
+        Vector2 randPosition = Random.insideUnitCircle * maxPositionOffset * rng;
+        Vector3 positionOffset = new Vector3(randPosition.x, isJump ? y : transform.position.y, randPosition.y);
+        float angleOffset = Mathf.Lerp(-maxRotationOffset, maxRotationOffset, Random.value);
+
+        startPosition = transform.position;
+        startRotation = transform.rotation;
+        endPosition = position + positionOffset;
+        endRotation = Quaternion.Euler(Vector3.up * angleOffset * rng);
+        startTime = Time.time;
+    }
+
+    public bool UptadeMove()
+    {
+        if (startTime == 0f) return false;
+
+        float step = Mathf.SmoothStep(0f, 1f, (Time.time - startTime) / moveDuration);
+        Vector3 offset = isJump ? Vector3.up * jumpCurve.Evaluate(step) : Vector3.zero;
+        transform.position = Vector3.Lerp(startPosition, endPosition, step) + offset;
+        transform.rotation = Quaternion.Lerp(startRotation, endRotation, step);
+
+        if (step >= 1f)
+        {
+            startTime = 0f;
+            return false;
+        }
+        return true;
     }
 
     public void MoveTo(Cell cell, float rng, float y = 0f)
@@ -32,11 +73,12 @@ public class Piece : MonoBehaviour
         Vector3 position = cell.pieces[0] != this ? cell.pieces[0].transform.position : cell.transform.position;
 
         Vector2 randPosition    = Random.insideUnitCircle * maxPositionOffset * rng;
-        Vector3 positionOffset  = new Vector3(randPosition.x, 0f, randPosition.y);
+        Vector3 positionOffset  = new Vector3(randPosition.x, y, randPosition.y);
         float angleOffset       = Mathf.Lerp(-maxRotationOffset, maxRotationOffset, Random.value);
 
-        transform.position = position + Vector3.up * y + positionOffset;
-        transform.rotation = Quaternion.Euler(baseRotation.eulerAngles + Vector3.up * angleOffset * rng);
+        transform.position = position + positionOffset;
+        transform.rotation = Quaternion.Euler(Vector3.up * angleOffset * rng);
+        endPosition = transform.position;
     }
 
     public virtual Dictionary<Cell, List<ActionType>> GetValidMoves(bool canMove, bool canStack)

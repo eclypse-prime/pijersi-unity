@@ -196,8 +196,8 @@ public class Board : MonoBehaviour
         end.pieces   = start.pieces;
         start.pieces = new Piece[2];
 
-        end.pieces[0].MoveTo(end, PlacementRng);
-        end.pieces[1]?.MoveTo(end, PlacementRng, PieceHeight);
+        end.pieces[0].InitMove(end, PlacementRng);
+        end.pieces[1]?.InitMove(end, PlacementRng);
     }
 
     public void Attack(Cell start, Cell end)
@@ -213,7 +213,7 @@ public class Board : MonoBehaviour
         end.pieces[1] = start.pieces[startId];
         start.pieces[startId] = null;
 
-        end.pieces[1].MoveTo(end, PlacementRng, PieceHeight);
+        end.pieces[1].InitMove(end, PlacementRng, PieceHeight);
     }
 
     public void Unstack(Cell start, Cell end)
@@ -228,7 +228,14 @@ public class Board : MonoBehaviour
         end.pieces[1]   = null;
         start.pieces[1] = null;
 
-        end.pieces[0].MoveTo(end, PlacementRng);
+        end.pieces[0].InitMove(end, PlacementRng, 0f);
+    }
+
+    public bool UpdateMove(Cell cell)
+    {
+        bool firstUpdate = cell.pieces[0].UptadeMove();
+        bool secondUpdate = cell.pieces[1]?.UptadeMove() == true;
+        return firstUpdate || secondUpdate;
     }
     #endregion
 }
