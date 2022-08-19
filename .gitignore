@@ -78,3 +78,5 @@ crashlytics-build.properties
 
 # Test Scenes
 /[Aa]ssets/[Ss]cenes/[Tt]est*
+
+/[Aa]ssets/[Ss]aves*
