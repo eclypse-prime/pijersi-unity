@@ -10,22 +10,21 @@ class Engine : IEngine
 
     public void PlayManual(int[] move)
     {
-        PijersiEngine.intArray arrayMove = new PijersiEngine.intArray(6);
+        PijersiEngine.IntVector vectorMove = new PijersiEngine.IntVector(6);
         for (int i = 0; i < 6; i++)
         {
-            arrayMove.setitem(i, move[i]);
+            vectorMove[i] = move[i];
         }
-        board.playManual(arrayMove.cast());
+        board.playManual(vectorMove);
     }
 
-    public int[] PlayAuto()
+    public int[] PlayAuto(int recursionDepth = 1)
     {
-        PijersiEngine.SWIGTYPE_p_int pMove = board.playAuto();
-        PijersiEngine.intArray arrayMove = PijersiEngine.intArray.frompointer(pMove);
+        PijersiEngine.IntVector vectorMove = board.playAuto(recursionDepth);
         int[] move = new int[6];
         for (int i = 0; i < 6; i++)
         {
-            move[i] = arrayMove.getitem(i);
+            move[i] = vectorMove[i];
         }
 
         return move;
@@ -48,6 +47,11 @@ class Engine : IEngine
     public int Evaluate()
     {
         return board.evaluate();
+    }
+
+    public bool CheckWin()
+    {
+        return board.checkWin();
     }
 
     public override string ToString()
