@@ -15,6 +15,7 @@ public class Pijersi : MonoBehaviour
     private bool isPauseOn;
     private new Camera camera;
     private PijersiEngine.Board engine;
+    private Save save;
     private Cell pointedCell;
     private Cell selectedCell;
     private int currentTeam;
@@ -191,12 +192,14 @@ public class Pijersi : MonoBehaviour
         currentTeam = 1 - currentTeam;
         canMove     = true;
         canStack    = true;
+        save.AddTurn();
     }
 
     private void OnExitTurn()
     {
         UI.UpdateGameState(currentTeam, playerNames[currentTeam]);
         UI.AddRecordColumnLine(currentTeam);
+
     }
 
     private void OnUpdateTurn()
@@ -341,6 +344,7 @@ public class Pijersi : MonoBehaviour
     {
         canMove = false;
         board.Move(selectedCell, pointedCell);
+        save.AddAction(ActionType.Move, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.Move, canStack);
     }
 
@@ -373,6 +377,7 @@ public class Pijersi : MonoBehaviour
     {
         canMove = false;
         board.Attack(selectedCell, pointedCell);
+        save.AddAction(ActionType.Attack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack, canStack);
     }
 
@@ -405,6 +410,7 @@ public class Pijersi : MonoBehaviour
     {
         canStack = false;
         board.Stack(selectedCell, pointedCell);
+        save.AddAction(ActionType.Stack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack, canMove);
     }
 
@@ -430,9 +436,10 @@ public class Pijersi : MonoBehaviour
     private void OnEnterUnstack()
     {
         canStack = false;
-        isUnstackAttack = !pointedCell.isEmpty;
+        ActionType action = !pointedCell.isEmpty ? ActionType.Attack : ActionType.Unstack;
         board.Unstack(selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, isUnstackAttack ? ActionType.Attack : ActionType.Unstack, canMove);
+        save.AddAction(action, selectedCell, pointedCell);
+        UI.UpdateRecord(selectedCell, pointedCell, action, canMove);
         canMove = false;
     }
 
@@ -545,6 +552,7 @@ public class Pijersi : MonoBehaviour
         playerScores = new int[2];
         currentTeam   = 1;
         board.ResetBoard();
+        save = new Save(config.gameType);
         UI.ResetUI();
     }
 
@@ -561,6 +569,11 @@ public class Pijersi : MonoBehaviour
         isPauseOn      = !isPauseOn;
         Time.timeScale = 1 - Time.timeScale;
         UI.SetActivePause(isPauseOn);
+    }
+
+    public void Save()
+    {
+        save.Write();
     }
     #endregion
 }

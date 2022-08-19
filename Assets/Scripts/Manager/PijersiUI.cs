@@ -12,6 +12,7 @@ public class PijersiUI : MonoBehaviour
 
     [SerializeField] private GameObject pause;
     [SerializeField] private GameObject resume;
+    [SerializeField] private Button save;
     [SerializeField] private TMP_Text Title;
     [SerializeField] private TMP_Text Display;
     [SerializeField] private TextMeshProUGUI gameState;
@@ -35,6 +36,7 @@ public class PijersiUI : MonoBehaviour
     public void ShowEnd(int winTeamId, int[] teamWinCounts, int maxWinRound)
     {
         pause.SetActive(true);
+        save.gameObject.SetActive(true);
         if (teamWinCounts[winTeamId] == maxWinRound)
             resume.SetActive(false);
         Title.text = $"{teamColor[winTeamId]} win !";
@@ -44,6 +46,8 @@ public class PijersiUI : MonoBehaviour
     public void HideEnd()
     {
         pause.SetActive(false);
+        save.gameObject.SetActive(false);
+        save.interactable = true;
         resume.SetActive(true);
         Title.text = "Pause";
         Display.text = "";
