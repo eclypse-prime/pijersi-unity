@@ -36,7 +36,6 @@ public class Pijersi : MonoBehaviour
         Selection,
         PlayAuto,
         Move,
-        Attack,
         Stack,
         Unstack,
         End,
@@ -82,9 +81,6 @@ public class Pijersi : MonoBehaviour
             case State.Move:
                 OnEnterMove();
                 break;
-            case State.Attack:
-                OnEnterAttack();
-                break;
             case State.Stack:
                 OnEnterStack();
                 break;
@@ -122,9 +118,6 @@ public class Pijersi : MonoBehaviour
             case State.Move:
                 OnExitMove();
                 break;
-            case State.Attack:
-                OnExitAttack();
-                break;
             case State.Stack:
                 OnExitStack();
                 break;
@@ -161,9 +154,6 @@ public class Pijersi : MonoBehaviour
                 break;
             case State.Move:
                 OnUpdateMove();
-                break;
-            case State.Attack:
-                OnUpdateAttack();
                 break;
             case State.Stack:
                 OnUpdateStack();
@@ -263,6 +253,7 @@ public class Pijersi : MonoBehaviour
             canStack       = false;
             aiActionStates = new State[] { State.Move };
             aiActionCells  = new Cell[] { aiActionCells[0], aiActionCells[2] };
+
             ChangeState(State.PlayAuto);
             return;
         }
@@ -273,26 +264,23 @@ public class Pijersi : MonoBehaviour
             State newState  = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
             aiActionStates  = new State[] { newState };
             aiActionCells   = new Cell[] { aiActionCells[0], aiActionCells[2] };
+
             ChangeState(State.PlayAuto);
             return;
         }
 
         // actions composées
-        if (aiActionCells[1].isEmpty) // move -> (un)stack
+        if (aiActionCells[1].pieces[0]?.team != aiActionCells[0].pieces[0].team) // move -> (un)stack
         {
             aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
             aiActionStates[0] = State.Move;
+
+            ChangeState(State.PlayAuto);
+            return;
         }
-        else if (aiActionCells[1].pieces[0].team != aiActionCells[0].pieces[0].team) // attack -> (un)stack
-        {
-            aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
-            aiActionStates[0] = State.Attack;
-        }
-        else // stack -> move/attack
-        {
-            aiActionStates[1] = aiActionCells[2].isEmpty ? State.Move : State.Attack;
-            aiActionStates[0] = State.Stack;
-        }
+
+        aiActionStates[1] = State.Move;
+        aiActionStates[0] = State.Stack;
         ChangeState(State.PlayAuto);
     }
     #endregion
@@ -349,7 +337,7 @@ public class Pijersi : MonoBehaviour
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             orderedActions = new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
-            State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Attack };
+            State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Move };
 
             for (int i = 0; i < orderedActions.Length; i++)
             {
@@ -382,7 +370,7 @@ public class Pijersi : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            State[] orderedState = { State.Move, State.Attack, State.Stack, State.Unstack };
+            State[] orderedState = { State.Move, State.Move, State.Stack, State.Unstack };
 
             ChangeState(orderedState[actionId]);
             if (canMove && canStack)
@@ -439,43 +427,6 @@ public class Pijersi : MonoBehaviour
         }
 
         if (canStack && pointedCell.isFull)
-        {
-            if (config.playerTypes[currentTeamId] != PlayerType.Human)
-            {
-                ChangeState(State.PlayAuto);
-                return;
-            }
-
-            ChangeState(State.Selection);
-            return;
-        }
-
-        ChangeState(State.Turn);
-    }
-    #endregion
-
-    #region Attack
-    private void OnEnterAttack()
-    {
-        canMove = false;
-        board.Attack(selectedCell, pointedCell);
-        save.AddAction(ActionType.Attack, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack);
-    }
-
-    private void OnExitAttack() { }
-
-    private void OnUpdateAttack()
-    {
-        if (board.UpdateMove(pointedCell)) return;
-
-        if (IsWin(pointedCell))
-        {
-            ChangeState(State.End);
-            return;
-        }
-
-        if (canStack)
         {
             if (config.playerTypes[currentTeamId] != PlayerType.Human)
             {
