@@ -24,7 +24,7 @@ public class Board : MonoBehaviour
     [SerializeField] private Material m_white;
 
     private new Transform transform;
-    private Cell[] cells;
+    public Cell[] cells { get; private set; }
     private Piece[] pieces;
 
     public int LineCount => lineCount;
@@ -54,7 +54,7 @@ public class Board : MonoBehaviour
             {
                 Vector3 position = new Vector3(columnStep * j + columnStepOffset, 0f, lineStep * i);
                 Cell cell        = Instantiate(cellPrefab, position, Quaternion.identity, transform).GetComponent<Cell>();
-                cell.x           = i;
+                cell.x           = lineCount - 1 - i;
                 cell.y           = j;
                 cell.name        = letters[i] + j.ToString();
 
@@ -181,7 +181,7 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private int CoordsToIndex(int x, int y)
+    public int CoordsToIndex(int x, int y)
     {
         if (x % 2 == 0)
             return (columnCount * 2 - 1) * x / 2 + y;
@@ -193,6 +193,9 @@ public class Board : MonoBehaviour
     #region Action
     public void Move(Cell start, Cell end)
     {
+        end.pieces[0]?.gameObject.SetActive(false);
+        end.pieces[1]?.gameObject.SetActive(false);
+
         end.pieces   = start.pieces;
         start.pieces = new Piece[2];
 
@@ -218,11 +221,8 @@ public class Board : MonoBehaviour
 
     public void Unstack(Cell start, Cell end)
     {
-        if (!end.isEmpty)
-        {
-            end.pieces[0].gameObject.SetActive(false);
-            end.pieces[1]?.gameObject.SetActive(false);
-        }
+        end.pieces[0]?.gameObject.SetActive(false);
+        end.pieces[1]?.gameObject.SetActive(false);
 
         end.pieces[0]   = start.pieces[1];
         end.pieces[1]   = null;
@@ -233,8 +233,8 @@ public class Board : MonoBehaviour
 
     public bool UpdateMove(Cell cell)
     {
-        bool firstUpdate = cell.pieces[0].UptadeMove();
-        bool secondUpdate = cell.pieces[1]?.UptadeMove() == true;
+        bool firstUpdate = cell.pieces[0].UpdateMove();
+        bool secondUpdate = cell.pieces[1]?.UpdateMove() == true;
         return firstUpdate || secondUpdate;
     }
     #endregion

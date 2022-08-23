@@ -33,12 +33,12 @@ public class Save
         }
     }
 
-    public GameType gameType;
+    public PlayerType[] gameType;
     public List<Turn> turns;
 
     private string date;
 
-    public Save(GameType gameType)
+    public Save(PlayerType[] gameType)
     {
         this.gameType = gameType;
         turns = new List<Turn>();

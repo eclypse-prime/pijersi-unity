@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObjects/PijersiConfig")]
 public class PijersiConfig : ScriptableObject
 {
-    public GameType gameType;
-    public int playerId;
-    public int winRound;
+    public PlayerType[] playerTypes;
+    public int winMax;
 }

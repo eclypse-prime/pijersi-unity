@@ -14,17 +14,19 @@ public class Pijersi : MonoBehaviour
     private State state;
     private bool isPauseOn;
     private new Camera camera;
-    private PijersiEngine.Board engine;
+    private IEngine engine;
     private Save save;
     private Cell pointedCell;
     private Cell selectedCell;
-    private int currentTeam;
+    private int currentTeamId;
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
-    private bool isUnstackAttack;
     private int[] playerScores;
     private string[] playerNames;
+    private int[] playAuto;
+    private State[] aiActionStates;
+    private Cell[] aiActionCells;
 
     private enum State
     {
@@ -32,30 +34,21 @@ public class Pijersi : MonoBehaviour
         PlayerTurn,
         AiTurn,
         Selection,
+        PlayAuto,
         Move,
         Attack,
         Stack,
         Unstack,
-        End
+        End,
     }
 
     #region base
-    private void Awake()
-    {
-        if (config.gameType != GameType.HumanVsHuman)
-        {
-            engine = new PijersiEngine.Board();
-            engine.init();
-        }
-    }
-
     private void Start()
     {
         camera = Camera.main;
         state  = State.Turn;
 
-        ResetMatch();
-        OnStateEnter();
+        ResetMatch(true);
     }
 
     private void Update()
@@ -82,6 +75,9 @@ public class Pijersi : MonoBehaviour
                 break;
             case State.Selection:
                 OnEnterSelection();
+                break;
+            case State.PlayAuto:
+                OnEnterPlayAuto();
                 break;
             case State.Move:
                 OnEnterMove();
@@ -120,6 +116,9 @@ public class Pijersi : MonoBehaviour
             case State.Selection:
                 OnExitSelection();
                 break;
+            case State.PlayAuto:
+                OnExitPlayAuto();
+                break;
             case State.Move:
                 OnExitMove();
                 break;
@@ -157,6 +156,9 @@ public class Pijersi : MonoBehaviour
             case State.Selection:
                 OnUpdateSelection();
                 break;
+            case State.PlayAuto:
+                OnUpdatePlayAuto();
+                break;
             case State.Move:
                 OnUpdateMove();
                 break;
@@ -189,22 +191,25 @@ public class Pijersi : MonoBehaviour
     #region Turn
     private void OnEnterTurn()
     {
-        currentTeam = 1 - currentTeam;
-        canMove     = true;
-        canStack    = true;
+        AddManualPlay();
+
+        currentTeamId = 1 - currentTeamId;
+        canMove       = true;
+        canStack      = true;
+        selectedCell  = null;
+        pointedCell   = null;
         save.AddTurn();
     }
 
     private void OnExitTurn()
     {
-        UI.UpdateGameState(currentTeam, playerNames[currentTeam]);
-        UI.AddRecordColumnLine(currentTeam);
-
+        UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
+        UI.AddRecordColumnLine(currentTeamId);
     }
 
     private void OnUpdateTurn()
     {
-        if (config.gameType == GameType.HumanVsHuman || currentTeam == config.playerId)
+        if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
             ChangeState(State.PlayerTurn);
             return;
@@ -217,11 +222,12 @@ public class Pijersi : MonoBehaviour
     #region PlayerTurn
     private void OnEnterPlayerTurn() { }
     private void OnExitPlayerTurn() { }
+
     private void OnUpdatePlayerTurn()
     {
         if (!CheckPointedCell()) return;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && pointedCell.pieces[0]?.team == currentTeam)
+        if (Mouse.current.leftButton.wasPressedThisFrame && pointedCell.pieces[0]?.team == currentTeamId)
         {
             ChangeState(State.Selection);
             return;
@@ -232,16 +238,70 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region AiTurn
-    private void OnEnterAiTurn() { }
+    private void OnEnterAiTurn()
+    {
+        aiActionStates = new State[2];
+        aiActionCells = new Cell[3];
+        playAuto = null;
+        StartCoroutine(PlayAuto());
+    }
+
     private void OnExitAiTurn() { }
-    private void OnUpdateAiTurn() { }
+
+    private void OnUpdateAiTurn()
+    {
+        if (playAuto == null) return;
+
+        aiActionCells[0] = board.cells[board.CoordsToIndex(playAuto[0], playAuto[1])];
+        if (playAuto[2] > -1)
+            aiActionCells[1] = board.cells[board.CoordsToIndex(playAuto[2], playAuto[3])];
+        aiActionCells[2] = board.cells[board.CoordsToIndex(playAuto[4], playAuto[5])];
+
+        // actions simples
+        if (aiActionCells[1] == null) // move
+        {
+            canStack       = false;
+            aiActionStates = new State[] { State.Move };
+            aiActionCells  = new Cell[] { aiActionCells[0], aiActionCells[2] };
+            ChangeState(State.PlayAuto);
+            return;
+        }
+
+        if (aiActionCells[1] == aiActionCells[0]) // (un)stack
+        {
+            canMove         = false;
+            State newState  = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
+            aiActionStates  = new State[] { newState };
+            aiActionCells   = new Cell[] { aiActionCells[0], aiActionCells[2] };
+            ChangeState(State.PlayAuto);
+            return;
+        }
+
+        // actions composées
+        if (aiActionCells[1].isEmpty) // move -> (un)stack
+        {
+            aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
+            aiActionStates[0] = State.Move;
+        }
+        else if (aiActionCells[1].pieces[0].team != aiActionCells[0].pieces[0].team) // attack -> (un)stack
+        {
+            aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
+            aiActionStates[0] = State.Attack;
+        }
+        else // stack -> move/attack
+        {
+            aiActionStates[1] = aiActionCells[2].isEmpty ? State.Move : State.Attack;
+            aiActionStates[0] = State.Stack;
+        }
+        ChangeState(State.PlayAuto);
+    }
     #endregion
 
     #region Selection
     private void OnEnterSelection()
     {
         selectedCell = pointedCell;
-        validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
+        validMoves   = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
         animation.NewSelection(selectedCell);
 
         if (validMoves.Count == 0)
@@ -339,18 +399,34 @@ public class Pijersi : MonoBehaviour
     }
     #endregion
 
+    #region PlayAuto
+    private void OnEnterPlayAuto() { }
+    private void OnExitPlayAuto() { }
+
+    private void OnUpdatePlayAuto()
+    {
+        selectedCell = aiActionCells[0];
+        pointedCell  = aiActionCells[1];
+        ChangeState(aiActionStates[0]);
+
+        if (aiActionStates.Length < 2) return;
+
+        aiActionCells  = new Cell[] { aiActionCells[1], aiActionCells[2] };
+        aiActionStates = new State[] { aiActionStates[1] };
+    }
+    #endregion
+
     #region Move
     private void OnEnterMove()
     {
         canMove = false;
+        ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
         board.Move(selectedCell, pointedCell);
-        save.AddAction(ActionType.Move, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Move, canStack);
+        save.AddAction(action, selectedCell, pointedCell);
+        UI.UpdateRecord(selectedCell, pointedCell, action);
     }
 
-    private void OnExitMove()
-    {
-    }
+    private void OnExitMove() { }
 
     private void OnUpdateMove()
     {
@@ -362,8 +438,14 @@ public class Pijersi : MonoBehaviour
             return;
         }
 
-        if (canStack)
+        if (canStack && pointedCell.isFull)
         {
+            if (config.playerTypes[currentTeamId] != PlayerType.Human)
+            {
+                ChangeState(State.PlayAuto);
+                return;
+            }
+
             ChangeState(State.Selection);
             return;
         }
@@ -378,12 +460,10 @@ public class Pijersi : MonoBehaviour
         canMove = false;
         board.Attack(selectedCell, pointedCell);
         save.AddAction(ActionType.Attack, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack, canStack);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Attack);
     }
 
-    private void OnExitAttack()
-    {
-    }
+    private void OnExitAttack() { }
 
     private void OnUpdateAttack()
     {
@@ -397,6 +477,12 @@ public class Pijersi : MonoBehaviour
 
         if (canStack)
         {
+            if (config.playerTypes[currentTeamId] != PlayerType.Human)
+            {
+                ChangeState(State.PlayAuto);
+                return;
+            }
+
             ChangeState(State.Selection);
             return;
         }
@@ -411,12 +497,10 @@ public class Pijersi : MonoBehaviour
         canStack = false;
         board.Stack(selectedCell, pointedCell);
         save.AddAction(ActionType.Stack, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack, canMove);
+        UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack);
     }
 
-    private void OnExitStack()
-    {
-    }
+    private void OnExitStack() { }
 
     private void OnUpdateStack()
     {
@@ -424,6 +508,12 @@ public class Pijersi : MonoBehaviour
 
         if (canMove)
         {
+            if (config.playerTypes[currentTeamId] != PlayerType.Human)
+            {
+                ChangeState(State.PlayAuto);
+                return;
+            }
+
             ChangeState(State.Selection);
             return;
         }
@@ -436,16 +526,14 @@ public class Pijersi : MonoBehaviour
     private void OnEnterUnstack()
     {
         canStack = false;
-        ActionType action = !pointedCell.isEmpty ? ActionType.Attack : ActionType.Unstack;
+        ActionType action = pointedCell.isEmpty ? ActionType.Unstack : ActionType.Attack;
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(action, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, action, canMove);
+        UI.UpdateRecord(selectedCell, pointedCell, action);
         canMove = false;
     }
 
-    private void OnExitUnstack()
-    {
-    }
+    private void OnExitUnstack() { }
 
     private void OnUpdateUnstack()
     {
@@ -464,27 +552,33 @@ public class Pijersi : MonoBehaviour
     #region End
     private void OnEnterEnd()
     {
-        playerScores[currentTeam]++;
-        UI.ShowEnd(currentTeam, playerScores, config.winRound);
+        playerScores[currentTeamId]++;
+        UI.ShowEnd(currentTeamId, playerScores, config.winMax);
         TogglePause();
     }
+
     private void OnExitEnd()
     {
-        string firstName = playerNames[0];
-        playerNames[0] = playerNames[1];
-        playerNames[1] = firstName;
+        if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
+            engine = new Engine();
+        save = new Save(config.playerTypes);
 
-        int firstScore = playerScores[0];
+        string firstName = playerNames[0];
+        playerNames[0]   = playerNames[1];
+        playerNames[1]   = firstName;
+
+        int firstScore  = playerScores[0];
         playerScores[0] = playerScores[1];
         playerScores[1] = firstScore;
 
-        currentTeam = 1;
+        currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
     }
+
     private void OnUpdateEnd()
     {
-        if (playerScores[currentTeam] < config.winRound)
+        if (playerScores[currentTeamId] < config.winMax)
             ChangeState(State.Turn);
     }
     #endregion
@@ -524,41 +618,40 @@ public class Pijersi : MonoBehaviour
     #endregion
 
     #region common
-    public void ResetMatch()
+    public void ResetMatch(bool isStart)
     {
-        playerNames = new string[2];
-        switch (config.gameType)
+        if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
+            engine = new Engine();
+        save = new Save(config.playerTypes);
+
+        playerNames    = new string[2];
+        playerNames[0] = config.playerTypes[0] == PlayerType.Human ? "Player" : "AI";
+        playerNames[1] = config.playerTypes[1] == PlayerType.Human ? "Player" : "AI";
+
+        if (config.playerTypes[0] == config.playerTypes[1])
         {
-            case GameType.HumanVsHuman:
-                playerNames[0] = "Player #1";
-                playerNames[1] = "Player #2";
-                break;
-            case GameType.HumanVsAi:
-                playerNames[0] = "Player";
-                playerNames[1] = "AI";
-                break;
-            case GameType.AiVsHuman:
-                playerNames[0] = "AI";
-                playerNames[1] = "Player";
-                break;
-            case GameType.AiVsAi:
-                playerNames[0] = "AI #1";
-                playerNames[1] = "AI #2";
-                break;
-            default:
-                break;
+            playerNames[0] += " #1";
+            playerNames[1] += " #2";
         }
 
-        playerScores = new int[2];
-        currentTeam   = 1;
+        playerScores  = new int[2];
+        currentTeamId = 1;
         board.ResetBoard();
-        save = new Save(config.gameType);
         UI.ResetUI();
+
+        if (isStart)
+        {
+            OnStateEnter();
+            return;
+        }
+
+        ChangeState(State.Turn);
     }
 
     private bool IsWin(Cell cell)
     {
-        if (cell.x == board.LineCount - 1 && cell.pieces[0].team == 0 || cell.x == 0 && cell.pieces[0].team == 1)
+        if (cell.lastPiece.type == PieceType.Wise) return false;
+        if (cell.x == 0 && cell.pieces[0].team == 0 || cell.x == board.LineCount - 1 && cell.pieces[0].team == 1)
             return true;
 
         return false;
@@ -574,6 +667,53 @@ public class Pijersi : MonoBehaviour
     public void Save()
     {
         save.Write();
+    }
+
+    IEnumerator PlayAuto()
+    {
+        playAuto = engine.PlayAuto(2);
+
+        yield return null;
+    }
+
+    private void AddManualPlay()
+    {
+        if (config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+
+        int[] manualPlay = new int[6];
+        Save.Turn lastTurn = save.turns[save.turns.Count - 1];
+        manualPlay[0] = lastTurn.cells[0].x;
+        manualPlay[1] = lastTurn.cells[0].y;
+        // actions simples
+        if (lastTurn.actions.Count < 2)
+        {
+            if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
+            {
+                manualPlay[2] = lastTurn.cells[0].x;
+                manualPlay[3] = lastTurn.cells[0].y;
+            }
+            else // move
+            {
+                manualPlay[2] = -1;
+                manualPlay[3] = -1;
+            }
+            manualPlay[4] = lastTurn.cells[1].x;
+            manualPlay[5] = lastTurn.cells[1].y;
+
+            engine.PlayManual(manualPlay);
+            return;
+        }
+
+        manualPlay[2] = lastTurn.cells[1].x;
+        manualPlay[3] = lastTurn.cells[1].y;
+        manualPlay[4] = lastTurn.cells[2].x;
+        manualPlay[5] = lastTurn.cells[2].y;
+
+        string text = "";
+        foreach (int index in manualPlay)
+            text += index;
+
+        engine.PlayManual(manualPlay);
     }
     #endregion
 }

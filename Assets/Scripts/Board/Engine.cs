@@ -10,10 +10,10 @@ class Engine : IEngine
 
     public void PlayManual(int[] move)
     {
-        PijersiEngine.IntVector vectorMove = new PijersiEngine.IntVector(6);
+        PijersiEngine.IntVector vectorMove = new PijersiEngine.IntVector();
         for (int i = 0; i < 6; i++)
         {
-            vectorMove[i] = move[i];
+            vectorMove.Add(move[i]);
         }
         board.playManual(vectorMove);
     }

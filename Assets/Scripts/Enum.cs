@@ -1,9 +1,7 @@
-public enum GameType
+public enum PlayerType
 {
-    HumanVsHuman,
-    HumanVsAi,
-    AiVsHuman,
-    AiVsAi
+    Human,
+    Ai
 }
 
 public enum PieceType

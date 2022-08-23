@@ -7,28 +7,14 @@ using UnityEngine.UI;
 public class NewPijersi : MonoBehaviour
 {
     [SerializeField] private PijersiConfig config;
-    [SerializeField] private Slider winRound;
-    [SerializeField] private TMP_Dropdown typeSelect;
-    [SerializeField] private TMP_Dropdown teamSelect;
-
-    public int Type
-    {
-        set
-        {
-            UpdateOptions();
-        }
-    }
-
-    private void UpdateOptions()
-    {
-        teamSelect.interactable = (GameType) typeSelect.value != GameType.HumanVsHuman;
-    }
+    [SerializeField] private Slider winMax;
+    [SerializeField] private TMP_Dropdown[] PlayerTypes;
 
     public void StartPijersi()
     {
-        config.gameType = (GameType) typeSelect.value;
-        config.playerId = teamSelect.value;
-        config.winRound = (int) winRound.value;
+        config.playerTypes = new PlayerType[] { (PlayerType) PlayerTypes[0].value, (PlayerType) PlayerTypes[1].value };
+        config.winMax = (int) winMax.value;
+
         GameManager.LoadScene("Pijersi");
     }
 }

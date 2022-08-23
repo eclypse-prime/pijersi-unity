@@ -1126,8 +1126,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.45590806, y: -0.004005135, z: 0.0020514166, w: 0.89001554}
-  m_LocalPosition: {x: 4.6536098, y: 12.037549, z: -5.440984}
+  m_LocalRotation: {x: 0.49105397, y: -0.005230747, z: 0.0029484737, w: 0.87110853}
+  m_LocalPosition: {x: 6.0883274, y: 12.054456, z: -2.1643996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1920,7 +1920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1091527695387582076, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1091527695387582076, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode

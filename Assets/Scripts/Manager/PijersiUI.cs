@@ -19,6 +19,7 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI record;
 
     private string[] teamColor = {"White", "Black"};
+    private bool isFirstAction = true;
 
     #region base
     private void Start()
@@ -62,9 +63,9 @@ public class PijersiUI : MonoBehaviour
     #endregion
 
     #region record
-    public void UpdateRecord(Cell start, Cell end, ActionType action, bool isNewturn)
+    public void UpdateRecord(Cell start, Cell end, ActionType action)
     {
-        string newRecord = isNewturn ? start.name : "";
+        string newRecord = isFirstAction ? start.name : "";
 
         if (action == ActionType.Move || action == ActionType.Attack)
             newRecord += end.isFull ? stackMoveSign : moveSign;
@@ -77,6 +78,7 @@ public class PijersiUI : MonoBehaviour
             newRecord += attackSign;
 
         record.text += newRecord;
+        isFirstAction = false;
     }
 
     public void AddRecordColumnLine(int teamId)
@@ -84,6 +86,7 @@ public class PijersiUI : MonoBehaviour
         if (record.text.Length == 0) return;
 
         record.text += teamId == 0 ? "\n" : "\t";
+        isFirstAction = true;
     }
     #endregion
 
@@ -94,8 +97,14 @@ public class PijersiUI : MonoBehaviour
         HideEnd();
     }
 
+    public void ReloadScene()
+    {
+        GameManager.ReloadScene();
+    }
+
     public void MainMenu()
     {
+        Time.timeScale = 1f;
         GameManager.LoadScene("Start");
     }
 

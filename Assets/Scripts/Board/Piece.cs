@@ -49,7 +49,7 @@ public class Piece : MonoBehaviour
         startTime = Time.time;
     }
 
-    public bool UptadeMove()
+    public bool UpdateMove()
     {
         if (startTime == 0f) return false;
 
