@@ -21,14 +21,11 @@ public class PijersiUI : MonoBehaviour
     private string[] teamColor = {"White", "Black"};
     private bool isFirstAction = true;
 
-    #region base
     private void Start()
     {
         ResetUI();
     }
-    #endregion
 
-    #region pauseEnd
     public void SetActivePause(bool value)
     {
         pause.SetActive(value);
@@ -53,16 +50,12 @@ public class PijersiUI : MonoBehaviour
         Title.text = "Pause";
         Display.text = "";
     }
-    #endregion
 
-    #region game state
     public void UpdateGameState(int teamId, string teamName)
     {
         gameState.text = (teamId == 0 ? "white" : "black") + " : " + teamName;
     }
-    #endregion
 
-    #region record
     public void UpdateRecord(Cell start, Cell end, ActionType action)
     {
         string newRecord = isFirstAction ? start.name : "";
@@ -88,18 +81,13 @@ public class PijersiUI : MonoBehaviour
         record.text += teamId == 0 ? "\n" : "\t";
         isFirstAction = true;
     }
-    #endregion
 
     public void ResetUI()
     {
         gameState.text = "";
         record.text = "";
+        isFirstAction = true;
         HideEnd();
-    }
-
-    public void ReloadScene()
-    {
-        GameManager.ReloadScene();
     }
 
     public void MainMenu()
