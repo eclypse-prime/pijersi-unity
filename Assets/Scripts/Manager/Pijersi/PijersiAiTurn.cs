@@ -60,4 +60,11 @@ public partial class Pijersi
 
         SM.ChangeState(State.PlayAuto);
     }
+
+    IEnumerator PlayAuto()
+    {
+        playAuto = engine.PlayAuto(2);
+
+        yield return null;
+    }
 }

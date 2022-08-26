@@ -13,9 +13,14 @@ public partial class Pijersi
 
     private void OnExitEnd()
     {
+    }
+
+    private void OnUpdateEnd()
+    {
         if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
             engine = new Engine();
         save = new Save(config.playerTypes);
+        isReplayOn = false;
 
         // inversion des équipes
         string firstName = playerNames[0];
@@ -29,11 +34,7 @@ public partial class Pijersi
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
-    }
 
-    private void OnUpdateEnd()
-    {
-        if (playerScores[currentTeamId] < config.winMax)
-            SM.ChangeState(State.Turn);
+        SM.ChangeState(State.Turn);
     }
 }

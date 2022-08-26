@@ -9,7 +9,7 @@ public partial class Pijersi
         canMove = false;
         ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
         board.Move(selectedCell, pointedCell);
-        save.AddAction(action, selectedCell, pointedCell);
+        save.AddAction(ActionType.Move, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
     }
 
@@ -28,13 +28,7 @@ public partial class Pijersi
         // prochaine action
         if (canStack && pointedCell.isFull)
         {
-            if (config.playerTypes[currentTeamId] != PlayerType.Human)
-            {
-                SM.ChangeState(State.PlayAuto);
-                return;
-            }
-
-            SM.ChangeState(State.Selection);
+            ToNextActionState();
             return;
         }
 

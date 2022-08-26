@@ -35,14 +35,20 @@ public class Save
 
     public PlayerType[] gameType;
     public List<Turn> turns;
+    public string date;
 
-    private string date;
+    public Save(Save save)
+    {
+        gameType = save.gameType;
+        turns    = save.turns;
+        date     = save.date;
+    }
 
     public Save(PlayerType[] gameType)
     {
         this.gameType = gameType;
-        turns = new List<Turn>();
-        date = DateTime.Now.ToString("yyyy'-'MM'-'dd HH'-'mm");
+        turns         = new List<Turn>();
+        date          = DateTime.Now.ToString("yyyy'-'MM'-'dd HH'-'mm");
     }
 
     public void AddTurn()

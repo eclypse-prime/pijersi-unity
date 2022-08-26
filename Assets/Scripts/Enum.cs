@@ -20,3 +20,9 @@ public enum ActionType
     Stack,
     Unstack
 }
+
+public enum ReplayType
+{
+    None,
+    play
+}

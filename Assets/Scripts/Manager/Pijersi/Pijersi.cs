@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FSM;
+using UnityEngine.InputSystem;
 
 public partial class Pijersi : MonoBehaviour
 {
@@ -11,10 +12,12 @@ public partial class Pijersi : MonoBehaviour
     [SerializeField] private new BoardAnimation animation;
     [SerializeField] private LayerMask cellLayer;
 
-    private bool isPauseOn;
     private new Camera camera;
+    private bool isPauseOn;
+    private bool isReplayOn;
     private IEngine engine;
     private Save save;
+    private Save replaySave;
     private Cell pointedCell;
     private Cell selectedCell;
     private int currentTeamId;
@@ -40,6 +43,7 @@ public partial class Pijersi : MonoBehaviour
         Stack,
         Unstack,
         End,
+        Replay
     }
 
     private void Awake()
@@ -53,13 +57,14 @@ public partial class Pijersi : MonoBehaviour
         SM.Add(new State<State>(State.Stack, "Stack", OnEnterStack, OnExitStack, OnUpdateStack));
         SM.Add(new State<State>(State.Unstack, "Unstack", OnEnterUnstack, OnExitUnstack, OnUpdateUnstack));
         SM.Add(new State<State>(State.End, "End", OnEnterEnd, OnExitEnd, OnUpdateEnd));
+        SM.Add(new State<State>(State.Replay, "Replay", OnEnterReplay, null, OnUpdateReplay));
 
         camera = Camera.main;
     }
 
     private void Start()
     {
-        ResetMatch(true);
+        ResetMatch();
     }
 
     private void Update()
@@ -67,5 +72,13 @@ public partial class Pijersi : MonoBehaviour
         if (CheckPause()) return;
 
         SM.Update();
+    }
+
+    private bool CheckPause()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            TogglePause();
+
+        return isPauseOn;
     }
 }

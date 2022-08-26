@@ -20,13 +20,7 @@ public partial class Pijersi
 
         if (canMove)
         {
-            if (config.playerTypes[currentTeamId] != PlayerType.Human)
-            {
-                SM.ChangeState(State.PlayAuto);
-                return;
-            }
-
-            SM.ChangeState(State.Selection);
+            ToNextActionState();
             return;
         }
 

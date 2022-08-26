@@ -9,10 +9,10 @@ public partial class Pijersi
         AddManualPlay();
 
         currentTeamId = 1 - currentTeamId;
-        canMove = true;
-        canStack = true;
-        selectedCell = null;
-        pointedCell = null;
+        canMove       = true;
+        canStack      = true;
+        selectedCell  = null;
+        pointedCell   = null;
         save.AddTurn();
     }
 
@@ -24,6 +24,12 @@ public partial class Pijersi
 
     private void OnUpdateTurn()
     {
+        if (isReplayOn)
+        {
+            SM.ChangeState(State.Replay);
+            return;
+        }
+
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
             SM.ChangeState(State.PlayerTurn);
@@ -31,5 +37,45 @@ public partial class Pijersi
         }
 
         SM.ChangeState(State.AiTurn);
+    }
+
+    private void AddManualPlay()
+    {
+        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+
+        int[] manualPlay = new int[6];
+        Save.Turn lastTurn = save.turns[save.turns.Count - 1];
+        manualPlay[0] = lastTurn.cells[0].x;
+        manualPlay[1] = lastTurn.cells[0].y;
+        // actions simples
+        if (lastTurn.actions.Count < 2)
+        {
+            if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
+            {
+                manualPlay[2] = lastTurn.cells[0].x;
+                manualPlay[3] = lastTurn.cells[0].y;
+            }
+            else // move
+            {
+                manualPlay[2] = -1;
+                manualPlay[3] = -1;
+            }
+            manualPlay[4] = lastTurn.cells[1].x;
+            manualPlay[5] = lastTurn.cells[1].y;
+
+            engine.PlayManual(manualPlay);
+            return;
+        }
+
+        manualPlay[2] = lastTurn.cells[1].x;
+        manualPlay[3] = lastTurn.cells[1].y;
+        manualPlay[4] = lastTurn.cells[2].x;
+        manualPlay[5] = lastTurn.cells[2].y;
+
+        string text = "";
+        foreach (int index in manualPlay)
+            text += index;
+
+        engine.PlayManual(manualPlay);
     }
 }

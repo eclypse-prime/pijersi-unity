@@ -9,7 +9,7 @@ public partial class Pijersi
         canStack = false;
         ActionType action = pointedCell.isEmpty ? ActionType.Unstack : ActionType.Attack;
         board.Unstack(selectedCell, pointedCell);
-        save.AddAction(action, selectedCell, pointedCell);
+        save.AddAction(ActionType.Unstack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
         canMove = false;
     }
