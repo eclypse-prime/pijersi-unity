@@ -30,18 +30,14 @@ class Engine : IEngine
         return move;
     }
 
-    public void SetState(int[] colours, int[] tops, int[] bottoms)
+    public void SetState(byte[] newState)
     {
-        PijersiEngine.intArray arrayColours = new PijersiEngine.intArray(45);
-        PijersiEngine.intArray arrayTops = new PijersiEngine.intArray(45);
-        PijersiEngine.intArray arrayBottoms = new PijersiEngine.intArray(45);
-        for (int i = 0; i < 45; i++)
+        PijersiEngine.byteArray arrayState = new PijersiEngine.byteArray(45);
+        for (int k = 0; k < 45; k++)
         {
-            arrayColours.setitem(i, colours[i]);
-            arrayTops.setitem(i, tops[i]);
-            arrayBottoms.setitem(i, bottoms[i]);
+            arrayState.setitem(k, newState[k]);
         }
-        board.setState(arrayColours.cast(), arrayTops.cast(), arrayBottoms.cast());
+        board.setState(arrayState.cast());
     }
 
     public int Evaluate()
