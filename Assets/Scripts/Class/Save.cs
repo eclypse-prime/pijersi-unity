@@ -23,6 +23,13 @@ public class Save
             isStackMoves = new List<bool>();
         }
 
+        public Turn(List<Cell> cells, List<ActionType> actions, List<bool> isStackMoves)
+        {
+            this.cells = new List<Cell>(cells);
+            this.actions = new List<ActionType>(actions);
+            this.isStackMoves = new List<bool>(isStackMoves);
+        }
+
         public void Add(ActionType action, Cell start, Cell end)
         {
             if (cells.Count == 0)
@@ -40,7 +47,7 @@ public class Save
     public Save(Save save)
     {
         gameType = save.gameType;
-        turns    = save.turns;
+        turns    = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions, turn.isStackMoves));
         date     = save.date;
     }
 

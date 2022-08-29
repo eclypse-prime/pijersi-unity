@@ -19,6 +19,7 @@ public partial class Pijersi
     {
         validMoves = null;
         selectedCell.ResetColor();
+        UI.replayButtons["Back"].interactable = true;
     }
 
     private void OnUpdateSelection()

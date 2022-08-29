@@ -9,6 +9,7 @@ public partial class Pijersi
         playerScores[currentTeamId]++;
         UI.ShowEnd(currentTeamId, playerScores, config.winMax);
         TogglePause();
+        replayState = ReplayState.None;
     }
 
     private void OnExitEnd()
@@ -20,7 +21,7 @@ public partial class Pijersi
         if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
             engine = new Engine();
         save = new Save(config.playerTypes);
-        isReplayOn = false;
+        replayState = ReplayState.None;
 
         // inversion des équipes
         string firstName = playerNames[0];

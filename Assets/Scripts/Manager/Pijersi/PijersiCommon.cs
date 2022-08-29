@@ -30,18 +30,24 @@ public partial class Pijersi
 
     private void ToNextActionState()
     {
-        if (isReplayOn)
+        if (replayType == ReplayType.Turn)
+        {
+            SM.ChangeState(State.Next);
+            return;
+        }
+
+        if (replaySave != null)
         {
             SM.ChangeState(State.Replay);
             return;
         }
 
-        if (config.playerTypes[currentTeamId] != PlayerType.Human)
+        if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
-            SM.ChangeState(State.PlayAuto);
+            SM.ChangeState(State.Selection);
             return;
         }
 
-        SM.ChangeState(State.Selection);
+        SM.ChangeState(State.PlayAuto);
     }
 }

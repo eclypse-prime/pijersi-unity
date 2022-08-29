@@ -14,7 +14,8 @@ public partial class Pijersi : MonoBehaviour
 
     private new Camera camera;
     private bool isPauseOn;
-    private bool isReplayOn;
+    private ReplayState replayState;
+    private ReplayType replayType;
     private IEngine engine;
     private Save save;
     private Save replaySave;
@@ -43,21 +44,38 @@ public partial class Pijersi : MonoBehaviour
         Stack,
         Unstack,
         End,
+        Back,
+        Next,
         Replay
+    }
+
+    private enum ReplayState
+    {
+        None,
+        Pause,
+        Play
+    }
+
+    private enum ReplayType
+    {
+        Action,
+        Turn
     }
 
     private void Awake()
     {
-        SM.Add(new State<State>(State.Turn, "Turn", OnEnterTurn, OnExitTurn, OnUpdateTurn));
-        SM.Add(new State<State>(State.PlayerTurn, "PlayerTurn", OnEnterPlayerTurn, OnExitPlayerTurn, OnUpdatePlayerTurn));
-        SM.Add(new State<State>(State.AiTurn, "AiTurn", OnEnterAiTurn, OnExitAiTurn, OnUpdateAiTurn));
-        SM.Add(new State<State>(State.Selection, "Selection", OnEnterSelection, OnExitSelection, OnUpdateSelection));
-        SM.Add(new State<State>(State.PlayAuto, "PlayAuto", OnEnterPlayAuto, OnExitPlayAuto, OnUpdatePlayAuto));
-        SM.Add(new State<State>(State.Move, "Move", OnEnterMove, OnExitMove, OnUpdateMove));
-        SM.Add(new State<State>(State.Stack, "Stack", OnEnterStack, OnExitStack, OnUpdateStack));
-        SM.Add(new State<State>(State.Unstack, "Unstack", OnEnterUnstack, OnExitUnstack, OnUpdateUnstack));
-        SM.Add(new State<State>(State.End, "End", OnEnterEnd, OnExitEnd, OnUpdateEnd));
-        SM.Add(new State<State>(State.Replay, "Replay", OnEnterReplay, null, OnUpdateReplay));
+        SM.Add(new State<State>(State.Turn, OnEnterTurn, OnExitTurn, OnUpdateTurn));
+        SM.Add(new State<State>(State.PlayerTurn, OnEnterPlayerTurn, OnExitPlayerTurn, OnUpdatePlayerTurn));
+        SM.Add(new State<State>(State.AiTurn, OnEnterAiTurn, OnExitAiTurn, OnUpdateAiTurn));
+        SM.Add(new State<State>(State.Selection, OnEnterSelection, OnExitSelection, OnUpdateSelection));
+        SM.Add(new State<State>(State.PlayAuto, OnEnterPlayAuto, OnExitPlayAuto, OnUpdatePlayAuto));
+        SM.Add(new State<State>(State.Move, OnEnterMove, OnExitMove, OnUpdateMove));
+        SM.Add(new State<State>(State.Stack, OnEnterStack, OnExitStack, OnUpdateStack));
+        SM.Add(new State<State>(State.Unstack, OnEnterUnstack, OnExitUnstack, OnUpdateUnstack));
+        SM.Add(new State<State>(State.End, OnEnterEnd, OnExitEnd, OnUpdateEnd));
+        SM.Add(new State<State>(State.Next, OnEnterNext, null, OnUpdateNext));
+        SM.Add(new State<State>(State.Back, OnEnterBack, null, OnUpdateBack));
+        SM.Add(new State<State>(State.Replay, OnEnterReplay, OnExitReplay, OnUpdateReplay));
 
         camera = Camera.main;
     }

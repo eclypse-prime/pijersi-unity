@@ -4,29 +4,28 @@ using UnityEngine;
 
 public partial class Pijersi
 {
-    private void OnEnterReplay()
+    public void OnEnterReplay()
     {
-        int turnId     = save.turns.Count - 1;
-        int actionId   = save.turns[turnId].actions.Count;
-        Save.Turn turn = replaySave.turns[turnId];
+        if (save.turns[0].actions.Count > 0)
+            UI.replayButtons["Back"].interactable = true;
 
-        selectedCell = turn.cells[actionId];
-        pointedCell  = turn.cells[actionId + 1];
-
-        switch (turn.actions[actionId])
-        {
-            case ActionType.Move:
-                SM.ChangeState(State.Move);
-                break;
-            case ActionType.Stack:
-                SM.ChangeState(State.Stack);
-                break;
-            case ActionType.Unstack:
-                SM.ChangeState(State.Unstack);
-                break;
-            default:
-                break;
-        }
+        int lastSaveTurnId = save.turns.Count - 1;
+        int lastReplaySaveTurnId = replaySave.turns.Count - 1;
+        if (lastSaveTurnId > lastReplaySaveTurnId || save.turns[lastSaveTurnId].actions.Count > replaySave.turns[lastSaveTurnId].actions.Count)
+            return;
+        UI.replayButtons["Next"].interactable = true;
     }
-    private void OnUpdateReplay() { }
+
+    public void OnExitReplay()
+    {
+        UI.replayButtons["Back"].interactable = false;
+        UI.replayButtons["Next"].interactable = false;
+    }
+
+    public void OnUpdateReplay()
+    {
+        if (replayState != ReplayState.Play) return;
+
+        SM.ChangeState(State.Next);
+    }
 }

@@ -6,7 +6,7 @@ public partial class Pijersi
 {
     private void OnEnterTurn()
     {
-        AddManualPlay();
+        UpdateEngine();
 
         currentTeamId = 1 - currentTeamId;
         canMove       = true;
@@ -24,7 +24,7 @@ public partial class Pijersi
 
     private void OnUpdateTurn()
     {
-        if (isReplayOn)
+        if (replayState != ReplayState.None)
         {
             SM.ChangeState(State.Replay);
             return;
@@ -39,9 +39,14 @@ public partial class Pijersi
         SM.ChangeState(State.AiTurn);
     }
 
-    private void AddManualPlay()
+    private void UpdateEngine()
     {
-        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human) return;
+
+        if (engine == null)
+        {
+            engine = new Engine();
+        }
 
         int[] manualPlay = new int[6];
         Save.Turn lastTurn = save.turns[save.turns.Count - 1];
@@ -71,10 +76,6 @@ public partial class Pijersi
         manualPlay[3] = lastTurn.cells[1].y;
         manualPlay[4] = lastTurn.cells[2].x;
         manualPlay[5] = lastTurn.cells[2].y;
-
-        string text = "";
-        foreach (int index in manualPlay)
-            text += index;
 
         engine.PlayManual(manualPlay);
     }

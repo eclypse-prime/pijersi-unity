@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class Pijersi : MonoBehaviour
+public partial class Pijersi
 {
     public void ResetMatch()
     {
@@ -22,7 +22,8 @@ public partial class Pijersi : MonoBehaviour
         }
 
         playerScores  = new int[2];
-        isReplayOn    = false;
+        replayState   = ReplayState.None;
+        replayType    = ReplayType.Action;
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
@@ -46,6 +47,36 @@ public partial class Pijersi : MonoBehaviour
     {
         replaySave = new Save(this.save);
         ResetMatch();
-        isReplayOn = true;
+        replayState = ReplayState.Play;
+        UI.replayButtons["Play"].interactable = true;
+    }
+
+    public void PausePlay()
+    {
+        replayState = replayState == ReplayState.Play ? ReplayState.Pause : ReplayState.Play;
+    }
+
+    public void Back(bool isTurn)
+    {
+        if (replayState == ReplayState.Play)
+            replayState = ReplayState.Pause;
+
+        replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
+
+        UI.SetReplayButtonsInteractable(false);
+        SM.ChangeState(State.Back);
+    }
+    
+    public void Next(bool isTurn)
+    {
+        if (replayState == ReplayState.Play)
+            replayState = ReplayState.Pause;
+
+        replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
+        UI.SetReplayButtonsInteractable(false);
+
+        if (replayState == ReplayState.Pause && save.turns[save.turns.Count - 1].actions.Count > 0)
+            SM.ChangeState(State.Turn);
+        SM.ChangeState(State.Next);
     }
 }

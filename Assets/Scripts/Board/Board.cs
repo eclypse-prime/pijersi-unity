@@ -26,6 +26,7 @@ public class Board : MonoBehaviour
     private new Transform transform;
     public Cell[] cells { get; private set; }
     private Piece[] pieces;
+    private List<Piece> deadPieces = new List<Piece>();
 
     public int LineCount => lineCount;
 
@@ -193,21 +194,11 @@ public class Board : MonoBehaviour
     #region Action
     public void Move(Cell start, Cell end)
     {
-        end.pieces[0]?.gameObject.SetActive(false);
-        end.pieces[1]?.gameObject.SetActive(false);
-
         end.pieces   = start.pieces;
         start.pieces = new Piece[2];
 
         end.pieces[0].InitMove(end, PlacementRng);
         end.pieces[1]?.InitMove(end, PlacementRng);
-    }
-
-    public void Attack(Cell start, Cell end)
-    {
-        end.pieces[0].gameObject.SetActive(false);
-        end.pieces[1]?.gameObject.SetActive(false);
-        Move(start, end);
     }
 
     public void Stack(Cell start, Cell end)
@@ -221,9 +212,6 @@ public class Board : MonoBehaviour
 
     public void Unstack(Cell start, Cell end)
     {
-        end.pieces[0]?.gameObject.SetActive(false);
-        end.pieces[1]?.gameObject.SetActive(false);
-
         end.pieces[0]   = start.pieces[1];
         end.pieces[1]   = null;
         start.pieces[1] = null;
@@ -236,6 +224,36 @@ public class Board : MonoBehaviour
         bool firstUpdate = cell.pieces[0].UpdateMove();
         bool secondUpdate = cell.pieces[1]?.UpdateMove() == true;
         return firstUpdate || secondUpdate;
+    }
+
+    public void KillPieces(Cell cell)
+    {
+        if (cell.isEmpty) return;
+
+        cell.pieces[0].gameObject.SetActive(false);
+        deadPieces.Add(cell.pieces[0]);
+
+        if (!cell.isFull) return;
+
+        cell.pieces[1].gameObject.SetActive(false);
+        deadPieces.Add(cell.pieces[1]);
+    }
+
+    public void ReviveLastPieces(Cell cell)
+    {
+        if (deadPieces.Count == 0) return;
+
+        int lastId = deadPieces.Count - 1;
+
+        if (deadPieces[lastId].cell != cell) return;
+
+        deadPieces[lastId].gameObject.SetActive(true);
+        deadPieces.RemoveAt(lastId);
+
+        if (lastId < 1 || deadPieces[lastId - 1].cell != cell) return;
+
+        deadPieces[lastId - 1].gameObject.SetActive(true);
+        deadPieces.RemoveAt(lastId - 1);
     }
     #endregion
 }

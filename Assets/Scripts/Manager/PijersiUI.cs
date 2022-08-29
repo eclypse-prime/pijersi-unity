@@ -10,17 +10,30 @@ public class PijersiUI : MonoBehaviour
     private const char stackMoveSign = '=';
     private const char attackSign = '!';
 
+    [Header("Overlay :")]
+    [SerializeField] private TMP_Text Display;
+    [SerializeField] private TextMeshProUGUI gameState;
+    [SerializeField] private TextMeshProUGUI record;
+    [SerializeField] private GameObject replay;
+    [Header("Pause/End Menu :")]
     [SerializeField] private GameObject pause;
     [SerializeField] private GameObject resume;
     [SerializeField] private GameObject endOptions;
     [SerializeField] private Button save;
     [SerializeField] private TMP_Text Title;
-    [SerializeField] private TMP_Text Display;
-    [SerializeField] private TextMeshProUGUI gameState;
-    [SerializeField] private TextMeshProUGUI record;
 
     private string[] teamColor = {"White", "Black"};
     private bool isFirstAction = true;
+    private List<string> records = new List<string>();
+
+    public Dictionary<string, Button> replayButtons { get; private set; }
+
+    private void Awake()
+    {
+        replayButtons = new Dictionary<string, Button>();
+        foreach (Button button in replay.GetComponentsInChildren<Button>())
+            replayButtons.Add(button.name, button);
+    }
 
     private void Start()
     {
@@ -38,7 +51,7 @@ public class PijersiUI : MonoBehaviour
         endOptions.SetActive(true);
         if (teamWinCounts[winTeamId] == maxWinRound)
             resume.SetActive(false);
-        Title.text = $"{teamColor[winTeamId]} win !";
+        Title.text   = $"{teamColor[winTeamId]} win !";
         Display.text = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
     }
 
@@ -46,10 +59,10 @@ public class PijersiUI : MonoBehaviour
     {
         pause.SetActive(false);
         endOptions.SetActive(false);
-        save.interactable = true;
         resume.SetActive(true);
-        Title.text = "Pause";
-        Display.text = "";
+        save.interactable = true;
+        Title.text        = "Pause";
+        Display.text      = "";
     }
 
     public void UpdateGameState(int teamId, string teamName)
@@ -71,24 +84,48 @@ public class PijersiUI : MonoBehaviour
         if (action == ActionType.Attack)
             newRecord += attackSign;
 
-        record.text += newRecord;
+        record.text  += newRecord;
         isFirstAction = false;
+        records.Add(newRecord);
     }
 
     public void AddRecordColumnLine(int teamId)
     {
         if (record.text.Length == 0) return;
 
-        record.text += teamId == 0 ? "\n" : "\t";
-        isFirstAction = true;
+        string newRecord = teamId == 0 ? "\n" : "\t ";
+        record.text     += newRecord;
+        isFirstAction    = true;
+        records.Add(newRecord);
+    }
+
+    public void UndoRecord()
+    {
+        int newRecordSize = records.Count - 1;
+        records.RemoveAt(newRecordSize);
+        if (newRecordSize == 0)
+            isFirstAction = true;
+
+        string newRecord = "";
+        foreach (string record in records)
+            newRecord += record;
+
+        record.text = newRecord;
+    }
+
+    public void SetReplayButtonsInteractable(bool value)
+    {
+        foreach (KeyValuePair<string, Button> replayButton in replayButtons)
+            replayButton.Value.interactable = value;
     }
 
     public void ResetUI()
     {
         gameState.text = "";
-        record.text = "";
-        isFirstAction = true;
+        record.text    = "";
+        isFirstAction  = true;
         HideEnd();
+        SetReplayButtonsInteractable(false);
     }
 
     public void MainMenu()
