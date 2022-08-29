@@ -40,7 +40,7 @@ class Engine : IEngine
         board.setState(arrayState.cast());
     }
 
-    public int Evaluate()
+    public float Evaluate()
     {
         return board.evaluate();
     }
