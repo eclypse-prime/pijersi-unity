@@ -8,6 +8,7 @@ public partial class Pijersi
     {
         canMove = false;
         ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
+        board.KillPieces(pointedCell);
         board.Move(selectedCell, pointedCell);
         save.AddAction(ActionType.Move, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
