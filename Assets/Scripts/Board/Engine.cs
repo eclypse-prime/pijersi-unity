@@ -40,6 +40,11 @@ class Engine : IEngine
         board.setState(arrayState.cast());
     }
 
+    public void SetPlayer(int colour)
+    {
+        board.currentPlayer = (colour == 0) ? PijersiEngine.PieceColour.White : PijersiEngine.PieceColour.Black;
+    }
+
     public float Evaluate()
     {
         return board.evaluate();
