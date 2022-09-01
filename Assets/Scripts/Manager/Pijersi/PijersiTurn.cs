@@ -43,7 +43,7 @@ public partial class Pijersi
 
     private void UpdateEngine()
     {
-        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human) return;
+        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
 
         if (engine == null)
         {
