@@ -9,6 +9,9 @@ public partial class Pijersi
     {
         selectedCell = pointedCell;
         validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
+        Cell[] cells = new Cell[validMoves.Keys.Count];
+        validMoves.Keys.CopyTo(cells, 0);
+        dangers = selectedCell.lastPiece.GetDanger(cells);
         animation.NewSelection(selectedCell);
 
         if (validMoves.Count == 0)
@@ -50,7 +53,10 @@ public partial class Pijersi
             }
 
             if (pointedCell != selectedCell) // highlight
+            {
                 animation.UpdateHighlight(pointedCell, ActionType.None);
+                animation.HighlightDangers(null);
+            }
             return;
         }
 
@@ -110,5 +116,10 @@ public partial class Pijersi
         // highlights
         if (pointedCell != selectedCell)
             animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : orderedActions[actionId]);
+
+        if (this.dangers == null) return;
+
+        Cell[] dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell].ToArray() : null;
+        animation.HighlightDangers(dangers);
     }
 }

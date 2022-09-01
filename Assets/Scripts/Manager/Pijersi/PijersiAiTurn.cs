@@ -63,7 +63,7 @@ public partial class Pijersi
 
     IEnumerator PlayAuto()
     {
-        playAuto = engine.PlayAuto(2);
+        playAuto = engine.PlayAuto((int) config.playerTypes[currentTeamId] - 1);
 
         yield return null;
     }

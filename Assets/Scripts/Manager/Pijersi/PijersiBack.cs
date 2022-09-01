@@ -18,6 +18,8 @@ public partial class Pijersi
             currentTeamId = 1 - currentTeamId;
             UI.UndoRecord();
             UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
+            if (cameraMovement.position != CameraMovement.positionType.Up)
+                cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
             turnId--;
         }
         Save.Turn turn = save.turns[turnId];
@@ -73,7 +75,7 @@ public partial class Pijersi
 
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
-            SM.ChangeState(State.Selection);
+            SM.ChangeState(State.PlayerTurn);
             return;
         }
 

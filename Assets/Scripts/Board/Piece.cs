@@ -101,7 +101,7 @@ public class Piece : MonoBehaviour
 
             if (canStack)
             {
-                if (cell.isFull && (near.isEmpty || near.pieces[0].team != team))
+                if (cell.isFull && (near.isEmpty || near.pieces[0].team != team && near.lastPiece.type == prey))
                     validActions.Add(ActionType.Unstack);
                 else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team)
                     validActions.Add(ActionType.Stack);
@@ -114,9 +114,10 @@ public class Piece : MonoBehaviour
         if (!canMove)
             return validMoves;
 
-        foreach (Cell farNear in cell.GetFarNears())
+        for (int i = 0; i < 6; i++)
         {
-            if (farNear == null) continue;
+            Cell farNear = cell.nears[i]?.nears[i];
+            if (farNear == null || !cell.nears[i].isEmpty) continue;
 
             List<ActionType> validActions = new List<ActionType>();
 
@@ -130,5 +131,68 @@ public class Piece : MonoBehaviour
         }
 
         return validMoves;
+    }
+
+    public virtual Dictionary<Cell, List<Cell>> GetDanger(Cell[] cells)
+    {
+        Dictionary<Cell, List<Cell>> result = new Dictionary<Cell, List<Cell>>();
+
+        foreach (Cell cell in cells)
+        {
+            List<Cell> dangers = new List<Cell>();
+            foreach (Cell near in cell.nears)
+            {
+                if (near == null || dangers.Contains(near)) continue;
+
+                if (!near.isEmpty)
+                {
+                    Piece piece = near.lastPiece;
+                    if (piece.team != team && piece.prey == type)
+                        dangers.Add(near);
+                }
+
+                foreach (Cell farNear in near.nears)
+                {
+                    if (farNear == null || farNear.isEmpty || near.isFull && near.pieces[0].team == farNear.pieces[0].team || dangers.Contains(farNear)) continue;
+
+                    if (!farNear.isEmpty)
+                    {
+                        Piece piece = farNear.lastPiece;
+                        if (piece.team != team && piece.prey == type && (farNear.isFull || near.pieces[0]?.team == piece.team))
+                            dangers.Add(farNear);
+                    }
+                }
+            }
+
+            if (dangers.Count > 0)
+                result.Add(cell, dangers);
+        }
+
+        return result;
+    }
+
+    public ushort ToByte()
+    {
+        ushort result = 1;
+        if (team == 2)
+            result += 2;
+        switch (type)
+        {
+            case PieceType.Scissors:
+                break;
+            case PieceType.Paper:
+                result += 4;
+                break;
+            case PieceType.Rock:
+                result += 8;
+                break;
+            case PieceType.Wise:
+                result += 12;
+                break;
+            default:
+                break;
+        }
+
+        return result;
     }
 }

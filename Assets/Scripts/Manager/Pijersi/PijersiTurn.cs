@@ -14,6 +14,8 @@ public partial class Pijersi
         selectedCell  = null;
         pointedCell   = null;
         save.AddTurn();
+
+        engine?.SetPlayer((byte)currentTeamId);
     }
 
     private void OnExitTurn()
@@ -41,11 +43,12 @@ public partial class Pijersi
 
     private void UpdateEngine()
     {
-        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human) return;
+        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] == PlayerType.Human) return;
 
         if (engine == null)
         {
             engine = new Engine();
+            engine.SetState(board.GetState());
         }
 
         int[] manualPlay = new int[6];

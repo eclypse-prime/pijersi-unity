@@ -1027,7 +1027,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
@@ -1035,15 +1035,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[1].m_Text
-      value: AI
+      value: AI (easy)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[2].m_Text
-      value: AI vs Player
+      value: AI (normal)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[3].m_Text
-      value: AI vs AI
+      value: AI (hard)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
@@ -1655,7 +1655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[0].m_Text
@@ -1663,15 +1663,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[1].m_Text
-      value: AI
+      value: AI (easy)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[2].m_Text
-      value: AI vs Player
+      value: AI (normal)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_Options.m_Options.Array.data[3].m_Text
-      value: AI vs AI
+      value: AI (hard)
       objectReference: {fileID: 0}
     - target: {fileID: 7991383553342839908, guid: a7e0f387f52f8d049866bd32e48b9b98, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size

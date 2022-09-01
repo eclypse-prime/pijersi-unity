@@ -256,4 +256,14 @@ public class Board : MonoBehaviour
         deadPieces.RemoveAt(lastId - 1);
     }
     #endregion
+
+    public byte[] GetState()
+    {
+        byte[] state = new byte[45];
+
+        for (int i = 0; i < 45; i++)
+            state[i] = (byte) cells[i].PiecesToByte();
+
+        return state;
+    }
 }

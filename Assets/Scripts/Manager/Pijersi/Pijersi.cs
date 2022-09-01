@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public partial class Pijersi : MonoBehaviour
 {
     [SerializeField] private PijersiConfig config;
+    [SerializeField] private CameraMovement cameraMovement;
     [SerializeField] private PijersiUI UI;
     [SerializeField] private Board board;
     [SerializeField] private new BoardAnimation animation;
@@ -25,6 +26,7 @@ public partial class Pijersi : MonoBehaviour
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
+    private Dictionary<Cell, List<Cell>> dangers;
     private int[] playerScores;
     private string[] playerNames;
     private int[] playAuto;
@@ -82,6 +84,7 @@ public partial class Pijersi : MonoBehaviour
 
     private void Start()
     {
+        cameraMovement.SetCenter(board.cells[22].transform.position);
         ResetMatch();
     }
 

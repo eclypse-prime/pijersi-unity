@@ -52,4 +52,9 @@ public class Wise : Piece
 
         return validMoves;
     }
+
+    public override Dictionary<Cell, List<Cell>> GetDanger(Cell[] cells)
+    {
+        return null;
+    }
 }

@@ -59,4 +59,9 @@ public class Cell : MonoBehaviour
 
         return farNears.ToArray();
     }
+
+    public ushort PiecesToByte()
+    {
+        return (ushort)(pieces[0]?.ToByte() + (pieces[1]?.ToByte() << 4));
+    }
 }

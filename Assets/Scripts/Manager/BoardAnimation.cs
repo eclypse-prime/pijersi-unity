@@ -11,11 +11,31 @@ public class BoardAnimation : MonoBehaviour
 
     private Dictionary<ActionType, Color> actionColors = new Dictionary<ActionType, Color>();
     private Cell highlightedCell;
+    private Cell[] highlightedDangers = new Cell[0];
 
     private void Awake()
     {
         for (int i = 0; i < actions.Length; i++)
             actionColors.Add(actions[i], colors[i]);
+    }
+
+    public void HighlightDangers(Cell[] cells = null)
+    {
+        if (cells == highlightedDangers) return;
+
+        foreach (Cell danger in highlightedDangers)
+            danger.ResetColor();
+
+        if (cells == null)
+        {
+            highlightedDangers = new Cell[0];
+            return;
+        }
+
+        foreach (Cell cell in cells)
+            cell.SetColor(actionColors[ActionType.Attack]);
+
+        highlightedDangers = cells;
     }
 
     #region cell

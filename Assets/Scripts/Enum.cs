@@ -1,7 +1,9 @@
 public enum PlayerType
 {
     Human,
-    Ai
+    AiEasy,
+    AiNormal,
+    AiHard
 }
 
 public enum PieceType

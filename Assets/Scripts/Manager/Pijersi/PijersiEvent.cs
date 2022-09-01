@@ -12,8 +12,26 @@ public partial class Pijersi
 
         // reset des noms d'équipe
         playerNames = new string[2];
-        playerNames[0] = config.playerTypes[0] == PlayerType.Human ? "Player" : "AI";
-        playerNames[1] = config.playerTypes[1] == PlayerType.Human ? "Player" : "AI";
+        for (int i = 0; i < 2; i++)
+        {
+            switch (config.playerTypes[i])
+            {
+                case PlayerType.Human:
+                    playerNames[i] = "Player";
+                    break;
+                case PlayerType.AiEasy:
+                    playerNames[i] = "AI (easy)";
+                    break;
+                case PlayerType.AiNormal:
+                    playerNames[i] = "AI (normal)";
+                    break;
+                case PlayerType.AiHard:
+                    playerNames[i] = "AI (hard)";
+                    break;
+                default:
+                    break;
+            }
+        }
 
         if (config.playerTypes[0] == config.playerTypes[1])
         {
@@ -27,6 +45,7 @@ public partial class Pijersi
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
+        cameraMovement.position = CameraMovement.positionType.White;
 
         SM.ChangeState(State.Turn);
     }

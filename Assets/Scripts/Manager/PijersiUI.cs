@@ -92,8 +92,7 @@ public class PijersiUI : MonoBehaviour
     public void AddRecordColumnLine(int teamId)
     {
         if (record.text.Length == 0) return;
-
-        string newRecord = teamId == 0 ? "\n" : "\t ";
+        string newRecord = teamId == 0 ? "\n" : "\t";
         record.text     += newRecord;
         isFirstAction    = true;
         records.Add(newRecord);
