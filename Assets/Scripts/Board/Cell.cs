@@ -60,6 +60,17 @@ public class Cell : MonoBehaviour
         return farNears.ToArray();
     }
 
+    public int GetNearIndex(Cell cell)
+    {
+        for (int i = 0; i < nears.Length; i++)
+        {
+            if (cell == nears[i])
+                return i;
+        }
+
+        return -1;
+    }
+
     public ushort PiecesToByte()
     {
         return (ushort)(pieces[0]?.ToByte() + (pieces[1]?.ToByte() << 4));

@@ -144,22 +144,33 @@ public class Piece : MonoBehaviour
             {
                 if (near == null || dangers.Contains(near)) continue;
 
+                Piece nearPiece = near.lastPiece;
                 if (!near.isEmpty)
                 {
-                    Piece piece = near.lastPiece;
-                    if (piece.team != team && piece.prey == type)
+                    if (nearPiece.team != team && nearPiece.prey == type)
                         dangers.Add(near);
                 }
 
                 foreach (Cell farNear in near.nears)
                 {
-                    if (farNear == null || farNear.isEmpty || near.isFull && near.pieces[0].team == farNear.pieces[0].team || dangers.Contains(farNear)) continue;
+                    if (farNear == null || near.isFull && near.pieces[0]?.team == farNear.pieces[0]?.team || dangers.Contains(farNear)) continue;
 
-                    if (!farNear.isEmpty)
+                    Piece farPiece = farNear.lastPiece;
+                    if (!farNear.isEmpty && farPiece.team != team && farPiece.prey == type && (farNear.isFull || near.pieces[0]?.team == farPiece.team))
+                        dangers.Add(farNear);
+
+                    foreach (Cell deepNear in farNear.nears)
                     {
-                        Piece piece = farNear.lastPiece;
-                        if (piece.team != team && piece.prey == type && (farNear.isFull || near.pieces[0]?.team == piece.team))
-                            dangers.Add(farNear);
+                        if (deepNear == null || deepNear.isEmpty || farNear.isFull || dangers.Contains(deepNear)) continue;
+
+                        Piece deepPiece = deepNear.lastPiece;
+                        if (deepPiece.team != team && deepPiece.prey == type)
+                        {
+                            if (deepNear.isFull && farNear.isEmpty && (near.isEmpty || deepPiece.prey == nearPiece.type && deepPiece.team != nearPiece.team))
+                                dangers.Add(deepNear);
+                            else if (deepPiece.team == farPiece?.team && near.isEmpty && near.nears[farNear.GetNearIndex(near)] == cell)
+                                dangers.Add(deepNear);
+                        }
                     }
                 }
             }
