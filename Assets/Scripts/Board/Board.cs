@@ -57,7 +57,7 @@ public class Board : MonoBehaviour
                 Cell cell        = Instantiate(cellPrefab, position, Quaternion.identity, transform).GetComponent<Cell>();
                 cell.x           = lineCount - 1 - i;
                 cell.y           = j;
-                cell.name        = letters[i] + j.ToString();
+                cell.name        = letters[i] + (j + 1).ToString();
 
                 if (i == 0 || i == lineCount - 1 || j == 0 || j == lineSize - 1 || IsDarkCell(cell.name))
                     cell.renderer.material = m_dark;
