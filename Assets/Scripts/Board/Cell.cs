@@ -73,6 +73,10 @@ public class Cell : MonoBehaviour
 
     public ushort PiecesToByte()
     {
-        return (ushort)(pieces[0]?.ToByte() + (pieces[1]?.ToByte() << 4));
+        if (isEmpty) return 0;
+
+        if (!isFull) return pieces[0].ToByte();
+
+        return (ushort)(pieces[0].ToByte() + (pieces[1].ToByte() << 4));
     }
 }

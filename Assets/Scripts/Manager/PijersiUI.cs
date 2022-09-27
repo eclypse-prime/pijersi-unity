@@ -95,7 +95,7 @@ public class PijersiUI : MonoBehaviour
         string newRecord = teamId == 0 ? "\n" : "\t";
         record.text     += newRecord;
         isFirstAction    = true;
-        records.Add(newRecord);
+        records[records.Count -1] += newRecord;
     }
 
     public void UndoRecord()
@@ -123,6 +123,7 @@ public class PijersiUI : MonoBehaviour
         gameState.text = "";
         record.text    = "";
         isFirstAction  = true;
+        records.Clear();
         HideEnd();
         SetReplayButtonsInteractable(false);
     }

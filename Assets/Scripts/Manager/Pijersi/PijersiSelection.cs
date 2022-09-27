@@ -9,20 +9,22 @@ public partial class Pijersi
     {
         selectedCell = pointedCell;
         validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
+
+        if (validMoves.Count == 0)
+            SM.ChangeState(State.Turn);
+
         Cell[] cells = new Cell[validMoves.Keys.Count];
         validMoves.Keys.CopyTo(cells, 0);
         dangers = selectedCell.lastPiece.GetDanger(cells);
         animation.NewSelection(selectedCell);
-
-        if (validMoves.Count == 0)
-            SM.ChangeState(State.Turn);
     }
 
     private void OnExitSelection()
     {
         validMoves = null;
         selectedCell.ResetColor();
-        UI.replayButtons["Back"].interactable = true;
+        pointedCell?.ResetColor();
+        animation.HighlightDangers(null);
     }
 
     private void OnUpdateSelection()
@@ -47,7 +49,11 @@ public partial class Pijersi
                 if (canMove && canStack) // annule la selection
                     SM.ChangeState(State.PlayerTurn);
                 else if (pointedCell == selectedCell) // termine le tour
+                {
+                    CheckReplaySave();
+                    UI.replayButtons["Next"].interactable = false;
                     SM.ChangeState(State.Turn);
+                }
 
                 return;
             }
@@ -57,6 +63,7 @@ public partial class Pijersi
                 animation.UpdateHighlight(pointedCell, ActionType.None);
                 animation.HighlightDangers(null);
             }
+
             return;
         }
 
@@ -65,6 +72,9 @@ public partial class Pijersi
         // action (ordre alternative)
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
+            CheckReplaySave();
+            UI.replayButtons["Next"].interactable = false;
+
             orderedActions = new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
             State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Move };
 
@@ -101,6 +111,9 @@ public partial class Pijersi
         // action (défaut)
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
+            CheckReplaySave();
+            UI.replayButtons["Next"].interactable = false;
+
             State[] orderedState = { State.Move, State.Move, State.Stack, State.Unstack };
 
             if (actionId > -1)
@@ -121,5 +134,12 @@ public partial class Pijersi
 
         Cell[] dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell].ToArray() : null;
         animation.HighlightDangers(dangers);
+    }
+    private void CheckReplaySave()
+    {
+        if (replaySave == null) return;
+
+        replaySave = null;
+        engine = null;
     }
 }

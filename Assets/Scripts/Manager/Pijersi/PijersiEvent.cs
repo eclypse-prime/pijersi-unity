@@ -80,7 +80,16 @@ public partial class Pijersi
         if (replayState == ReplayState.Play)
             replayState = ReplayState.Pause;
 
-        replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
+        replayAt.Item1 = save.turns.Count - 1;
+        if (save.turns[replayAt.Item1].actions.Count == 0)
+            replayAt.Item1--;
+
+        if (replayState == ReplayState.None)
+        {
+            while (replayAt.Item1 > 0 && config.playerTypes[replayAt.Item1 % 2 == 0 ? 0 : 1] != PlayerType.Human)
+                replayAt.Item1--;
+        }
+        replayAt.Item2 = isTurn ? 0 : save.turns[replayAt.Item1].actions.Count - 1;
 
         UI.SetReplayButtonsInteractable(false);
         SM.ChangeState(State.Back);
@@ -90,6 +99,14 @@ public partial class Pijersi
     {
         if (replayState == ReplayState.Play)
             replayState = ReplayState.Pause;
+
+        replayAt.Item1 = save.turns.Count - 1;
+        if (replayState == ReplayState.None)
+        {
+            while (replayAt.Item1 < replaySave.turns.Count && config.playerTypes[replayAt.Item1 % 2 == 0 ? 0 : 1] != PlayerType.Human)
+                replayAt.Item1++;
+        }
+        replayAt.Item2 = isTurn ? replaySave.turns[replayAt.Item1].actions.Count - 1 : 0;
 
         replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
         UI.SetReplayButtonsInteractable(false);

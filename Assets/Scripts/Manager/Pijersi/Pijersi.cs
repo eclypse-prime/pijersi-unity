@@ -32,6 +32,7 @@ public partial class Pijersi : MonoBehaviour
     private int[] playAuto;
     private State[] aiActionStates;
     private Cell[] aiActionCells;
+    private (int, int) replayAt;
 
     private StateMachine<State> SM = new StateMachine<State>();
 

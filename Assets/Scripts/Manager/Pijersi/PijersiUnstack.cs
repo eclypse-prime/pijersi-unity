@@ -12,6 +12,7 @@ public partial class Pijersi
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(ActionType.Unstack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
+        UI.replayButtons["Back"].interactable = true;
         canMove = false;
     }
 

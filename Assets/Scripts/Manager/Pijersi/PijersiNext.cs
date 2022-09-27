@@ -14,7 +14,6 @@ public partial class Pijersi
         pointedCell  = turn.cells[actionId + 1];
 
         UI.replayButtons["Back"].interactable = true;
-        UI.replayButtons["Next"].interactable = false;
 
         switch (turn.actions[actionId])
         {
@@ -31,12 +30,10 @@ public partial class Pijersi
                 break;
         }
 
-        if (save.turns[turnId].actions.Count == replaySave.turns[turnId].actions.Count)
+        if (replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[turnId].actions.Count - 1)
         {
-            replayType = ReplayType.Action;
-
-            if (turnId == replaySave.turns.Count - 1)
-                replaySave = null;
+            replaySave = null;
+            replayAt   = (-1, -1);
         }
     }
     private void OnUpdateNext()

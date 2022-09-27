@@ -19,6 +19,9 @@ public partial class Pijersi
     {
         UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
         UI.AddRecordColumnLine(currentTeamId);
+
+        if (replaySave != null)
+            UI.replayButtons["Next"].interactable = true;
     }
 
     private void OnUpdateTurn()

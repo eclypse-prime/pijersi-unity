@@ -245,14 +245,19 @@ public class Board : MonoBehaviour
 
         int lastId = deadPieces.Count - 1;
 
-        if (deadPieces[lastId].cell != cell) return;
+        Piece piece = deadPieces[lastId];
+        if (piece.cell != cell) return;
 
-        deadPieces[lastId].gameObject.SetActive(true);
+        cell.pieces[0] = piece;
+        piece.gameObject.SetActive(true);
         deadPieces.RemoveAt(lastId);
 
         if (lastId < 1 || deadPieces[lastId - 1].cell != cell) return;
 
-        deadPieces[lastId - 1].gameObject.SetActive(true);
+        piece = deadPieces[lastId - 1];
+        cell.pieces[1] = cell.pieces[0];
+        cell.pieces[0] = piece;
+        piece.gameObject.SetActive(true);
         deadPieces.RemoveAt(lastId - 1);
     }
     #endregion

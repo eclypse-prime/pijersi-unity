@@ -185,7 +185,7 @@ public class Piece : MonoBehaviour
     public ushort ToByte()
     {
         ushort result = 1;
-        if (team == 2)
+        if (team == 1)
             result += 2;
         switch (type)
         {

@@ -12,6 +12,7 @@ public partial class Pijersi
         board.Move(selectedCell, pointedCell);
         save.AddAction(ActionType.Move, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
+        UI.replayButtons["Back"].interactable = true;
     }
 
     private void OnExitMove() { }

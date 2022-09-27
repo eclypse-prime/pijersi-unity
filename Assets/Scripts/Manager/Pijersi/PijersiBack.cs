@@ -7,18 +7,15 @@ public partial class Pijersi
     private void OnEnterBack()
     {
         engine = null;
-
-        if (replaySave == null)
-            replaySave = new Save(save);
+        replaySave ??= new Save(save);
 
         int turnId = save.turns.Count - 1;
         if (save.turns[turnId].actions.Count == 0)
         {
             save.turns.RemoveAt(turnId);
             currentTeamId = 1 - currentTeamId;
-            UI.UndoRecord();
             UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
-            if (cameraMovement.position != CameraMovement.positionType.Up)
+            if (cameraMovement.position != CameraMovement.positionType.Up && config.playerTypes[currentTeamId] == PlayerType.Human)
                 cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
             turnId--;
         }
@@ -45,7 +42,7 @@ public partial class Pijersi
             default:
                 break;
         }
-
+        
         turn.actions.RemoveAt(actionId);
         turn.cells.RemoveAt(actionId + 1);
         UI.UndoRecord();
@@ -62,16 +59,19 @@ public partial class Pijersi
         board.ReviveLastPieces(selectedCell);
 
         int turnId = save.turns.Count - 1;
+        int actionId = save.turns[turnId].actions.Count - 1;
 
-        if (replayType == ReplayType.Turn && save.turns[turnId].actions.Count > 0)
+        if (replayAt.Item1 <= turnId && replayAt.Item2 <= actionId)
         {
-            replayType = ReplayType.Action;
             SM.ChangeState(State.Back);
-            
             return;
         }
 
+        replayAt = (-1, -1);
         save.turns[turnId].cells.RemoveAt(0);
+
+        if (turnId > 0 || actionId > 0)
+            UI.replayButtons["Back"].interactable = true;
 
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {

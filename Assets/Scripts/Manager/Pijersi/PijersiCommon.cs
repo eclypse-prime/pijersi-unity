@@ -46,14 +46,14 @@ public partial class Pijersi
 
     private void ToNextActionState()
     {
-        if (replayType == ReplayType.Turn)
-        {
-            SM.ChangeState(State.Next);
-            return;
-        }
-
         if (replaySave != null)
         {
+            if (replayAt != (-1, -1))
+            {
+                SM.ChangeState(State.Next);
+                return;
+            }
+
             SM.ChangeState(State.Replay);
             return;
         }

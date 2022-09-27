@@ -10,6 +10,7 @@ public partial class Pijersi
         board.Stack(selectedCell, pointedCell);
         save.AddAction(ActionType.Stack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, ActionType.Stack);
+        UI.replayButtons["Back"].interactable = true;
     }
 
     private void OnExitStack() { }
