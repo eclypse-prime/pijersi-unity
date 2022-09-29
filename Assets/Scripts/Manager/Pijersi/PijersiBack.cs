@@ -14,8 +14,8 @@ public partial class Pijersi
         {
             save.turns.RemoveAt(turnId);
             currentTeamId = 1 - currentTeamId;
-            UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
-            if (cameraMovement.position != CameraMovement.positionType.Up && config.playerTypes[currentTeamId] == PlayerType.Human)
+            UI.UpdateGameState(currentTeamId, teams[currentTeamId].Name);
+            if (cameraMovement.position != CameraMovement.positionType.Up && teams[currentTeamId].Type == PlayerType.Human)
                 cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
             turnId--;
         }

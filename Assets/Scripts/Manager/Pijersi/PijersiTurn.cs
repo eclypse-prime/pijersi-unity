@@ -17,7 +17,7 @@ public partial class Pijersi
 
     private void OnExitTurn()
     {
-        UI.UpdateGameState(currentTeamId, playerNames[currentTeamId]);
+        UI.UpdateGameState(currentTeamId, teams[currentTeamId].Name);
         UI.AddRecordColumnLine(currentTeamId);
 
         if (replaySave != null)

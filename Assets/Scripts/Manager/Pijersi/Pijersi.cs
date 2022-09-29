@@ -20,22 +20,38 @@ public partial class Pijersi : MonoBehaviour
     private IEngine engine;
     private Save save;
     private Save replaySave;
+    private Team[] teams;
+    private int currentTeamId;
     private Cell pointedCell;
     private Cell selectedCell;
-    private int currentTeamId;
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
     private List<Cell>[] selectedCellDangers = new List<Cell>[2];
     private Dictionary<Cell, List<Cell>> dangers;
-    private int[] playerScores;
-    private string[] playerNames;
     private int[] playAuto;
     private State[] aiActionStates;
     private Cell[] aiActionCells;
     private (int, int) replayAt;
 
     private StateMachine<State> SM = new StateMachine<State>();
+
+    private struct Team
+    {
+        private PlayerType type;
+        private string name;
+        public int score;
+
+        public PlayerType Type => type;
+        public string Name => name;
+
+        public Team(PlayerType type, string name)
+        {
+            this.type = type;
+            this.name = name;
+            score = 0;
+        }
+    }
 
     private enum State
     {
@@ -87,6 +103,7 @@ public partial class Pijersi : MonoBehaviour
     private void Start()
     {
         cameraMovement.SetCenter(board.cells[22].transform.position);
+        InitTeams();
         ResetMatch();
     }
 
@@ -95,6 +112,42 @@ public partial class Pijersi : MonoBehaviour
         if (CheckPause()) return;
 
         SM.Update();
+    }
+
+    private void InitTeams()
+    {
+        teams = new Team[2];
+
+        string[] teamNames = new string[2];
+        for (int i = 0; i < 2; i++)
+        {
+            switch (config.playerTypes[i])
+            {
+                case PlayerType.Human:
+                    teamNames[i] = "Player";
+                    break;
+                case PlayerType.AiEasy:
+                    teamNames[i] = "AI (easy)";
+                    break;
+                case PlayerType.AiNormal:
+                    teamNames[i] = "AI (normal)";
+                    break;
+                case PlayerType.AiHard:
+                    teamNames[i] = "AI (hard)";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (config.playerTypes[0] == config.playerTypes[1])
+        {
+            teamNames[0] += " #1";
+            teamNames[1] += " #2";
+        }
+
+        teams[0] = new Team(config.playerTypes[0], teamNames[0]);
+        teams[1] = new Team(config.playerTypes[1], teamNames[1]);
     }
 
     private bool CheckPause()

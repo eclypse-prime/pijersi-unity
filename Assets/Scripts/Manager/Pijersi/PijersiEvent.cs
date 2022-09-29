@@ -6,40 +6,12 @@ public partial class Pijersi
 {
     public void ResetMatch()
     {
-        if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
+        if (teams[0].Type != PlayerType.Human || teams[1].Type != PlayerType.Human)
             engine = new Engine();
         save = new Save(config.playerTypes);
 
-        // reset des noms d'équipe
-        playerNames = new string[2];
-        for (int i = 0; i < 2; i++)
-        {
-            switch (config.playerTypes[i])
-            {
-                case PlayerType.Human:
-                    playerNames[i] = "Player";
-                    break;
-                case PlayerType.AiEasy:
-                    playerNames[i] = "AI (easy)";
-                    break;
-                case PlayerType.AiNormal:
-                    playerNames[i] = "AI (normal)";
-                    break;
-                case PlayerType.AiHard:
-                    playerNames[i] = "AI (hard)";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (config.playerTypes[0] == config.playerTypes[1])
-        {
-            playerNames[0] += " #1";
-            playerNames[1] += " #2";
-        }
-
-        playerScores  = new int[2];
+        teams[0].score = 0;
+        teams[1].score = 0;
         replayState   = ReplayState.None;
         replayType    = ReplayType.Action;
         currentTeamId = 1;
