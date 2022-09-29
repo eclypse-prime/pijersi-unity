@@ -53,7 +53,12 @@ public class Wise : Piece
         return validMoves;
     }
 
-    public override Dictionary<Cell, List<Cell>> GetDanger(Cell[] cells)
+    public override List<Cell> GetDangers(Cell cell)
+    {
+        return null;
+    }
+
+    public override Dictionary<Cell, List<Cell>> GetDangers(Cell[] cells)
     {
         return null;
     }

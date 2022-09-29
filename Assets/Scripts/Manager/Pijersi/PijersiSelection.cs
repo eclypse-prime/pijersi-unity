@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,8 +16,11 @@ public partial class Pijersi
 
         Cell[] cells = new Cell[validMoves.Keys.Count];
         validMoves.Keys.CopyTo(cells, 0);
-        dangers = selectedCell.lastPiece.GetDanger(cells);
+        dangers = selectedCell.lastPiece.GetDangers(cells);
+        selectedCellDangers[0] = selectedCell.pieces[0].GetDangers(selectedCell);
+        selectedCellDangers[1] = selectedCell.pieces[1]?.GetDangers(selectedCell);
         animation.NewSelection(selectedCell);
+        animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0]).ToArray());
     }
 
     private void OnExitSelection()
@@ -58,12 +62,15 @@ public partial class Pijersi
                 return;
             }
 
-            if (pointedCell != selectedCell) // highlight
+            // highlight
+            if (pointedCell == selectedCell)
             {
-                animation.UpdateHighlight(pointedCell, ActionType.None);
-                animation.HighlightDangers(null);
+                animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0]).ToArray());
+                return;
             }
 
+            animation.UpdateHighlight(pointedCell, ActionType.None);
+            animation.HighlightDangers(null);
             return;
         }
 
@@ -132,8 +139,16 @@ public partial class Pijersi
 
         if (this.dangers == null) return;
 
-        Cell[] dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell].ToArray() : null;
-        animation.HighlightDangers(dangers);
+        List<Cell> dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell] : null;
+        if (!canMove)
+        {
+            dangers?.AddRange(selectedCellDangers[0]);
+            dangers ??= selectedCellDangers[0];
+            animation.HighlightDangers(dangers?.ToArray());
+            return;
+        }
+
+        animation.HighlightDangers(dangers?.ToArray());
     }
     private void CheckReplaySave()
     {

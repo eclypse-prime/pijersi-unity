@@ -133,47 +133,54 @@ public class Piece : MonoBehaviour
         return validMoves;
     }
 
-    public virtual Dictionary<Cell, List<Cell>> GetDanger(Cell[] cells)
+    public virtual List<Cell> GetDangers(Cell cell)
+    {
+        List<Cell> result = new List<Cell>();
+        foreach (Cell near in cell.nears)
+        {
+            if (near == null || result.Contains(near)) continue;
+
+            Piece nearPiece = near.lastPiece;
+            if (!near.isEmpty)
+            {
+                if (nearPiece.team != team && nearPiece.prey == type)
+                    result.Add(near);
+            }
+
+            foreach (Cell farNear in near.nears)
+            {
+                if (farNear == null || near.isFull && near.pieces[0]?.team == farNear.pieces[0]?.team || result.Contains(farNear)) continue;
+
+                Piece farPiece = farNear.lastPiece;
+                if (!farNear.isEmpty && farPiece.team != team && farPiece.prey == type && (farNear.isFull || near.pieces[0]?.team == farPiece.team))
+                    result.Add(farNear);
+
+                foreach (Cell deepNear in farNear.nears)
+                {
+                    if (deepNear == null || deepNear.isEmpty || farNear.isFull || result.Contains(deepNear)) continue;
+
+                    Piece deepPiece = deepNear.lastPiece;
+                    if (deepPiece.team != team && deepPiece.prey == type)
+                    {
+                        if (deepNear.isFull && farNear.isEmpty && (near.isEmpty || deepPiece.prey == nearPiece.type && deepPiece.team != nearPiece.team))
+                            result.Add(deepNear);
+                        else if (deepPiece.team == farPiece?.team && near.isEmpty && near.nears[farNear.GetNearIndex(near)] == cell)
+                            result.Add(deepNear);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public virtual Dictionary<Cell, List<Cell>> GetDangers(Cell[] cells)
     {
         Dictionary<Cell, List<Cell>> result = new Dictionary<Cell, List<Cell>>();
 
         foreach (Cell cell in cells)
         {
-            List<Cell> dangers = new List<Cell>();
-            foreach (Cell near in cell.nears)
-            {
-                if (near == null || dangers.Contains(near)) continue;
-
-                Piece nearPiece = near.lastPiece;
-                if (!near.isEmpty)
-                {
-                    if (nearPiece.team != team && nearPiece.prey == type)
-                        dangers.Add(near);
-                }
-
-                foreach (Cell farNear in near.nears)
-                {
-                    if (farNear == null || near.isFull && near.pieces[0]?.team == farNear.pieces[0]?.team || dangers.Contains(farNear)) continue;
-
-                    Piece farPiece = farNear.lastPiece;
-                    if (!farNear.isEmpty && farPiece.team != team && farPiece.prey == type && (farNear.isFull || near.pieces[0]?.team == farPiece.team))
-                        dangers.Add(farNear);
-
-                    foreach (Cell deepNear in farNear.nears)
-                    {
-                        if (deepNear == null || deepNear.isEmpty || farNear.isFull || dangers.Contains(deepNear)) continue;
-
-                        Piece deepPiece = deepNear.lastPiece;
-                        if (deepPiece.team != team && deepPiece.prey == type)
-                        {
-                            if (deepNear.isFull && farNear.isEmpty && (near.isEmpty || deepPiece.prey == nearPiece.type && deepPiece.team != nearPiece.team))
-                                dangers.Add(deepNear);
-                            else if (deepPiece.team == farPiece?.team && near.isEmpty && near.nears[farNear.GetNearIndex(near)] == cell)
-                                dangers.Add(deepNear);
-                        }
-                    }
-                }
-            }
+            List<Cell> dangers = GetDangers(cell);
 
             if (dangers.Count > 0)
                 result.Add(cell, dangers);

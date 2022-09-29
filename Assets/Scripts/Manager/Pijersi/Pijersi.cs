@@ -26,6 +26,7 @@ public partial class Pijersi : MonoBehaviour
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
+    private List<Cell>[] selectedCellDangers = new List<Cell>[2];
     private Dictionary<Cell, List<Cell>> dangers;
     private int[] playerScores;
     private string[] playerNames;
