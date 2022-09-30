@@ -45,6 +45,8 @@ public partial class Pijersi
     public void PausePlay()
     {
         replayState = replayState == ReplayState.Play ? ReplayState.Pause : ReplayState.Play;
+        if (SM.currentState.id == State.PlayerTurn)
+            SM.ChangeState(State.Replay);
     }
 
     public void Back(bool isTurn)
@@ -83,8 +85,8 @@ public partial class Pijersi
         replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
         UI.SetReplayButtonsInteractable(false);
 
-        if (replayState == ReplayState.Pause && save.turns[save.turns.Count - 1].actions.Count > 0)
-            SM.ChangeState(State.Turn);
+        //if (replayState == ReplayState.Pause && save.turns[save.turns.Count - 1].actions.Count > 0)
+        //    SM.ChangeState(State.Turn);
         SM.ChangeState(State.Next);
     }
 }
