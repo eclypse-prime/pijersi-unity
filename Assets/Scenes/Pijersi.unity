@@ -1790,7 +1790,8 @@ MonoBehaviour:
   record: {fileID: 3061662228985187679}
   replay: {fileID: 606124029}
   pause: {fileID: 631857170}
-  resume: {fileID: 4542067590308567941}
+  resume: {fileID: 4542067590308567942}
+  restart: {fileID: 1779987916}
   endOptions: {fileID: 1397400055}
   save: {fileID: 437912981}
   Title: {fileID: 1891186238}
@@ -2951,6 +2952,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2339813259043803463, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
   m_PrefabInstance: {fileID: 1779987914}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1779987916 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1091527695387582076, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
+  m_PrefabInstance: {fileID: 1779987914}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1837589936
 GameObject:
   m_ObjectHideFlags: 0
@@ -3679,8 +3691,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2339813259043803463, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
   m_PrefabInstance: {fileID: 4542067590308567939}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &4542067590308567941 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3325981463439244711, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
+--- !u!114 &4542067590308567942 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1091527695387582076, guid: e8085964ef5c83645a64189ab177f8f1, type: 3}
   m_PrefabInstance: {fileID: 4542067590308567939}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
