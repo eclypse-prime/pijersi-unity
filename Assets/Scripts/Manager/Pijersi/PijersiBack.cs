@@ -50,6 +50,7 @@ public partial class Pijersi
         UI.replayButtons["Next"].interactable = true;
         if (replayState != ReplayState.None)
             UI.replayButtons["Play"].interactable = true;
+        CheckCamera();
     }
 
     private void OnUpdateBack()
