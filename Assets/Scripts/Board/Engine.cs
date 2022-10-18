@@ -20,7 +20,7 @@ class Engine : IEngine
 
     public int[] PlayAuto(int recursionDepth = 1)
     {
-        PijersiEngine.IntVector vectorMove = board.playAuto(recursionDepth);
+        PijersiEngine.IntVector vectorMove = board.playAlphaBeta(recursionDepth);
         int[] move = new int[6];
         for (int i = 0; i < 6; i++)
         {
