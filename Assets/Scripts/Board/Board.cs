@@ -10,7 +10,7 @@ public class Board : MonoBehaviour
     private const float lineStep        = 1.73f;
     private const float PieceHeight     = 1f;
     private readonly char[] letters     = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
-    private readonly string[] darkCells = { "C2", "C3", "D2", "D4", "E2", "E3" };
+    private readonly string[] darkCells = { "C3", "C4", "D3", "D5", "E3", "E4" };
 
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private GameObject[] piecePrefabs;
