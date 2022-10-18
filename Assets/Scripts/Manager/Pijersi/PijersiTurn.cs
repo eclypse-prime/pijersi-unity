@@ -21,7 +21,10 @@ public partial class Pijersi
         UI.AddRecordColumnLine(currentTeamId);
 
         if (replaySave != null)
+        {
+            UI.replayButtons["Play"].interactable = true;
             UI.replayButtons["Next"].interactable = true;
+        }
     }
 
     private void OnUpdateTurn()

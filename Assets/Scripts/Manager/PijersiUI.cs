@@ -17,7 +17,8 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private GameObject replay;
     [Header("Pause/End Menu :")]
     [SerializeField] private GameObject pause;
-    [SerializeField] private GameObject resume;
+    [SerializeField] private Selectable resume;
+    [SerializeField] private Selectable restart;
     [SerializeField] private GameObject endOptions;
     [SerializeField] private Button save;
     [SerializeField] private TMP_Text Title;
@@ -43,23 +44,30 @@ public class PijersiUI : MonoBehaviour
     public void SetActivePause(bool value)
     {
         pause.SetActive(value);
+        resume.Select();
     }
 
     public void ShowEnd(int winTeamId, int[] teamWinCounts, int maxWinRound)
     {
         pause.SetActive(true);
         endOptions.SetActive(true);
-        if (teamWinCounts[winTeamId] == maxWinRound)
-            resume.SetActive(false);
         Title.text   = $"{teamColor[winTeamId]} win !";
         Display.text = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
+        if (teamWinCounts[winTeamId] == maxWinRound)
+        {
+            resume.gameObject.SetActive(false);
+            restart.Select();
+            return;
+        }
+
+        resume.Select();
     }
 
     public void HideEnd()
     {
         pause.SetActive(false);
         endOptions.SetActive(false);
-        resume.SetActive(true);
+        resume.gameObject.SetActive(true);
         save.interactable = true;
         Title.text        = "Pause";
         Display.text      = "";

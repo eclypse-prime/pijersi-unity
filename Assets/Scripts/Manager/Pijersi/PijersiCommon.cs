@@ -54,6 +54,7 @@ public partial class Pijersi
                 return;
             }
 
+            UI.replayButtons["Play"].interactable = true;
             SM.ChangeState(State.Replay);
             return;
         }
