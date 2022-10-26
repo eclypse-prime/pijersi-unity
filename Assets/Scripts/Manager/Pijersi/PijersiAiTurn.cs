@@ -18,10 +18,14 @@ public partial class Pijersi
     {
         if (playAuto == null) return;
 
-        aiActionCells[0] = board.cells[board.CoordsToIndex(playAuto[0], playAuto[1])];
-        if (playAuto[2] > -1)
-            aiActionCells[1] = board.cells[board.CoordsToIndex(playAuto[2], playAuto[3])];
-        aiActionCells[2] = board.cells[board.CoordsToIndex(playAuto[4], playAuto[5])];
+        aiActionCells[0] = board.cells[playAuto[0]];
+        if (playAuto[1] > -1)
+            aiActionCells[1] = board.cells[playAuto[1]];
+        aiActionCells[2] = board.cells[playAuto[2]];
+        // aiActionCells[0] = board.cells[board.CoordsToIndex(playAuto[0], playAuto[1])];
+        // if (playAuto[2] > -1)
+        //     aiActionCells[1] = board.cells[board.CoordsToIndex(playAuto[2], playAuto[3])];
+        // aiActionCells[2] = board.cells[board.CoordsToIndex(playAuto[4], playAuto[5])];
 
         // actions simples
         if (aiActionCells[1] == null) // move
@@ -45,7 +49,7 @@ public partial class Pijersi
             return;
         }
 
-        // actions composées
+        // actions composï¿½es
         if (aiActionCells[1].pieces[0]?.team != aiActionCells[0].pieces[0].team) // move -> (un)stack
         {
             aiActionStates[0] = State.Move;
@@ -63,7 +67,7 @@ public partial class Pijersi
 
     IEnumerator PlayAuto()
     {
-        playAuto = engine.PlayAuto((int) config.playerTypes[currentTeamId] - 1);
+        playAuto = engine.PlayAuto((int) config.playerTypes[currentTeamId]);
 
         yield return null;
     }
