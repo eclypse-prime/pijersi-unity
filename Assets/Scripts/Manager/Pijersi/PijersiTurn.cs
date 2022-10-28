@@ -55,34 +55,40 @@ public partial class Pijersi
             engine.SetPlayer((byte)(1 - currentTeamId));
         }
 
-        int[] manualPlay = new int[6];
+        int[] manualPlay = new int[3];
         Save.Turn lastTurn = save.turns[save.turns.Count - 1];
-        manualPlay[0] = lastTurn.cells[0].x;
-        manualPlay[1] = lastTurn.cells[0].y;
+        manualPlay[0] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
+        // manualPlay[0] = lastTurn.cells[0].x;
+        // manualPlay[1] = lastTurn.cells[0].y;
         // actions simples
         if (lastTurn.actions.Count < 2)
         {
             if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
             {
-                manualPlay[2] = lastTurn.cells[0].x;
-                manualPlay[3] = lastTurn.cells[0].y;
+                // manualPlay[2] = lastTurn.cells[0].x;
+                // manualPlay[3] = lastTurn.cells[0].y;
+                manualPlay[1] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
             }
             else // move
             {
-                manualPlay[2] = -1;
-                manualPlay[3] = -1;
+                manualPlay[1] = -1;
+                // manualPlay[2] = -1;
+                // manualPlay[3] = -1;
             }
-            manualPlay[4] = lastTurn.cells[1].x;
-            manualPlay[5] = lastTurn.cells[1].y;
+            // manualPlay[4] = lastTurn.cells[1].x;
+            // manualPlay[5] = lastTurn.cells[1].y;
+            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
 
             engine.PlayManual(manualPlay);
             return;
         }
 
-        manualPlay[2] = lastTurn.cells[1].x;
-        manualPlay[3] = lastTurn.cells[1].y;
-        manualPlay[4] = lastTurn.cells[2].x;
-        manualPlay[5] = lastTurn.cells[2].y;
+        // manualPlay[2] = lastTurn.cells[1].x;
+        // manualPlay[3] = lastTurn.cells[1].y;
+        // manualPlay[4] = lastTurn.cells[2].x;
+        // manualPlay[5] = lastTurn.cells[2].y;
+        manualPlay[1] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
+        manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
 
         engine.PlayManual(manualPlay);
     }
