@@ -18,7 +18,7 @@ public partial class Pijersi
 
         if (!CheckPointedCell()) return;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && pointedCell.pieces[0]?.team == currentTeamId)
+        if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame) && pointedCell.pieces[0]?.team == currentTeamId)
         {
             SM.ChangeState(State.Selection);
             return;
