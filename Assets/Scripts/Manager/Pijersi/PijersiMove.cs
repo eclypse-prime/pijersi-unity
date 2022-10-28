@@ -28,9 +28,11 @@ public partial class Pijersi
         }
 
         // prochaine action
+        if (CheckReplayState()) return;
+
         if (canStack && pointedCell.isFull)
         {
-            ToNextActionState();
+            NextActionState();
             return;
         }
 

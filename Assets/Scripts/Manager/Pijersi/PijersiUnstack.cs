@@ -28,6 +28,8 @@ public partial class Pijersi
             return;
         }
 
+        if (CheckReplayState()) return;
+
         SM.ChangeState(State.Turn);
     }
 }

@@ -44,21 +44,8 @@ public partial class Pijersi
         return false;
     }
 
-    private void ToNextActionState()
+    private void NextActionState()
     {
-        if (replaySave != null)
-        {
-            if (replayAt != (-1, -1))
-            {
-                SM.ChangeState(State.Next);
-                return;
-            }
-
-            UI.replayButtons["Play"].interactable = true;
-            SM.ChangeState(State.Replay);
-            return;
-        }
-
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
@@ -66,5 +53,33 @@ public partial class Pijersi
         }
 
         SM.ChangeState(State.PlayAuto);
+    }
+
+    private bool CheckReplayState()
+    {
+        if (replaySave == null) return false;
+
+        if (replayAt != (-1, -1))
+        {
+            SM.ChangeState(State.Next);
+            return true;
+        }
+
+        int turnId = save.turns.Count - 1;
+        if (save.turns[turnId].actions.Count == replaySave.turns[turnId].actions.Count)
+        {
+            SM.ChangeState(State.Turn);
+            if (config.playerTypes[currentTeamId] == PlayerType.Human)
+            {
+                SM.ChangeState(State.PlayerTurn);
+                return true;
+            }
+        }
+
+        if (replayState != ReplayState.None)
+            UI.replayButtons["Play"].interactable = true;
+        UI.replayButtons["Next"].interactable = true;
+        SM.ChangeState(State.Replay);
+        return true;
     }
 }

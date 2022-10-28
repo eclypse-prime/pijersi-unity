@@ -50,7 +50,6 @@ public partial class Pijersi
         {
             aiActionStates[0] = State.Move;
             aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team && aiActionCells[2] != aiActionCells[0] ? State.Stack : State.Unstack;
-            Debug.Log(aiActionCells[2].pieces[0]?.team);
             SM.ChangeState(State.PlayAuto);
             return;
         }

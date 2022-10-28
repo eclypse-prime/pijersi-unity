@@ -14,6 +14,8 @@ public partial class Pijersi
         {
             save.turns.RemoveAt(turnId);
             currentTeamId = 1 - currentTeamId;
+            canMove = false;
+            canStack = false;
             UI.UpdateGameState(currentTeamId, teams[currentTeamId].Name);
             if (cameraMovement.position != CameraMovement.positionType.Up && teams[currentTeamId].Type == PlayerType.Human)
                 cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
@@ -45,6 +47,9 @@ public partial class Pijersi
         
         turn.actions.RemoveAt(actionId);
         turn.cells.RemoveAt(actionId + 1);
+        if (actionId == 0)
+            turn.cells.RemoveAt(actionId);
+
         UI.UndoRecord();
         UI.replayButtons["Back"].interactable = false;
         UI.replayButtons["Next"].interactable = true;
@@ -69,14 +74,13 @@ public partial class Pijersi
         }
 
         replayAt = (-1, -1);
-        save.turns[turnId].cells.RemoveAt(0);
 
-        if (turnId > 0 || actionId > 0)
+        if (turnId > 0 || actionId + 1 > 0)
             UI.replayButtons["Back"].interactable = true;
 
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
-            SM.ChangeState(State.PlayerTurn);
+            SM.ChangeState(State.Selection);
             return;
         }
 

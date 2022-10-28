@@ -19,9 +19,11 @@ public partial class Pijersi
     {
         if (board.UpdateMove(pointedCell)) return;
 
+        if (CheckReplayState()) return;
+
         if (canMove)
         {
-            ToNextActionState();
+            NextActionState();
             return;
         }
 
