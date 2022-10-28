@@ -19,6 +19,12 @@ public partial class Pijersi
         UI.ResetUI();
         cameraMovement.position = CameraMovement.positionType.White;
 
+        StartCoroutine(StartFirstTurn());
+    }
+
+    IEnumerator StartFirstTurn()
+    {
+        yield return null;
         SM.ChangeState(State.Turn);
     }
 
