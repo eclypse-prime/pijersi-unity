@@ -138,6 +138,9 @@ public partial class Pijersi : MonoBehaviour
                 case PlayerType.AiInsane:
                     teamNames[i] = "AI (insane)";
                     break;
+                case PlayerType.AiGod:
+                    teamNames[i] = "AI (god)";
+                    break;
                 default:
                     break;
             }

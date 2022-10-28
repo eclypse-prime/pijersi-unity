@@ -4,7 +4,8 @@ public enum PlayerType
     AiEasy,
     AiNormal,
     AiHard,
-    AiInsane
+    AiInsane,
+    AiGod
 }
 
 public enum PieceType
