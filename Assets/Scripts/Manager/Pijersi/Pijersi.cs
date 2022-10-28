@@ -155,7 +155,7 @@ public partial class Pijersi : MonoBehaviour
 
     private bool CheckPause()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && SM.currentState.id != State.End)
             TogglePause();
 
         return isPauseOn;
