@@ -20,7 +20,7 @@ public partial class Pijersi
         selectedCellDangers[0] = selectedCell.pieces[0].GetDangers(selectedCell);
         selectedCellDangers[1] = selectedCell.pieces[1]?.GetDangers(selectedCell);
         animation.NewSelection(selectedCell);
-        animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0]).ToArray());
+        animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
     }
 
     private void OnExitSelection()
@@ -65,7 +65,7 @@ public partial class Pijersi
             // highlight
             if (pointedCell == selectedCell)
             {
-                animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0]).ToArray());
+                animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
                 return;
             }
 
