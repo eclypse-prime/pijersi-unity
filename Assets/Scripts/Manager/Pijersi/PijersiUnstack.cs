@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public partial class Pijersi
 {
     private void OnEnterUnstack()
@@ -12,7 +8,6 @@ public partial class Pijersi
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(ActionType.Unstack, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
-        UI.replayButtons["Back"].interactable = true;
         canMove = false;
     }
 

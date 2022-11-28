@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public partial class Pijersi
@@ -19,12 +17,6 @@ public partial class Pijersi
         UI.ResetUI();
         cameraMovement.position = CameraMovement.positionType.White;
 
-        StartCoroutine(StartFirstTurn());
-    }
-
-    IEnumerator StartFirstTurn()
-    {
-        yield return null;
         SM.ChangeState(State.Turn);
     }
 
@@ -42,9 +34,10 @@ public partial class Pijersi
 
     public void Replay()
     {
-        replaySave = new Save(this.save);
+        replaySave = new Save(save);
         ResetMatch();
         replayState = ReplayState.Play;
+
         UI.replayButtons["Play"].interactable = true;
     }
 
@@ -66,20 +59,22 @@ public partial class Pijersi
 
         replayAt.Item2 = isTurn ? 0 : save.turns[replayAt.Item1].actions.Count - 1;
 
-        UI.SetReplayButtonsInteractable(false);
+        UI.replayButtons["Back"].interactable = false;
+        UI.replayButtons["Play"].interactable = true;
+        UI.replayButtons["Next"].interactable = true;
+
         SM.ChangeState(State.Back);
     }
     
     public void Next(bool isTurn)
     {
-        if (replayState == ReplayState.Play)
-            replayState = ReplayState.Pause;
-
         replayAt.Item1 = save.turns.Count - 1;
-        replayAt.Item2 = save.turns[replayAt.Item1].actions.Count;
+        replayAt.Item2 = isTurn ? replaySave.turns[replayAt.Item1].actions.Count - 1 : save.turns[replayAt.Item1].actions.Count;
 
-        replayType = isTurn ? ReplayType.Turn : ReplayType.Action;
-        UI.SetReplayButtonsInteractable(false);
+        UI.replayButtons["Back"].interactable = true;
+        if (replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[replayAt.Item1].actions.Count - 1)
+            UI.replayButtons["Play"].interactable = false;
+        UI.replayButtons["Next"].interactable = false;
 
         SM.ChangeState(State.Next);
     }

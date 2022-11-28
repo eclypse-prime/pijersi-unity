@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -69,15 +67,13 @@ public partial class Pijersi
         if (save.turns[turnId].actions.Count == replaySave.turns[turnId].actions.Count)
         {
             SM.ChangeState(State.Turn);
-            if (config.playerTypes[currentTeamId] == PlayerType.Human)
+            if (replayState != ReplayState.Play && config.playerTypes[currentTeamId] == PlayerType.Human)
             {
                 SM.ChangeState(State.PlayerTurn);
                 return true;
             }
         }
 
-        if (replayState != ReplayState.None)
-            UI.replayButtons["Play"].interactable = true;
         UI.replayButtons["Next"].interactable = true;
         SM.ChangeState(State.Replay);
         return true;

@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public partial class Pijersi
 {
@@ -18,14 +16,14 @@ public partial class Pijersi
     {
         if (playAuto == null) return;
 
+        UI.replayButtons["Back"].interactable = true;
+        UI.replayButtons["Play"].interactable = false;
+        UI.replayButtons["Next"].interactable = false;
+
         aiActionCells[0] = board.cells[playAuto[0]];
         if (playAuto[1] > -1)
             aiActionCells[1] = board.cells[playAuto[1]];
         aiActionCells[2] = board.cells[playAuto[2]];
-        // aiActionCells[0] = board.cells[board.CoordsToIndex(playAuto[0], playAuto[1])];
-        // if (playAuto[2] > -1)
-        //     aiActionCells[1] = board.cells[board.CoordsToIndex(playAuto[2], playAuto[3])];
-        // aiActionCells[2] = board.cells[board.CoordsToIndex(playAuto[4], playAuto[5])];
 
         // actions simples
         if (aiActionCells[1] == null) // move

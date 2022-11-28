@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public partial class Pijersi
 {
     private void OnEnterBack()
@@ -51,10 +47,6 @@ public partial class Pijersi
             turn.cells.RemoveAt(actionId);
 
         UI.UndoRecord();
-        UI.replayButtons["Back"].interactable = false;
-        UI.replayButtons["Next"].interactable = true;
-        if (replayState != ReplayState.None)
-            UI.replayButtons["Play"].interactable = true;
         CheckCamera();
     }
 

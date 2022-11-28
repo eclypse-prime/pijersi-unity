@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 public partial class Pijersi
@@ -54,8 +51,7 @@ public partial class Pijersi
                     SM.ChangeState(State.PlayerTurn);
                 else if (pointedCell == selectedCell) // termine le tour
                 {
-                    CheckReplaySave();
-                    UI.replayButtons["Next"].interactable = false;
+                    UpdateUIAndReplay();
                     SM.ChangeState(State.Turn);
                 }
 
@@ -79,8 +75,7 @@ public partial class Pijersi
         // action (ordre alternative)
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            CheckReplaySave();
-            UI.replayButtons["Next"].interactable = false;
+            UpdateUIAndReplay();
 
             orderedActions = new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
             State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Move };
@@ -118,8 +113,7 @@ public partial class Pijersi
         // action (défaut)
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            CheckReplaySave();
-            UI.replayButtons["Next"].interactable = false;
+            UpdateUIAndReplay();
 
             State[] orderedState = { State.Move, State.Move, State.Stack, State.Unstack };
 
@@ -150,8 +144,13 @@ public partial class Pijersi
 
         animation.HighlightDangers(dangers?.ToArray());
     }
-    private void CheckReplaySave()
+
+    private void UpdateUIAndReplay()
     {
+        UI.replayButtons["Back"].interactable = true;
+        UI.replayButtons["Play"].interactable = false;
+        UI.replayButtons["Next"].interactable = false;
+
         if (replaySave == null) return;
 
         replaySave = null;
