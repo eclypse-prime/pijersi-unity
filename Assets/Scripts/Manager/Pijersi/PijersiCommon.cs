@@ -57,6 +57,7 @@ public partial class Pijersi
     {
         if (replaySave == null) return false;
 
+        // Next suivant
         if (replayAt != (-1, -1))
         {
             SM.ChangeState(State.Next);
@@ -64,9 +65,22 @@ public partial class Pijersi
         }
 
         int turnId = save.turns.Count - 1;
+
+        if (replaySave.turns[turnId + 1].actions.Count > 0)
+            UI.replayButtons["Next"].interactable = false;
+
+        if ((canMove || canStack) && config.playerTypes[currentTeamId] == PlayerType.Human)
+        {
+            SM.ChangeState(State.Selection);
+            return true;
+        }
+
+        // fin de tour
         if (save.turns[turnId].actions.Count == replaySave.turns[turnId].actions.Count)
         {
             SM.ChangeState(State.Turn);
+
+
             if (replayState != ReplayState.Play && config.playerTypes[currentTeamId] == PlayerType.Human)
             {
                 SM.ChangeState(State.PlayerTurn);
@@ -74,7 +88,6 @@ public partial class Pijersi
             }
         }
 
-        UI.replayButtons["Next"].interactable = true;
         SM.ChangeState(State.Replay);
         return true;
     }

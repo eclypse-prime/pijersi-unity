@@ -67,11 +67,17 @@ public partial class Pijersi
 
         replayAt = (-1, -1);
 
-        if (turnId > 0 || actionId + 1 > 0)
+        if (turnId > 0 || actionId > -1)
             UI.replayButtons["Back"].interactable = true;
 
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {
+            if (actionId == -1)
+            {
+                SM.ChangeState(State.PlayerTurn);
+                return;
+            }
+
             SM.ChangeState(State.Selection);
             return;
         }
