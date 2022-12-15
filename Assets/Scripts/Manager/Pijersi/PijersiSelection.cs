@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
 
 public partial class Pijersi
 {
     private void OnEnterSelection()
     {
+        replayState = ReplayState.None;
         selectedCell = pointedCell;
         validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
 
         if (validMoves.Count == 0)
-            SM.ChangeState(State.Turn);
+            SM.ChangeState(State.PlayerTurn);
 
         Cell[] cells = new Cell[validMoves.Keys.Count];
         validMoves.Keys.CopyTo(cells, 0);
@@ -33,7 +33,7 @@ public partial class Pijersi
         // curseur hors plateau
         if (!CheckPointedCell())
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
+            if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
                 if (canMove && canStack) // annule la selection
                     SM.ChangeState(State.PlayerTurn);
@@ -45,7 +45,7 @@ public partial class Pijersi
         // curseur sur une case non-intéragible
         if (!validMoves.ContainsKey(pointedCell) || validMoves[pointedCell].Count == 0)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
+            if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
                 if (canMove && canStack) // annule la selection
                     SM.ChangeState(State.PlayerTurn);
@@ -73,7 +73,7 @@ public partial class Pijersi
         ActionType[] orderedActions;
 
         // action (ordre alternative)
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (secondaryAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
 
@@ -111,7 +111,7 @@ public partial class Pijersi
         }
 
         // action (défaut)
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (mainAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
 

@@ -27,12 +27,12 @@ public class PijersiUI : MonoBehaviour
     private bool isFirstAction = true;
     private List<string> records = new List<string>();
 
-    public Dictionary<string, Button> replayButtons { get; private set; }
+    public Dictionary<string, BetterButton> replayButtons { get; private set; }
 
     private void Awake()
     {
-        replayButtons = new Dictionary<string, Button>();
-        foreach (Button button in replay.GetComponentsInChildren<Button>())
+        replayButtons = new Dictionary<string, BetterButton>();
+        foreach (BetterButton button in replay.GetComponentsInChildren<BetterButton>())
             replayButtons.Add(button.name, button);
     }
 
@@ -122,7 +122,7 @@ public class PijersiUI : MonoBehaviour
 
     public void SetReplayButtonsInteractable(bool value)
     {
-        foreach (KeyValuePair<string, Button> replayButton in replayButtons)
+        foreach (KeyValuePair<string, BetterButton> replayButton in replayButtons)
             replayButton.Value.interactable = value;
     }
 

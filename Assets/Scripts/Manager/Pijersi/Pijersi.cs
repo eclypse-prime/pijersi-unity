@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FSM;
@@ -13,10 +12,13 @@ public partial class Pijersi : MonoBehaviour
     [SerializeField] private new BoardAnimation animation;
     [SerializeField] private LayerMask cellLayer;
 
+    // inputs
+    [SerializeField] private InputAction mainAction;
+    [SerializeField] private InputAction secondaryAction;
+
     private new Camera camera;
     private bool isPauseOn;
     private ReplayState replayState;
-    private ReplayType replayType;
     private IEngine engine;
     private Save save;
     private Save replaySave;
@@ -76,12 +78,6 @@ public partial class Pijersi : MonoBehaviour
         Play
     }
 
-    private enum ReplayType
-    {
-        Action,
-        Turn
-    }
-
     private void Awake()
     {
         SM.Add(new State<State>(State.Turn, OnEnterTurn, OnExitTurn, OnUpdateTurn));
@@ -98,6 +94,18 @@ public partial class Pijersi : MonoBehaviour
         SM.Add(new State<State>(State.Replay, OnEnterReplay, OnExitReplay, OnUpdateReplay));
 
         camera = Camera.main;
+    }
+
+    private void OnEnable()
+    {
+        mainAction.Enable();
+        secondaryAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        mainAction.Disable();
+        secondaryAction.Disable();
     }
 
     private void Start()

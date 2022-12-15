@@ -47,7 +47,7 @@ public partial class Pijersi
             turn.cells.RemoveAt(actionId);
 
         UI.UndoRecord();
-        CheckCamera();
+        //CheckCamera();
     }
 
     private void OnUpdateBack()

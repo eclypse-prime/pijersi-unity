@@ -122,9 +122,27 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  m_OnRightClick:
+  m_onRightClick:
     m_PersistentCalls:
       m_Calls: []
+  pressAction:
+    m_Name: Press
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 00d27264-a08e-4075-a2a1-b947b19539e0
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  alternativePressAction:
+    m_Name: Alternative Press
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 3337a54a-61e3-40d6-b331-de424226a1b7
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &8588850787154172166
 GameObject:
   m_ObjectHideFlags: 0

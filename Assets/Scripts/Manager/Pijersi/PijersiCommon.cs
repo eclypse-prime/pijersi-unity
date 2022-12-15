@@ -17,21 +17,21 @@ public partial class Pijersi
         return true;
     }
 
-    private bool CheckCamera()
-    {
-        if (Keyboard.current.leftArrowKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
-        {
-            cameraMovement.position = cameraMovement.position == CameraMovement.positionType.White ? CameraMovement.positionType.Black : CameraMovement.positionType.White;
-            return true;
-        }
-        if (Keyboard.current.upArrowKey.wasPressedThisFrame || Keyboard.current.downArrowKey.wasPressedThisFrame)
-        {
-            cameraMovement.position = cameraMovement.position != CameraMovement.positionType.Up ? CameraMovement.positionType.Up : CameraMovement.positionType.White;
-            return true;
-        }
+    //private bool CheckCamera()
+    //{
+    //    if (Keyboard.current.leftArrowKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
+    //    {
+    //        cameraMovement.position = cameraMovement.position == CameraMovement.positionType.White ? CameraMovement.positionType.Black : CameraMovement.positionType.White;
+    //        return true;
+    //    }
+    //    if (Keyboard.current.upArrowKey.wasPressedThisFrame || Keyboard.current.downArrowKey.wasPressedThisFrame)
+    //    {
+    //        cameraMovement.position = cameraMovement.position != CameraMovement.positionType.Up ? CameraMovement.positionType.Up : CameraMovement.positionType.White;
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
     private bool IsWin(Cell cell)
     {
@@ -66,10 +66,9 @@ public partial class Pijersi
 
         int turnId = save.turns.Count - 1;
 
-        if (replaySave.turns[turnId + 1].actions.Count > 0)
-            UI.replayButtons["Next"].interactable = false;
+        UI.replayButtons["Next"].interactable = true;
 
-        if ((canMove || canStack) && config.playerTypes[currentTeamId] == PlayerType.Human)
+        if (replayState != ReplayState.Play && (canMove || canStack) && config.playerTypes[currentTeamId] == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
             return true;
@@ -80,6 +79,8 @@ public partial class Pijersi
         {
             SM.ChangeState(State.Turn);
 
+            if (replaySave.turns[turnId + 1].actions.Count == 0)
+                UI.replayButtons["Next"].interactable = false;
 
             if (replayState != ReplayState.Play && config.playerTypes[currentTeamId] == PlayerType.Human)
             {

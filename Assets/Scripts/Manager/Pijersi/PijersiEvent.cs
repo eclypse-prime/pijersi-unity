@@ -11,7 +11,6 @@ public partial class Pijersi
         teams[0].score = 0;
         teams[1].score = 0;
         replayState   = ReplayState.None;
-        replayType    = ReplayType.Action;
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
@@ -50,8 +49,7 @@ public partial class Pijersi
 
     public void Back(bool isTurn)
     {
-        if (replayState == ReplayState.Play)
-            replayState = ReplayState.Pause;
+        replayState = ReplayState.Pause;
 
         replayAt.Item1 = save.turns.Count - 1;
         if (save.turns[replayAt.Item1].actions.Count == 0)

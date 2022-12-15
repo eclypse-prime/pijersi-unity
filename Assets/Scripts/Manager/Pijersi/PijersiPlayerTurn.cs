@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
-
 public partial class Pijersi
 {
     private void OnEnterPlayerTurn()
@@ -14,11 +9,11 @@ public partial class Pijersi
 
     private void OnUpdatePlayerTurn()
     {
-        CheckCamera();
+        //CheckCamera();
 
         if (!CheckPointedCell()) return;
 
-        if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame) && pointedCell.pieces[0]?.team == currentTeamId)
+        if ((mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame()) && pointedCell.pieces[0]?.team == currentTeamId)
         {
             SM.ChangeState(State.Selection);
             return;
