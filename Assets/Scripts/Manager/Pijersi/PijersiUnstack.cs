@@ -6,7 +6,7 @@ public partial class Pijersi
         ActionType action = pointedCell.isEmpty ? ActionType.Unstack : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Unstack(selectedCell, pointedCell);
-        save.AddAction(ActionType.Unstack, selectedCell, pointedCell);
+        save.AddAction(action, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
         canMove = false;
     }

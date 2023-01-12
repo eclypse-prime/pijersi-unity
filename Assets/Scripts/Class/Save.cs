@@ -1,7 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using System.Linq;
 using UnityEngine;
 
 public class Save
@@ -9,6 +10,9 @@ public class Save
     private const char moveSign = '-';
     private const char stackMoveSign = '=';
     private const char attackSign = '!';
+    private const string validPattern = "[a-g][1-7]((-|=)[a-g][1-7]!?){1,2}";
+    private static string validSavePattern = $"([^a-z0-9]*{validPattern}){{3,}}";
+    private static string savePath = $"{Application.dataPath}\\Saves\\";
 
     public struct Turn
     {
@@ -36,26 +40,131 @@ public class Save
                 cells.Add(start);
             cells.Add(end);
             actions.Add(action);
-            isStackMoves.Add(end.isFull);
+            if ((action == ActionType.Move || action == ActionType.Attack) && end.isFull)
+            {
+                isStackMoves.Add(true);
+                return;
+            }
+            isStackMoves.Add(false);
         }
     }
 
-    public PlayerType[] gameType;
+    public PlayerType[] playerTypes;
     public List<Turn> turns;
-    public string date;
+    public DateTime date;
 
     public Save(Save save)
     {
-        gameType = save.gameType;
-        turns    = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions, turn.isStackMoves));
-        date     = save.date;
+        playerTypes = save.playerTypes;
+        turns = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions, turn.isStackMoves));
+        date = new DateTime(save.date.Ticks);
     }
 
-    public Save(PlayerType[] gameType)
+    public Save(PlayerType[] playerTypes)
     {
-        this.gameType = gameType;
-        turns         = new List<Turn>();
-        date          = DateTime.Now.ToString("yyyy'-'MM'-'dd HH'-'mm");
+        this.playerTypes = playerTypes;
+        turns = new List<Turn>();
+        date = DateTime.Now;
+    }
+
+    public Save(Board board, string saveName)
+    {
+        playerTypes = new PlayerType[] { PlayerType.Human, PlayerType.Human };
+        turns = new List<Turn>();
+        date = DateTime.Now;
+
+        // load save data
+        string data = new StreamReader(savePath + saveName + ".txt").ReadToEnd();
+
+        MatchCollection turnMatches = Regex.Matches(data, validPattern, RegexOptions.IgnoreCase);
+        foreach (Match turnMatch in turnMatches)
+        {
+            if (turnMatch.Length == 0) continue;
+
+            string turnData = turnMatch.Value;
+
+            Turn turn = new Turn(null);
+            turn.cells.Add(board.cells[board.CoordsToIndex(turnData[0], turnData[1])]);
+            turn.cells.Add(board.cells[board.CoordsToIndex(turnData[3], turnData[4])]);
+
+            int offset = 0;
+            // si la première action est une attaque
+            if (turnData[5] == attackSign)
+            {
+                if (turnData[2] == moveSign)
+                    turn.actions.Add(turn.cells[0].isFull ? ActionType.UnstackAttack : ActionType.Attack);
+                else
+                    turn.actions.Add(ActionType.StackAttack);
+
+                offset++;
+            }
+            else
+            {
+                if (!turn.cells[1].isEmpty)
+                    turn.actions.Add(ActionType.Stack);
+                else if (turnData[2] == moveSign)
+                    turn.actions.Add(turn.cells[0].isFull ? ActionType.Unstack : ActionType.Move);
+                else
+                    turn.actions.Add(ActionType.StackMove);
+            }
+
+            SimulateAction(board, turn.actions[0], turn.cells[0], turn.cells[1]);
+
+            // second action
+            if (turnData.Length > 6)
+            {
+                turn.cells.Add(board.cells[board.CoordsToIndex(turnData[6 + offset], turnData[7 + offset])]);
+
+                // si la second action est une attaque
+                if (turnData.Length == 8 + offset)
+                {
+                    if (turnData[5 + offset] == moveSign)
+                        turn.actions.Add(turn.cells[1].isFull ? ActionType.UnstackAttack : ActionType.Attack);
+                    else
+                        turn.actions.Add(ActionType.StackAttack);
+                }
+                else
+                {
+                    if (!turn.cells[2].isEmpty)
+                        turn.actions.Add(ActionType.Stack);
+                    else if (turnData[5 + offset] == moveSign)
+                        turn.actions.Add(turn.cells[1].isFull ? ActionType.Unstack : ActionType.Move);
+                    else
+                        turn.actions.Add(ActionType.StackMove);
+                }
+
+                SimulateAction(board, turn.actions[1], turn.cells[1], turn.cells[2]);
+            }
+
+            turns.Add(turn);
+        }
+
+
+        board.ResetBoard();
+
+        // simule l'action dans le board
+        static void SimulateAction(Board board, ActionType action, Cell start, Cell end)
+        {
+            switch (action)
+            {
+                case ActionType.Move:
+                case ActionType.StackMove:
+                case ActionType.Attack:
+                case ActionType.StackAttack:
+                    board.Move(start, end);
+                    break;
+                case ActionType.Stack:
+                    board.Stack(start, end);
+                    break;
+                case ActionType.Unstack:
+                case ActionType.UnstackAttack:
+                    board.Unstack(start, end);
+                    break;
+                default:
+                    Debug.LogError("Bad ActionType");
+                    break;
+            }
+        }
     }
 
     public void AddTurn()
@@ -80,11 +189,7 @@ public class Save
 
             for (int i = 0; i < turn.actions.Count; i++)
             {
-                if (turn.actions[i] == ActionType.Move || turn.actions[i] == ActionType.Attack)
-                    text += turn.isStackMoves[i] ? stackMoveSign : moveSign;
-                else
-                    text += moveSign;
-
+                text += turn.isStackMoves[i] ? stackMoveSign : moveSign;
                 text += turn.cells[i + 1].name;
 
                 if (turn.actions[i] == ActionType.Attack)
@@ -98,6 +203,27 @@ public class Save
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
 
-        File.WriteAllText($"{path}\\{date}.txt", text);
+        File.WriteAllText($"{path}\\{date.ToString("dd-MM-yyyy HH-mm-ss")}.txt", text);
+    }
+
+    public static FileInfo[] GetList()
+    {
+        // Récupére les fichiers .txt du dossier
+        IEnumerable<FileInfo> files = new DirectoryInfo(savePath)
+            .GetFiles("*.txt", SearchOption.TopDirectoryOnly);
+
+        // Tri les fichiers valides selon la date de dernière modification (du plus récent au plus ancien)
+        files = files.Where(f => IsValideData(f))
+                    .OrderByDescending(f => f.LastWriteTime);
+
+        return files.ToArray();
+    
+        static bool IsValideData(FileInfo info)
+        {
+            string data = info.OpenText().ReadToEnd();
+            Regex validSyntax = new Regex(validSavePattern, RegexOptions.IgnoreCase);
+
+            return validSyntax.IsMatch(data);
+        }
     }
 }

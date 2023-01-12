@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public partial class Pijersi
 {
     private void OnEnterNext()
@@ -12,13 +14,19 @@ public partial class Pijersi
         switch (turn.actions[actionId])
         {
             case ActionType.Move:
+            case ActionType.StackMove:
+            case ActionType.Attack:
+            case ActionType.StackAttack:
                 SM.ChangeState(State.Move);
                 break;
             case ActionType.Stack:
                 SM.ChangeState(State.Stack);
                 break;
             case ActionType.Unstack:
+            case ActionType.UnstackAttack:
                 SM.ChangeState(State.Unstack);
+                break;
+            case ActionType.None:
                 break;
             default:
                 break;

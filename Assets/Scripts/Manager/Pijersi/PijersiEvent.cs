@@ -33,7 +33,7 @@ public partial class Pijersi
 
     public void Replay()
     {
-        replaySave = new Save(save);
+        replaySave ??= new Save(save);
         ResetMatch();
         replayState = ReplayState.Play;
 

@@ -2260,7 +2260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightColor: {r: 1, g: 1, b: 1, a: 1}
   selectionColor: {r: 1, g: 0.86978406, b: 0, a: 1}
-  actions: 01000000020000000300000004000000
+  actions: 01000000050000000300000004000000
   colors:
   - {r: 0.6156517, g: 1, b: 0.18431371, a: 1}
   - {r: 1, g: 0.042452812, b: 0.042452812, a: 1}

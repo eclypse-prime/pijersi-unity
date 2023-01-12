@@ -6,7 +6,7 @@ public partial class Pijersi
         ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Move(selectedCell, pointedCell);
-        save.AddAction(ActionType.Move, selectedCell, pointedCell);
+        save.AddAction(action, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
     }
 

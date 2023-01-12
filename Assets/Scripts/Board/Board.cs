@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -188,6 +190,11 @@ public class Board : MonoBehaviour
             return (columnCount * 2 - 1) * x / 2 + y;
 
         return (columnCount * 2 - 1) * (x - 1) / 2 + columnCount - 1 + y;
+    }
+
+    public int CoordsToIndex(char x, char y)
+    {
+        return CoordsToIndex(lineCount - Array.FindIndex(letters, l => l == x) - 1, (int) char.GetNumericValue(y) - 1);
     }
     #endregion
 

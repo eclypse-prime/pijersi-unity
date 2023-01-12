@@ -112,6 +112,15 @@ public partial class Pijersi : MonoBehaviour
     {
         cameraMovement.SetCenter(board.cells[22].transform.position);
         InitTeams();
+
+        // Dans le cas d'un chargement de partie
+        if (config.partyData != null)
+        {
+            save = new Save(board, config.partyData);
+            Replay();
+            return;
+        }
+
         ResetMatch();
     }
 

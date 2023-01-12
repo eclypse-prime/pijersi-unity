@@ -20,7 +20,10 @@ public enum ActionType
 {
     None,
     Move,
-    Attack,
+    StackMove,
     Stack,
-    Unstack
+    Unstack,
+    Attack,
+    StackAttack,
+    UnstackAttack
 }

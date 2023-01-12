@@ -14,6 +14,7 @@ public class NewPijersi : MonoBehaviour
     {
         config.playerTypes = new PlayerType[] { (PlayerType) PlayerTypes[0].value, (PlayerType) PlayerTypes[1].value };
         config.winMax = (int) winMax.value;
+        config.partyData = null;
 
         GameManager.LoadScene("Pijersi");
     }
