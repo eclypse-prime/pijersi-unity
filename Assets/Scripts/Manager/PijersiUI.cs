@@ -15,6 +15,7 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameState;
     [SerializeField] private TextMeshProUGUI record;
     [SerializeField] private GameObject replay;
+    [SerializeField] private Selectable[] notPauseButtons;
     [Header("Pause/End Menu :")]
     [SerializeField] private GameObject pause;
     [SerializeField] private Selectable resume;
@@ -44,6 +45,9 @@ public class PijersiUI : MonoBehaviour
     public void SetActivePause(bool value)
     {
         pause.SetActive(value);
+        foreach (Selectable button in notPauseButtons)
+            button.enabled = !value;
+
         resume.Select();
     }
 
