@@ -10,22 +10,20 @@ class Engine : IEngine
 
     public void PlayManual(int[] move)
     {
-        PijersiEngine.IntVector vectorMove = new PijersiEngine.IntVector();
-        for (int i = 0; i < 3; i++)
-        {
-            vectorMove.Add(move[i]);
-        }
-        board.playManual(vectorMove);
+        uint uintMove = (uint) move[0];
+        uintMove |= (uint)move[1] << 8;
+        uintMove |= (uint)move[2] << 16;
+
+        board.playManual(uintMove);
     }
 
     public int[] PlayAuto(int recursionDepth = 1)
     {
-        PijersiEngine.IntVector vectorMove = board.playAlphaBeta(recursionDepth);
+        uint uintMove = board.playDepth(recursionDepth);
         int[] move = new int[3];
-        for (int i = 0; i < 3; i++)
-        {
-            move[i] = vectorMove[i];
-        }
+        move[0] = (int)uintMove & 0b_1111;
+        move[1] = (int)uintMove >> 8 & 0b_1111;
+        move[2] = (int)uintMove >> 16;
 
         return move;
     }
