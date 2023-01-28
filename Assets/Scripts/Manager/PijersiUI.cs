@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,19 +9,22 @@ public class PijersiUI : MonoBehaviour
     private const char stackMoveSign = '=';
     private const char attackSign = '!';
 
+    [SerializeField] private PijersiConfig config;
     [Header("Overlay :")]
-    [SerializeField] private TMP_Text Display;
     [SerializeField] private TextMeshProUGUI gameState;
     [SerializeField] private TextMeshProUGUI record;
     [SerializeField] private GameObject replay;
-    [SerializeField] private Selectable[] notPauseButtons;
-    [Header("Pause/End Menu :")]
+    [SerializeField] private Button[] overlayButtons;
+    [Header("Pause Menu :")]
     [SerializeField] private GameObject pause;
-    [SerializeField] private Selectable resume;
-    [SerializeField] private Selectable restart;
-    [SerializeField] private GameObject endOptions;
+    [SerializeField] private TextMeshProUGUI pauseScore;
+    [SerializeField] private Button pauseResume;
+    [Header("End Menu :")]
+    [SerializeField] private GameObject end;
+    [SerializeField] private TextMeshProUGUI endTitle;
+    [SerializeField] private TextMeshProUGUI endScore;
+    [SerializeField] private Button endResume;
     [SerializeField] private Button save;
-    [SerializeField] private TMP_Text Title;
 
     private string[] teamColor = {"White", "Black"};
     private bool isFirstAction = true;
@@ -42,42 +44,71 @@ public class PijersiUI : MonoBehaviour
         ResetUI();
     }
 
-    public void SetActivePause(bool value)
+    public void ResetUI((int, int) scores)
     {
-        pause.SetActive(value);
-        foreach (Selectable button in notPauseButtons)
-            button.enabled = !value;
+        ResetOverlay();
 
-        resume.Select();
+        if (!config.isBestOf)
+        {
+            endScore.text = "";
+            pauseScore.text = "";
+            return;
+        }
+        pauseScore.text = $"{scores.Item1} - {scores.Item2} / {config.winMax}";
+    }
+
+    public void ResetUI()
+    {
+        ResetUI((0, 0));
+    }
+
+    public void ResetOverlay()
+    {
+        gameState.text = "";
+        record.text = "";
+        isFirstAction = true;
+        records.Clear();
+        SetActiveOverlayButtons(true);
+        SetReplayButtonsInteractable(false);
     }
 
     public void ShowEnd(int winTeamId, int[] teamWinCounts, int maxWinRound)
     {
-        pause.SetActive(true);
-        endOptions.SetActive(true);
-        Title.text   = $"{teamColor[winTeamId]} win !";
-        Display.text = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
+        SetActiveOverlayButtons(false);
+        end.SetActive(true);
+        endTitle.text   = $"{teamColor[winTeamId]} win !";
+
+        if (config.isBestOf)
+        {
+            string score = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
+            endScore.text = score;
+            pauseScore.text = score;
+        }
+
         if (teamWinCounts[winTeamId] == maxWinRound)
         {
-            resume.gameObject.SetActive(false);
-            restart.Select();
+            endResume.gameObject.SetActive(false);
+            save.Select();
+
             return;
         }
 
-        resume.Select();
+        endResume.Select();
     }
 
-    public void HideEnd()
+    public void SetActiveOverlayButtons(bool value)
     {
-        pause.SetActive(false);
-        endOptions.SetActive(false);
-        resume.gameObject.SetActive(true);
-        save.interactable = true;
-        Title.text        = "Pause";
-        Display.text      = "";
+        foreach (Selectable button in overlayButtons)
+            button.enabled = value;
     }
 
-    public void UpdateGameState(int teamId, string teamName)
+    public void SetReplayButtonsInteractable(bool value)
+    {
+        foreach (KeyValuePair<string, BetterButton> replayButton in replayButtons)
+            replayButton.Value.interactable = value;
+    }
+
+    public void SetGameState(int teamId, string teamName)
     {
         gameState.text = (teamId == 0 ? "white" : "black") + " : " + teamName;
     }
@@ -104,6 +135,7 @@ public class PijersiUI : MonoBehaviour
     public void AddRecordColumnLine(int teamId)
     {
         if (record.text.Length == 0) return;
+
         string newRecord = teamId == 0 ? "\n" : "\t";
         record.text     += newRecord;
         isFirstAction    = true;
@@ -122,22 +154,6 @@ public class PijersiUI : MonoBehaviour
             newRecord += record;
 
         record.text = newRecord;
-    }
-
-    public void SetReplayButtonsInteractable(bool value)
-    {
-        foreach (KeyValuePair<string, BetterButton> replayButton in replayButtons)
-            replayButton.Value.interactable = value;
-    }
-
-    public void ResetUI()
-    {
-        gameState.text = "";
-        record.text    = "";
-        isFirstAction  = true;
-        records.Clear();
-        HideEnd();
-        SetReplayButtonsInteractable(false);
     }
 
     public void MainMenu()

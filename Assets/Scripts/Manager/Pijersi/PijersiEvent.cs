@@ -6,11 +6,11 @@ public partial class Pijersi
     {
         if (teams[0].Type != PlayerType.Human || teams[1].Type != PlayerType.Human)
             engine = new Engine();
-        save = new Save(config.playerTypes);
+        save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
 
         teams[0].score = 0;
         teams[1].score = 0;
-        replayState   = ReplayState.None;
+        replayState = ReplayState.None;
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
@@ -23,7 +23,6 @@ public partial class Pijersi
     {
         isPauseOn = !isPauseOn;
         Time.timeScale = 1 - Time.timeScale;
-        UI.SetActivePause(isPauseOn);
     }
 
     public void Save()
@@ -33,11 +32,18 @@ public partial class Pijersi
 
     public void Replay()
     {
-        replaySave ??= new Save(save);
-        ResetMatch();
+        replaySave = new Save(save);
+        save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
         replayState = ReplayState.Play;
+        teams[currentTeamId].score = Mathf.Min(0, teams[currentTeamId].score - 1);
+        currentTeamId = 1;
 
+        board.ResetBoard();
+        UI.ResetUI((teams[0].score, teams[1].score));
         UI.replayButtons["Play"].interactable = true;
+        cameraMovement.position = CameraMovement.positionType.White;
+
+        SM.ChangeState(State.Turn);
     }
 
     public void PausePlay()

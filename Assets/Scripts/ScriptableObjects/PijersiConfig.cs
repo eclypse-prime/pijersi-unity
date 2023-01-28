@@ -6,4 +6,6 @@ public class PijersiConfig : ScriptableObject
     public PlayerType[] playerTypes;
     public string partyData;
     public int winMax;
+
+    public bool isBestOf => winMax > 1;
 }

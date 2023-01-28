@@ -126,7 +126,7 @@ public partial class Pijersi : MonoBehaviour
 
     private void Update()
     {
-        if (CheckPause()) return;
+        if (isPauseOn) return;
 
         SM.Update();
     }
@@ -171,13 +171,5 @@ public partial class Pijersi : MonoBehaviour
 
         teams[0] = new Team(config.playerTypes[0], teamNames[0]);
         teams[1] = new Team(config.playerTypes[1], teamNames[1]);
-    }
-
-    private bool CheckPause()
-    {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && SM.currentState.id != State.End)
-            TogglePause();
-
-        return isPauseOn;
     }
 }

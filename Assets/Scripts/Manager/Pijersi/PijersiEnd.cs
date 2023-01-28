@@ -21,7 +21,6 @@ public partial class Pijersi
     {
         if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
             engine = new Engine();
-        save = new Save(config.playerTypes);
         replayState = ReplayState.None;
 
         // inversion des équipes
@@ -29,9 +28,10 @@ public partial class Pijersi
         teams[0] = teams[1];
         teams[1] = firstTeam;
 
+        save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
         currentTeamId = 1;
         board.ResetBoard();
-        UI.ResetUI();
+        UI.ResetOverlay();
 
         SM.ChangeState(State.Turn);
     }
