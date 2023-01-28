@@ -18,6 +18,34 @@ public class BetterButton : Button
         set { m_onRightClick = value; }
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        pressAction.Enable();
+        alternativePressAction.Enable();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        pressAction.Disable();
+        alternativePressAction.Disable();
+    }
+
+    private void Update()
+    {
+        if (!IsActive() || !IsInteractable() || !pressAction.triggered)
+            return;
+
+        if (alternativePressAction.inProgress)
+        {
+            onRightClick.Invoke();
+            return;
+        }
+
+        onClick.Invoke();
+    }
+
     private void Press()
     {
         if (!IsActive() || !IsInteractable())
@@ -42,33 +70,5 @@ public class BetterButton : Button
             return;
 
         Press();
-    }
-
-    private void Update()
-    {
-        if (!IsActive() || !IsInteractable() || !pressAction.triggered)
-            return;
-
-        if (alternativePressAction.inProgress)
-        {
-            onRightClick.Invoke();
-            return;
-        }
-
-        onClick.Invoke();
-    }
-
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-        pressAction.Enable();
-        alternativePressAction.Enable();
-    }
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-        pressAction.Disable();
-        alternativePressAction.Enable();
     }
 }

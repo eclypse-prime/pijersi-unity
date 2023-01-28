@@ -13,7 +13,7 @@ public partial class Pijersi
 
     private void OnExitTurn()
     {
-        UI.UpdateGameState(currentTeamId, teams[currentTeamId].Name);
+        UI.SetGameState(currentTeamId, teams[currentTeamId].Name);
         UI.AddRecordColumnLine(currentTeamId);
     }
 
