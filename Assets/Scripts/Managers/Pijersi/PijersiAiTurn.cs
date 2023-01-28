@@ -21,7 +21,8 @@ public partial class Pijersi
         UI.replayButtons["Next"].interactable = false;
 
         aiActionCells[0] = board.cells[playAuto[0]];
-        if (playAuto[1] > -1)
+        // 0xFFU represents a null action
+        if (playAuto[1] != 0xFFU)
             aiActionCells[1] = board.cells[playAuto[1]];
         aiActionCells[2] = board.cells[playAuto[2]];
 

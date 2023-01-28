@@ -1,3 +1,5 @@
+using UnityEngine;
+
 class Engine : IEngine
 {
     private PijersiEngine.Board board;
@@ -21,9 +23,9 @@ class Engine : IEngine
     {
         uint uintMove = board.playDepth(recursionDepth);
         int[] move = new int[3];
-        move[0] = (int)uintMove & 0b_1111;
-        move[1] = (int)uintMove >> 8 & 0b_1111;
-        move[2] = (int)uintMove >> 16;
+        move[0] = (int)(uintMove & 0xFFU);
+        move[1] = (int)((uintMove >> 8) & 0xFFU);
+        move[2] = (int)((uintMove >> 16) & 0xFFU);
 
         return move;
     }
