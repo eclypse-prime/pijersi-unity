@@ -12,7 +12,7 @@ public partial class Pijersi
             currentTeamId = 1 - currentTeamId;
             canMove = false;
             canStack = false;
-            UI.SetGameState(currentTeamId, teams[currentTeamId].Name);
+            UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
             if (cameraMovement.position != CameraMovement.positionType.Up && teams[currentTeamId].Type == PlayerType.Human)
                 cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
             turnId--;
@@ -47,7 +47,6 @@ public partial class Pijersi
             turn.cells.RemoveAt(actionId);
 
         UI.UndoRecord();
-        //CheckCamera();
     }
 
     private void OnUpdateBack()

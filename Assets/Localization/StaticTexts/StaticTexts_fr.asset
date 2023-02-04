@@ -10,152 +10,108 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: UIText_en
+  m_Name: StaticTexts_fr
   m_EditorClassIdentifier: 
   m_LocaleId:
-    m_Code: en
+    m_Code: fr
   m_SharedData: {fileID: 11400000, guid: c21fa2030912c2b41a59df899a6764f2, type: 2}
   m_Metadata:
     m_Items: []
   m_TableData:
   - m_Id: 6168184778752
-    m_Localized: New game
+    m_Localized: Nouvelle partie
     m_Metadata:
       m_Items: []
   - m_Id: 7029652877312
-    m_Localized: Load game
+    m_Localized: Charger partie
     m_Metadata:
       m_Items: []
   - m_Id: 7206736392192
-    m_Localized: Rules
+    m_Localized: "R\xE8gles"
     m_Metadata:
       m_Items: []
   - m_Id: 20328213803008
-    m_Localized: Quit
-    m_Metadata:
-      m_Items: []
-  - m_Id: 10539421298688
-    m_Localized: New Game
+    m_Localized: Quitter
     m_Metadata:
       m_Items: []
   - m_Id: 10945538977792
-    m_Localized: Team #1
+    m_Localized: "\xC9quipe #1"
     m_Metadata:
       m_Items: []
   - m_Id: 11427359649792
-    m_Localized: Human
+    m_Localized: Joueur
     m_Metadata:
       m_Items: []
   - m_Id: 11482699296768
-    m_Localized: AI (easy)
+    m_Localized: IA (facile)
     m_Metadata:
       m_Items: []
   - m_Id: 11533022556160
-    m_Localized: AI (normal)
+    m_Localized: IA (normale)
     m_Metadata:
       m_Items: []
   - m_Id: 11573803773952
-    m_Localized: AI (hard)
+    m_Localized: IA (difficile)
     m_Metadata:
       m_Items: []
   - m_Id: 11626098356224
-    m_Localized: AI (insane)
+    m_Localized: "IA (d\xE9mentiel)"
     m_Metadata:
       m_Items: []
   - m_Id: 11906227531776
-    m_Localized: AI (god)
+    m_Localized: IA (divin)
     m_Metadata:
       m_Items: []
   - m_Id: 12386987044864
-    m_Localized: Team #2
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592390500352
-    m_Localized: Human
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592390500353
-    m_Localized: AI (easy)
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592394694656
-    m_Localized: AI (normal)
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592394694657
-    m_Localized: AI (hard)
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592398888960
-    m_Localized: AI (insane)
-    m_Metadata:
-      m_Items: []
-  - m_Id: 12592398888961
-    m_Localized: AI (god)
+    m_Localized: "\xC9quipe #2"
     m_Metadata:
       m_Items: []
   - m_Id: 13314356047872
-    m_Localized: Win max
+    m_Localized: 'Manches gagnantes :'
     m_Metadata:
       m_Items: []
   - m_Id: 13767617703936
-    m_Localized: Start
-    m_Metadata:
-      m_Items: []
-  - m_Id: 14169620770816
-    m_Localized: Load Game
+    m_Localized: Jouer
     m_Metadata:
       m_Items: []
   - m_Id: 15463479668736
-    m_Localized: Return
-    m_Metadata:
-      m_Items: []
-  - m_Id: 23485207703552
-    m_Localized: Rules
+    m_Localized: Retour
     m_Metadata:
       m_Items: []
   - m_Id: 23842415603712
-    m_Localized: Resume
+    m_Localized: Continuer
     m_Metadata:
       m_Items: []
   - m_Id: 24317324062720
-    m_Localized: Restart
+    m_Localized: Rejouer
     m_Metadata:
       m_Items: []
   - m_Id: 24461843001344
-    m_Localized: Main menu
-    m_Metadata:
-      m_Items: []
-  - m_Id: 25162811863040
-    m_Localized: End
+    m_Localized: Menu principal
     m_Metadata:
       m_Items: []
   - m_Id: 25236774219776
-    m_Localized: Save
+    m_Localized: Sauvegarder
     m_Metadata:
       m_Items: []
   - m_Id: 25357192687616
-    m_Localized: Replay
+    m_Localized: Revoir
     m_Metadata:
       m_Items: []
-  - m_Id: 25877760339968
-    m_Localized: Resume
+  - m_Id: 2453624365412352
+    m_Localized: Pijersi Unity
     m_Metadata:
       m_Items: []
-  - m_Id: 26007129452544
-    m_Localized: Restart
+  - m_Id: 2452125283414016
+    m_Localized: 'Copyright '
     m_Metadata:
       m_Items: []
-  - m_Id: 26081867755520
-    m_Localized: Main menu
-    m_Metadata:
-      m_Items: []
-  - m_Id: 26506197102592
-    m_Localized: Rules
+  - m_Id: 2451361072836608
+    m_Localized: Pause
     m_Metadata:
       m_Items: []
   - m_Id: 26643619278848
-    m_Localized: More info
+    m_Localized: Plus d'info
     m_Metadata:
       m_Items: []
   references:

@@ -41,16 +41,16 @@ public partial class Pijersi : MonoBehaviour
     private struct Team
     {
         private PlayerType type;
-        private string name;
+        private int number;
         public int score;
 
         public PlayerType Type => type;
-        public string Name => name;
+        public int Number => number;
 
-        public Team(PlayerType type, string name)
+        public Team(PlayerType type, int number)
         {
             this.type = type;
-            this.name = name;
+            this.number = number;
             score = 0;
         }
     }
@@ -134,42 +134,8 @@ public partial class Pijersi : MonoBehaviour
     private void InitTeams()
     {
         teams = new Team[2];
-
-        string[] teamNames = new string[2];
-        for (int i = 0; i < 2; i++)
-        {
-            switch (config.playerTypes[i])
-            {
-                case PlayerType.Human:
-                    teamNames[i] = "Player";
-                    break;
-                case PlayerType.AiEasy:
-                    teamNames[i] = "AI (easy)";
-                    break;
-                case PlayerType.AiNormal:
-                    teamNames[i] = "AI (normal)";
-                    break;
-                case PlayerType.AiHard:
-                    teamNames[i] = "AI (hard)";
-                    break;
-                case PlayerType.AiInsane:
-                    teamNames[i] = "AI (insane)";
-                    break;
-                case PlayerType.AiGod:
-                    teamNames[i] = "AI (god)";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if (config.playerTypes[0] == config.playerTypes[1])
-        {
-            teamNames[0] += " #1";
-            teamNames[1] += " #2";
-        }
-
-        teams[0] = new Team(config.playerTypes[0], teamNames[0]);
-        teams[1] = new Team(config.playerTypes[1], teamNames[1]);
+        int offset = config.playerTypes[0] == config.playerTypes[1] ? 1 : 0;
+        teams[0] = new Team(config.playerTypes[0], 1 * offset);
+        teams[1] = new Team(config.playerTypes[1], 2 * offset);
     }
 }

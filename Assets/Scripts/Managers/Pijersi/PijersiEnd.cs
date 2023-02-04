@@ -8,7 +8,7 @@ public partial class Pijersi
     {
         teams[currentTeamId].score++;
         int[] scores = { teams[0].score, teams[1].score };
-        UI.ShowEnd(currentTeamId, scores, config.winMax);
+        UI.ShowEnd(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number, scores, config.winMax);
         TogglePause();
         replayState = ReplayState.None;
     }

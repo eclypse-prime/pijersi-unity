@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: DynamicTexts_fr
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: fr
+  m_SharedData: {fileID: 11400000, guid: 3ae6d5d336c1cc444bfc9aacf68a3527, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 3643259938887696393
+  m_TableData:
+  - m_Id: 19972648960
+    m_Localized: '{0:choose(0|1):Blanc|Noir}'
+    m_Metadata:
+      m_Items:
+      - rid: 3643259938887696393
+  - m_Id: 4043425869824
+    m_Localized: '{0} : {1} {2}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1086068018802688
+    m_Localized: '{0:choose(1|2):#1|#2| }'
+    m_Metadata:
+      m_Items:
+      - rid: 3643259938887696393
+  - m_Id: 2148720912527360
+    m_Localized: '{0} gagne !'
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 3643259938887696393
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 007076a6040000000070f65169010000007076eac5db03000070b6a25fec0300

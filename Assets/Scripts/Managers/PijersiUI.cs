@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 
 public class PijersiUI : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private Button endResume;
     [SerializeField] private Button save;
 
-    private string[] teamColor = {"White", "Black"};
+    private LocalizedStringDatabase stringDatabase;
     private bool isFirstAction = true;
     private List<string> records = new List<string>();
 
@@ -34,6 +35,8 @@ public class PijersiUI : MonoBehaviour
 
     private void Awake()
     {
+        stringDatabase = LocalizationSettings.StringDatabase;
+
         replayButtons = new Dictionary<string, BetterButton>();
         foreach (BetterButton button in replay.GetComponentsInChildren<BetterButton>())
             replayButtons.Add(button.name, button);
@@ -42,6 +45,14 @@ public class PijersiUI : MonoBehaviour
     private void Start()
     {
         ResetUI();
+    }
+
+    private string GetTeamName(PlayerType teamType, int teamNumber)
+    {
+        string type = LocalizationSettings.StringDatabase.GetLocalizedString("StaticTexts", teamType.ToString());
+        string number = LocalizationSettings.StringDatabase.GetLocalizedString("DynamicTexts", "TeamNumber", arguments: teamNumber);
+
+        return $"{type} {number}";
     }
 
     public void ResetUI((int, int) scores)
@@ -64,7 +75,6 @@ public class PijersiUI : MonoBehaviour
 
     public void ResetOverlay()
     {
-        gameState.text = "";
         record.text = "";
         isFirstAction = true;
         records.Clear();
@@ -72,11 +82,12 @@ public class PijersiUI : MonoBehaviour
         SetReplayButtonsInteractable(false);
     }
 
-    public void ShowEnd(int winTeamId, int[] teamWinCounts, int maxWinRound)
+    public void ShowEnd(int winTeamId, PlayerType winTeamType, int winTeamNumber, int[] teamWinCounts, int maxWinRound)
     {
         SetActiveOverlayButtons(false);
         end.SetActive(true);
-        endTitle.text   = $"{teamColor[winTeamId]} win !";
+        string teamColor = stringDatabase.GetLocalizedString("DynamicTexts", "TeamColor", arguments: winTeamId);
+        endTitle.text = stringDatabase.GetLocalizedString("DynamicTexts", "Winner", arguments: teamColor);
 
         if (config.isBestOf)
         {
@@ -87,7 +98,9 @@ public class PijersiUI : MonoBehaviour
 
         if (teamWinCounts[winTeamId] == maxWinRound)
         {
-            endResume.gameObject.SetActive(false);
+            endResume.interactable = false;
+            string score = stringDatabase.GetLocalizedString("DynamicTexts", "BigWinner", arguments: GetTeamName(winTeamType, winTeamNumber));
+            endScore.text += $" {score}";
             save.Select();
 
             return;
@@ -108,9 +121,10 @@ public class PijersiUI : MonoBehaviour
             replayButton.Value.interactable = value;
     }
 
-    public void SetGameState(int teamId, string teamName)
+    public void SetGameState(int teamId, PlayerType teamType, int teamNumber)
     {
-        gameState.text = (teamId == 0 ? "white" : "black") + " : " + teamName;
+        string color = LocalizationSettings.StringDatabase.GetLocalizedString("DynamicTexts", "TeamColor", arguments: teamId);
+        gameState.text = $"{color} : {GetTeamName(teamType, teamNumber)}";
     }
 
     public void UpdateRecord(Cell start, Cell end, ActionType action)
@@ -137,8 +151,8 @@ public class PijersiUI : MonoBehaviour
         if (record.text.Length == 0) return;
 
         string newRecord = teamId == 0 ? "\n" : "\t";
-        record.text     += newRecord;
-        isFirstAction    = true;
+        record.text += newRecord;
+        isFirstAction = true;
         records[records.Count -1] += newRecord;
     }
 

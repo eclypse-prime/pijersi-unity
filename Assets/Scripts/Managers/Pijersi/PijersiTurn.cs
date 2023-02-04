@@ -1,3 +1,4 @@
+using UnityEngine;
 public partial class Pijersi
 {
     private void OnEnterTurn()
@@ -13,7 +14,7 @@ public partial class Pijersi
 
     private void OnExitTurn()
     {
-        UI.SetGameState(currentTeamId, teams[currentTeamId].Name);
+        UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
         UI.AddRecordColumnLine(currentTeamId);
     }
 

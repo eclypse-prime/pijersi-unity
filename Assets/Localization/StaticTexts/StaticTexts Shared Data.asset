@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: StaticTexts Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: StaticTexts
+  m_TableCollectionNameGuidString: c21fa2030912c2b41a59df899a6764f2
+  m_Entries:
+  - m_Id: 6168184778752
+    m_Key: NewGame
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7029652877312
+    m_Key: LoadGame
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7206736392192
+    m_Key: Rules
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10945538977792
+    m_Key: Team1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12386987044864
+    m_Key: Team2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11427359649792
+    m_Key: Human
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11482699296768
+    m_Key: AiEasy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11533022556160
+    m_Key: AiNormal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11573803773952
+    m_Key: AiHard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11626098356224
+    m_Key: AiInsane
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11906227531776
+    m_Key: AiGod
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13314356047872
+    m_Key: WinMax
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13767617703936
+    m_Key: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15463479668736
+    m_Key: Return
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20328213803008
+    m_Key: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23842415603712
+    m_Key: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24317324062720
+    m_Key: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24461843001344
+    m_Key: MainMenu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25236774219776
+    m_Key: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25357192687616
+    m_Key: Replay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26643619278848
+    m_Key: MoreRulesInfo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2451361072836608
+    m_Key: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2452125283414016
+    m_Key: Copyright
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2453624365412352
+    m_Key: PijersiUnity
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3643259922520735768
+  references:
+    version: 2
+    RefIds:
+    - rid: 3643259922520735768
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1674948561878

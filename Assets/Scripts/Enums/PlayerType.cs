@@ -5,5 +5,6 @@ public enum PlayerType
     AiNormal,
     AiHard,
     AiInsane,
-    AiGod
+    AiGod,
+    _count
 }

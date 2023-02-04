@@ -89,7 +89,7 @@ MonoBehaviour:
       data:
         m_FormatErrorAction: 0
         m_ParseErrorAction: 0
-        m_CaseSensitivity: 0
+        m_CaseSensitivity: 1
         m_ConvertCharacterStringLiterals: 1
     - rid: 3643259922520735752
       type: {class: Parser, ns: UnityEngine.Localization.SmartFormat.Core.Parsing, asm: Unity.Localization}

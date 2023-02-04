@@ -18,7 +18,13 @@ MonoBehaviour:
   m_GUID: fe05a364c49c49448874e1200f7a07cd
   m_SerializeEntries:
   - m_GUID: 6cda72a4e571c5d418f844c37e790720
-    m_Address: UIText_en
+    m_Address: StaticTexts_en
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en
+    - Preload
+  - m_GUID: 6ab4aca5ada3d1c429b7df1c5ff6e0e9
+    m_Address: DynamicTexts_en
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en
