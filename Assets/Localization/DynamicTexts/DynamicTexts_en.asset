@@ -37,6 +37,10 @@ MonoBehaviour:
     m_Localized: '{0} win !'
     m_Metadata:
       m_Items: []
+  - m_Id: 2193730940858368
+    m_Localized: '{0} is the big winner !'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
