@@ -123,19 +123,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7011699141408992895}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4411768792337133631}
-        m_TargetAssemblyTypeName: TooltipTrigger, Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_onRightClick:
     m_PersistentCalls:
       m_Calls: []
@@ -189,10 +177,10 @@ MonoBehaviour:
         - m_Target: {fileID: 4411768792337133631}
           m_TargetAssemblyTypeName: TooltipTrigger, Assembly-CSharp
           m_MethodName: Show
-          m_Mode: 1
+          m_Mode: 2
           m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_ObjectArgument: {fileID: 5021379582073994597}
+            m_ObjectArgumentAssemblyTypeName: BetterButton, Assembly-CSharp
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -230,22 +218,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4411768792337133631}
-          m_TargetAssemblyTypeName: TooltipTrigger, Assembly-CSharp
-          m_MethodName: Hide
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 0
 --- !u!1 &8588850787154172166
 GameObject:
   m_ObjectHideFlags: 0

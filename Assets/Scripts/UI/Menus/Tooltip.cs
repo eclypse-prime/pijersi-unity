@@ -7,6 +7,7 @@ public class Tooltip : MonoBehaviour
     [SerializeField] private RectTransform panel;
     [SerializeField] private TextMeshProUGUI text;
     private RectTransform canvas;
+    private BetterButton currentButton;
 
     public static Tooltip Instance { get; private set; }
 
@@ -17,6 +18,14 @@ public class Tooltip : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(this);
+    }
+
+    private void Update()
+    {
+        if (currentButton == null) return;
+
+        if (!currentButton.isActiveAndEnabled || !currentButton.interactable)
+            Hide();
     }
 
     public void Show(string content)
@@ -36,8 +45,16 @@ public class Tooltip : MonoBehaviour
         text.text = content;
     }
 
+    public void Show(BetterButton button)
+    {
+        currentButton = button;
+        
+        Show(button.name);
+    }
+
     public void Hide()
     {
+        currentButton = null;
         panel.gameObject.SetActive(false);
     }
 }
