@@ -176,7 +176,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4411768792337133631}
           m_TargetAssemblyTypeName: TooltipTrigger, Assembly-CSharp
-          m_MethodName: Show
+          m_MethodName: Set
           m_Mode: 2
           m_Arguments:
             m_ObjectArgument: {fileID: 5021379582073994597}

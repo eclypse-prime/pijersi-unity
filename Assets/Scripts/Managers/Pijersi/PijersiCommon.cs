@@ -5,6 +5,8 @@ public partial class Pijersi
 {
     private bool CheckPointedCell()
     {
+        lastPointedCell = pointedCell;
+
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (!Physics.Raycast(ray, out hit, 50f, cellLayer))

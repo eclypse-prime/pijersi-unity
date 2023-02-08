@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.singularitygroup.hotreload": "git+https://gitlab.com/singularitygroup/hot-reload-for-unity.git#1.1.8",
+    "com.unity.2d.animation": "7.0.9",
     "com.unity.collab-proxy": "1.15.18",
     "com.unity.ide.visualstudio": "2.0.17",
     "com.unity.ide.vscode": "1.2.5",

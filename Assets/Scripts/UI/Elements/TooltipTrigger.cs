@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class TooltipTrigger : MonoBehaviour
 {
-    public void Show(BetterButton button)
+    public void Set(BetterButton button)
     {
-        Tooltip.Instance.Show(button);
+        Tooltip.Instance.Set(button);
     }
 
     public void Hide()

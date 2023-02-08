@@ -782,7 +782,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 100, y: -24.999983}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 56.23, y: 27.88}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &340243367
 MonoBehaviour:
@@ -2830,10 +2830,10 @@ RectTransform:
   m_Father: {fileID: 340243366}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -100, y: 24.999983}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 56.23, y: 27.88}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1622273901
 MonoBehaviour:
@@ -2905,7 +2905,7 @@ MonoBehaviour:
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
   m_enableExtraPadding: 0
-  checkPaddingRequired: 1
+  checkPaddingRequired: 0
   m_isRichText: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
@@ -3538,6 +3538,7 @@ GameObject:
   - component: {fileID: 1833314166}
   - component: {fileID: 1833314165}
   - component: {fileID: 1833314169}
+  - component: {fileID: 1833314170}
   m_Layer: 5
   m_Name: Tooltip
   m_TagString: Untagged
@@ -3641,6 +3642,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 340243366}
   text: {fileID: 1622273901}
+  animator: {fileID: 1833314170}
+--- !u!95 &1833314170
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833314163}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 42f31447a7d591743a82f6c363ebadaa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 2
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1869245099
 GameObject:
   m_ObjectHideFlags: 0
