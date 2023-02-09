@@ -111,6 +111,10 @@ MonoBehaviour:
     m_Key: PijersiUnity
     m_Metadata:
       m_Items: []
+  - m_Id: 4016562465304576
+    m_Key: Start/Menus/NewPijersi/Start
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

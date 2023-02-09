@@ -71,4 +71,14 @@ public class BetterButton : Button
 
         Press();
     }
+
+    public void ReloadInputAction()
+    {
+        pressAction.Disable();
+        alternativePressAction.Disable();
+        pressAction.Dispose();
+        alternativePressAction.Dispose();
+        pressAction.Enable();
+        alternativePressAction.Enable();
+    }
 }
