@@ -25,6 +25,7 @@ public partial class Pijersi : MonoBehaviour
     private Team[] teams;
     private int currentTeamId;
     private Cell pointedCell;
+    private Cell lastPointedCell;
     private Cell selectedCell;
     private bool canMove;
     private bool canStack;

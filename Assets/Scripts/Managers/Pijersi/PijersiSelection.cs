@@ -18,6 +18,7 @@ public partial class Pijersi
         selectedCellDangers[1] = selectedCell.pieces[1]?.GetDangers(selectedCell);
         animation.NewSelection(selectedCell);
         animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
+        Tooltip.Instance.Set("CancelSelection");
     }
 
     private void OnExitSelection()
@@ -36,9 +37,13 @@ public partial class Pijersi
             if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
                 if (canMove && canStack) // annule la selection
+                {
                     SM.ChangeState(State.PlayerTurn);
+                    return;
+                }
             }
 
+            Tooltip.Instance.Hide();
             return;
         }
 
@@ -62,32 +67,44 @@ public partial class Pijersi
             if (pointedCell == selectedCell)
             {
                 animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
+
+                if (pointedCell == lastPointedCell) return;
+
+                if (canMove && canStack)
+                {
+                    Tooltip.Instance.Set("CancelSelection");
+                    return;
+                }
+                Tooltip.Instance.Set("EndTurn");
+
                 return;
             }
 
             animation.UpdateHighlight(pointedCell, ActionType.None);
             animation.HighlightDangers(null);
+            if (pointedCell != lastPointedCell)
+                Tooltip.Instance.Hide();
+
             return;
         }
 
-        ActionType[] orderedActions;
+        State[] orderedState;
+        int actionId;
+        ActionType[] alternateActions = { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
 
         // action (ordre alternative)
         if (secondaryAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
+            Tooltip.Instance.Hide();
 
-            orderedActions = new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
-            State[] orderedState = { State.Stack, State.Unstack, State.Move, State.Move };
+            orderedState = new State[] { State.Stack, State.Unstack, State.Move, State.Move };
+            actionId = GetFirstValidActionId(alternateActions);
 
-            for (int i = 0; i < orderedActions.Length; i++)
+            if (actionId > -1)
             {
-                // lance la première action valide
-                if (validMoves[pointedCell].Contains(orderedActions[i]))
-                {
-                    SM.ChangeState(orderedState[i]);
-                    return;
-                }
+                SM.ChangeState(orderedState[actionId]);
+                return;
             }
 
             if (canMove && canStack) // annule la selection
@@ -99,23 +116,16 @@ public partial class Pijersi
         }
 
         // prend la première action valide
-        orderedActions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
-        int actionId = -1;
-        for (int i = 0; i < orderedActions.Length; i++)
-        {
-            if (validMoves[pointedCell].Contains(orderedActions[i]))
-            {
-                actionId = i;
-                break;
-            }
-        }
+        ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
+        actionId = GetFirstValidActionId(actions);
 
         // action (défaut)
         if (mainAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
+            Tooltip.Instance.Hide();
 
-            State[] orderedState = { State.Move, State.Move, State.Stack, State.Unstack };
+            orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
 
             if (actionId > -1)
                 SM.ChangeState(orderedState[actionId]);
@@ -129,7 +139,25 @@ public partial class Pijersi
 
         // highlights
         if (pointedCell != selectedCell)
-            animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : orderedActions[actionId]);
+            animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : actions[actionId]);
+
+        // actions tooltip
+        if (pointedCell != lastPointedCell)
+        {
+            string tooltipKey = actionId > -1 ? actions[actionId].ToString() : "";
+
+            actionId =GetFirstValidActionId(alternateActions);
+
+            tooltipKey += actionId > -1 ? alternateActions[actionId].ToString() : "";
+
+            //if (tooltipKey == "") // aucune action possible
+            //{
+            //    Tooltip.Instance.Hide();
+            //    return;
+            //}
+
+            Tooltip.Instance.Set(tooltipKey);
+        }
 
         if (this.dangers == null) return;
 
@@ -143,17 +171,32 @@ public partial class Pijersi
         }
 
         animation.HighlightDangers(dangers?.ToArray());
-    }
 
-    private void UpdateUIAndReplay()
-    {
-        UI.replayButtons["Back"].interactable = true;
-        UI.replayButtons["Play"].interactable = false;
-        UI.replayButtons["Next"].interactable = false;
+        int GetFirstValidActionId(ActionType[] orderedActions)
+        {
+            int actionId = -1;
+            for (int i = 0; i < orderedActions.Length; i++)
+            {
+                if (validMoves[pointedCell].Contains(orderedActions[i]))
+                {
+                    actionId = i;
+                    break;
+                }
+            }
 
-        if (replaySave == null) return;
+            return actionId;
+        }
 
-        replaySave = null;
-        engine = null;
+        void UpdateUIAndReplay()
+        {
+            UI.replayButtons["Back"].interactable = true;
+            UI.replayButtons["Play"].interactable = false;
+            UI.replayButtons["Next"].interactable = false;
+
+            if (replaySave == null) return;
+
+            replaySave = null;
+            engine = null;
+        }
     }
 }

@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Tooltip_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 2163846579ff01b46a2c52ce07a3c4ef, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 8817416120107270151
+  m_TableData:
+  - m_Id: 1693151817728
+    m_Localized: 'Shortcut : {}'
+    m_Metadata:
+      m_Items:
+      - rid: 8817416120107270151
+  - m_Id: 2597456343040
+    m_Localized: N
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3026621722624
+    m_Localized: L
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3338568888320
+    m_Localized: R, H, F1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3640818823168
+    m_Localized: Q
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5587001044992
+    m_Localized: N, S
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5802982535168
+    m_Localized: Q, R
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6097884049408
+    m_Localized: Escape, P
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6393154662400
+    m_Localized: "\nTurn :\tLeft arrow\nAction :\tRight clic, Control + Left arrow"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8171124322304
+    m_Localized: Escape, P
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8046746431488
+    m_Localized: Space, Up Arrow, Down Arrow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8051012038656
+    m_Localized: "\nTurn :\tRight arrow\nAction :\tRight clic, Control + Right arrow"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11004380868608
+    m_Localized: R
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11114598789120
+    m_Localized: M
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11736618266624
+    m_Localized: S
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11987873853440
+    m_Localized: None
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12760854720512
+    m_Localized: I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13063574417408
+    m_Localized: R, H, F1, Escape
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 8817416120107270151
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 0070b6378a010000

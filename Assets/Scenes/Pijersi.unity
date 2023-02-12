@@ -2725,6 +2725,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnRightClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2741,6 +2745,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: b5a45b7f-3626-4efd-a877-db81c5f116b9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 203776966}
@@ -2752,6 +2760,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1105363388}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/#(S)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Press
+      objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -3081,6 +3097,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnRightClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -3093,6 +3113,14 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: 76c71425-434c-44b5-9960-b73acf7b8758
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[1].m_Id
+      value: 5ca209ab-d809-4657-abca-3025a8feb3b8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 203776966}
@@ -3100,6 +3128,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 2125379591}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Path
+      value: <Keyboard>/escape
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[1].m_Path
+      value: <Keyboard>/#(P)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[0].m_Action
+      value: Press
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
+      propertyPath: pressAction.m_SingletonActionBindings.Array.data[1].m_Action
+      value: Press
+      objectReference: {fileID: 0}
     - target: {fileID: 5021379582073994597, guid: aeae57bb5b13a05428c9edf90019a4eb, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -4375,7 +4419,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3873220526754822402, guid: cf925211a15b53944b171b2f9e42225f, type: 3}
       propertyPath: m_Name
-      value: Return
+      value: RulesReturn
       objectReference: {fileID: 0}
     - target: {fileID: 4292102842893899234, guid: cf925211a15b53944b171b2f9e42225f, type: 3}
       propertyPath: m_Pivot.x

@@ -115,6 +115,10 @@ MonoBehaviour:
     m_Key: Start/Menus/NewPijersi/Start
     m_Metadata:
       m_Items: []
+  - m_Id: 5065246363774976
+    m_Key: Start/Menus/Main/LoadGame
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

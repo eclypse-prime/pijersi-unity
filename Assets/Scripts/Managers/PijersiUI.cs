@@ -49,8 +49,8 @@ public class PijersiUI : MonoBehaviour
 
     private string GetTeamName(PlayerType teamType, int teamNumber)
     {
-        string type = LocalizationSettings.StringDatabase.GetLocalizedString("StaticTexts", teamType.ToString());
-        string number = LocalizationSettings.StringDatabase.GetLocalizedString("DynamicTexts", "TeamNumber", arguments: teamNumber);
+        string type = stringDatabase.GetLocalizedString("StaticTexts", teamType.ToString());
+        string number = stringDatabase.GetLocalizedString("DynamicTexts", "TeamNumber", arguments: teamNumber);
 
         return $"{type} {number}";
     }
