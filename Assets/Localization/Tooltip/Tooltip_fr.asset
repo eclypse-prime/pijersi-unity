@@ -57,7 +57,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6393154662400
-    m_Localized: "\nTour :\tFl\xE8che gauche\nAction :\tClic droit, Control + Fl\xE8che
+    m_Localized: "\nTour :\tFl\xE8che gauche\nAction :\tClic-droit, Control + Fl\xE8che
       gauche"
     m_Metadata:
       m_Items: []
@@ -66,7 +66,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 8051012038656
-    m_Localized: "\nTour :\tFl\xE8che droite\nAction :\tClic droit, Control + Fl\xE8che
+    m_Localized: "\nTour :\tFl\xE8che droite\nAction :\tClic-droit, Control + Fl\xE8che
       droite"
     m_Metadata:
       m_Items: []
@@ -92,6 +92,34 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 13063574417408
     m_Localized: R, H, F1, Echap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16886804148224
+    m_Localized: "D\xE9placer"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18210199334912
+    m_Localized: "Annuler S\xE9lection"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18369855516672
+    m_Localized: Empiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18849126051840
+    m_Localized: "D\xE9placer\nD\xE9sempiler (clic-droit)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18936799588352
+    m_Localized: "Attaquer\nD\xE9sempiler (clic-droit)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20820822224896
+    m_Localized: Attaquer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20828317446144
+    m_Localized: "D\xE9sempiler"
     m_Metadata:
       m_Items: []
   references:

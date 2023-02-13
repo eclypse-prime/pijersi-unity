@@ -53,7 +53,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6393154662400
-    m_Localized: "\nTurn :\tLeft arrow\nAction :\tRight clic, Control + Left arrow"
+    m_Localized: "\nTurn :\tLeft arrow\nAction :\tRight click, Control + Left arrow"
     m_Metadata:
       m_Items: []
   - m_Id: 8171124322304
@@ -65,7 +65,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 8051012038656
-    m_Localized: "\nTurn :\tRight arrow\nAction :\tRight clic, Control + Right arrow"
+    m_Localized: "\nTurn :\tRight arrow\nAction :\tRight click, Control + Right arrow"
     m_Metadata:
       m_Items: []
   - m_Id: 11004380868608
@@ -90,6 +90,38 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 13063574417408
     m_Localized: R, H, F1, Escape
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16886804148224
+    m_Localized: Move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18210199334912
+    m_Localized: Cancel Selection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18369855516672
+    m_Localized: Stack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18849126051840
+    m_Localized: 'Move
+
+      Unstack (Right click)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18936799588352
+    m_Localized: 'Attack
+
+      Unstack (Right click)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20820822224896
+    m_Localized: Attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20828317446144
+    m_Localized: Unstack
     m_Metadata:
       m_Items: []
   references:
