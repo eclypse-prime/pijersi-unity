@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +5,6 @@ public class CameraMovement : MonoBehaviour
 {
     [Range(10f, 30f)]
     [SerializeField] private float distance;
-    [SerializeField] private float angle;
-    [SerializeField] private Vector3 offset;
 
     private new Transform transform;
     private Vector3 center;
@@ -23,7 +20,6 @@ public class CameraMovement : MonoBehaviour
 
     public enum positionType
     {
-        Up,
         Black,
         White
     }
@@ -36,12 +32,13 @@ public class CameraMovement : MonoBehaviour
     public void SetCenter(Vector3 position)
     {
         center = position;
-        positions = new Dictionary<positionType, Vector3>();
-        positions.Add(positionType.Up, position + Vector3.up * distance);
-        positions.Add(positionType.White, position + new Vector3(0f, 1f, -1f).normalized * distance);
-        positions.Add(positionType.Black, position + new Vector3(0f, 1f, 1f).normalized * distance);
+        positions = new Dictionary<positionType, Vector3>
+        {
+            { positionType.White, position + new Vector3(0f, 1f, -1f).normalized * distance },
+            { positionType.Black, position + new Vector3(0f, 1f, 1f).normalized * distance }
+        };
 
-        SetPosition(positionType.Up);
+        SetPosition(positionType.White);
     }
 
     private void SetPosition(positionType type)
@@ -49,6 +46,5 @@ public class CameraMovement : MonoBehaviour
         currentPosition = type;
         transform.position = positions[type];
         transform.LookAt(center);
-        transform.position += transform.rotation.y > 0 ? -offset : offset;
     }
 }

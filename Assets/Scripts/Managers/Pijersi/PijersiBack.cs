@@ -13,8 +13,7 @@ public partial class Pijersi
             canMove = false;
             canStack = false;
             UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
-            if (cameraMovement.position != CameraMovement.positionType.Up && teams[currentTeamId].Type == PlayerType.Human)
-                cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
+            cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
             turnId--;
         }
         Save.Turn turn = save.turns[turnId];
