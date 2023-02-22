@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public partial class Pijersi
 {
@@ -26,7 +27,9 @@ public partial class Pijersi
         validMoves = null;
         selectedCell.ResetColor();
         pointedCell?.ResetColor();
+        lastPointedCell?.ResetColor();
         animation.HighlightDangers(null);
+        Tooltip.Instance.Hide();
     }
 
     private void OnUpdateSelection()
@@ -43,6 +46,8 @@ public partial class Pijersi
                 }
             }
 
+            if (lastPointedCell != selectedCell)
+                lastPointedCell?.ResetColor();
             Tooltip.Instance.Hide();
             return;
         }
@@ -70,6 +75,8 @@ public partial class Pijersi
 
                 if (pointedCell == lastPointedCell) return;
 
+                lastPointedCell?.ResetColor();
+
                 if (canMove && canStack)
                 {
                     Tooltip.Instance.Set("CancelSelection");
@@ -80,10 +87,11 @@ public partial class Pijersi
                 return;
             }
 
-            animation.UpdateHighlight(pointedCell, ActionType.None);
+            if (pointedCell == lastPointedCell) return;
+
+            animation.UpdateHighlight(pointedCell);
             animation.HighlightDangers(null);
-            if (pointedCell != lastPointedCell)
-                Tooltip.Instance.Hide();
+            Tooltip.Instance.Hide();
 
             return;
         }
@@ -96,7 +104,6 @@ public partial class Pijersi
         if (secondaryAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
-            Tooltip.Instance.Hide();
 
             orderedState = new State[] { State.Stack, State.Unstack, State.Move, State.Move };
             actionId = GetFirstValidActionId(alternateActions);
@@ -123,7 +130,6 @@ public partial class Pijersi
         if (mainAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
-            Tooltip.Instance.Hide();
 
             orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
 
@@ -137,24 +143,19 @@ public partial class Pijersi
             return;
         }
 
-        // highlights
-        if (pointedCell != selectedCell)
-            animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : actions[actionId]);
-
-        // actions tooltip
+        // actions highlights and tooltip
         if (pointedCell != lastPointedCell)
         {
+            // highlights
+            if (pointedCell != selectedCell)
+                animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : actions[actionId]);
+
+            // tooltip
             string tooltipKey = actionId > -1 ? actions[actionId].ToString() : "";
 
-            actionId =GetFirstValidActionId(alternateActions);
+            actionId = GetFirstValidActionId(alternateActions);
 
             tooltipKey += actionId > -1 ? alternateActions[actionId].ToString() : "";
-
-            //if (tooltipKey == "") // aucune action possible
-            //{
-            //    Tooltip.Instance.Hide();
-            //    return;
-            //}
 
             Tooltip.Instance.Set(tooltipKey);
         }

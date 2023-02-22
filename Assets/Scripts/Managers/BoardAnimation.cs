@@ -41,8 +41,6 @@ public class BoardAnimation : MonoBehaviour
     #region cell
     public void UpdateHighlight(Cell cell, Color color)
     {
-        if (cell == highlightedCell) return;
-
         highlightedCell?.ResetColor();
 
         highlightedCell = cell;

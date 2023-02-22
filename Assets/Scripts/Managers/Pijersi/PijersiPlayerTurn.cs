@@ -16,6 +16,7 @@ public partial class Pijersi
             return;
         }
 
-        animation.UpdateHighlight(pointedCell);
+        if (pointedCell != lastPointedCell)
+            animation.UpdateHighlight(pointedCell);
     }
 }
