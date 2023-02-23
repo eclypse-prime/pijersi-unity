@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public partial class Pijersi
 {
@@ -34,42 +33,33 @@ public partial class Pijersi
 
     private void OnUpdateSelection()
     {
-        // curseur hors plateau
+        // cursor out of board
         if (!CheckPointedCell())
         {
+            // player cancel or end the turn
             if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
-                if (canMove && canStack) // annule la selection
-                {
-                    SM.ChangeState(State.PlayerTurn);
-                    return;
-                }
+                EndSelection();
             }
 
-            if (lastPointedCell != selectedCell)
-                lastPointedCell?.ResetColor();
+            if (lastPointedCell != null && lastPointedCell != selectedCell)
+                lastPointedCell.ResetColor();
             Tooltip.Instance.Hide();
+
             return;
         }
 
-        // curseur sur une case non-intéragible
+        // cursor on invalid target cell or on selectedCell
         if (!validMoves.ContainsKey(pointedCell) || validMoves[pointedCell].Count == 0)
         {
+            // player cancel or end the turn
             if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
-                if (canMove && canStack) // annule la selection
-                    SM.ChangeState(State.PlayerTurn);
-                else if (pointedCell == selectedCell) // termine le tour
-                {
-                    UpdateUIAndReplay();
-                    SM.ChangeState(State.Turn);
-                }
-
-                return;
+                EndSelection();
             }
 
-            // highlight
-            if (pointedCell == selectedCell)
+            // highlight/tooltip
+            if (pointedCell == selectedCell) // when on selectedCell
             {
                 animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
 
@@ -100,7 +90,7 @@ public partial class Pijersi
         int actionId;
         ActionType[] alternateActions = { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
 
-        // action (ordre alternative)
+        // action (alternative)
         if (secondaryAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
@@ -108,21 +98,11 @@ public partial class Pijersi
             orderedState = new State[] { State.Stack, State.Unstack, State.Move, State.Move };
             actionId = GetFirstValidActionId(alternateActions);
 
-            if (actionId > -1)
-            {
-                SM.ChangeState(orderedState[actionId]);
-                return;
-            }
-
-            if (canMove && canStack) // annule la selection
-                SM.ChangeState(State.PlayerTurn);
-            else if (pointedCell == selectedCell) // termine le tour
-                SM.ChangeState(State.Turn);
+            SM.ChangeState(orderedState[actionId]);
 
             return;
         }
 
-        // prend la première action valide
         ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
         actionId = GetFirstValidActionId(actions);
 
@@ -133,37 +113,31 @@ public partial class Pijersi
 
             orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
 
-            if (actionId > -1)
-                SM.ChangeState(orderedState[actionId]);
-            else if (canMove && canStack)
-                SM.ChangeState(State.PlayerTurn);
-            else if (pointedCell == selectedCell)
-                SM.ChangeState(State.Turn);
+            SM.ChangeState(orderedState[actionId]);
 
             return;
         }
 
-        // actions highlights and tooltip
+        // actions highlights/tooltip
         if (pointedCell != lastPointedCell)
         {
             // highlights
             if (pointedCell != selectedCell)
-                animation.UpdateHighlight(pointedCell, actionId == -1 ? ActionType.None : actions[actionId]);
+                animation.UpdateHighlight(pointedCell, actions[actionId]);
 
             // tooltip
-            string tooltipKey = actionId > -1 ? actions[actionId].ToString() : "";
-
+            string tooltipKey = actions[actionId].ToString();
             actionId = GetFirstValidActionId(alternateActions);
-
-            tooltipKey += actionId > -1 ? alternateActions[actionId].ToString() : "";
+            tooltipKey += alternateActions[actionId].ToString();
 
             Tooltip.Instance.Set(tooltipKey);
         }
 
         if (this.dangers == null) return;
 
+        // dangers highlight
         List<Cell> dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell] : null;
-        if (!canMove)
+        if (!canMove) // add bottom piece dangers if can only unstack
         {
             dangers?.AddRange(selectedCellDangers[0]);
             dangers ??= selectedCellDangers[0];
@@ -173,6 +147,24 @@ public partial class Pijersi
 
         animation.HighlightDangers(dangers?.ToArray());
 
+
+        // cancel or end the selection
+        void EndSelection()
+        {
+            // cancel selection
+            if (canMove && canStack)
+            {
+                SM.ChangeState(State.PlayerTurn);
+                return;
+            }
+
+            // end turn
+            UpdateUIAndReplay();
+            SM.ChangeState(State.Turn);
+            return;
+        }
+
+        // return the first action in common between valid moves and ordered Actions
         int GetFirstValidActionId(ActionType[] orderedActions)
         {
             int actionId = -1;
