@@ -9,13 +9,22 @@ public partial class Pijersi
         if (save.turns[turnId].actions.Count == 0)
         {
             save.turns.RemoveAt(turnId);
+            turnId--;
             currentTeamId = 1 - currentTeamId;
-            canMove = false;
-            canStack = false;
+            if (save.turns[turnId].actions.Count > 1)
+            {
+                canMove = false;
+                canStack = false;
+            }
+            else
+            {
+                canMove = true;
+                canStack = true;
+            }
             UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
             cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
-            turnId--;
         }
+
         Save.Turn turn = save.turns[turnId];
         int actionId = turn.actions.Count - 1;
 
