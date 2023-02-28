@@ -36,13 +36,7 @@ public partial class Pijersi
         // cursor out of board
         if (!CheckPointedCell())
         {
-            if (lastPointedCell == null) return;
-
-            // player cancel or end the turn
-            if (mainAction.WasReleasedThisFrame() || secondaryAction.WasPressedThisFrame())
-                EndSelection();
-
-            if (lastPointedCell != selectedCell)
+            if (lastPointedCell != null && lastPointedCell != selectedCell)
                 lastPointedCell.ResetColor();
             Tooltip.Instance.Hide();
 
