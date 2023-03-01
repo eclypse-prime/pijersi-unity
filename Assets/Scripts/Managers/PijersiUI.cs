@@ -150,7 +150,10 @@ public class PijersiUI : MonoBehaviour
     {
         if (record.text.Length == 0) return;
 
-        string newRecord = teamId == 0 ? "\n" : "\t";
+        string newRecord = "\n";
+        if (teamId > 0)
+            newRecord = records[records.Count - 1].Length == 5 ? "\t\t" : "\t";
+        
         record.text += newRecord;
         isFirstAction = true;
         records[records.Count -1] += newRecord;
