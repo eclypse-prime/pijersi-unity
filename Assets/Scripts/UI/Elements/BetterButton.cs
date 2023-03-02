@@ -72,6 +72,23 @@ public class BetterButton : Button
         Press();
     }
 
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+            eventData.button = PointerEventData.InputButton.Left;
+
+        base.OnPointerDown(eventData);
+    }
+
+    public override void OnPointerUp(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+            eventData.button = PointerEventData.InputButton.Left;
+
+        base.OnPointerUp(eventData);
+    }
+
+    // Reload inputActions (for inputs localization)
     public void ReloadInputAction()
     {
         pressAction.Disable();
