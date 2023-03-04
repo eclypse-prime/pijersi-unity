@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public partial class Pijersi
 {
     private void OnEnterNext()
