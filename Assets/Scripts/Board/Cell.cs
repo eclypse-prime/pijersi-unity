@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +31,7 @@ public class Cell : MonoBehaviour
 
     public void SetNears(Cell[] cells)
     {
-        this.nears = cells;
+        nears = cells;
     }
 
     public void SetColor(Color color)
@@ -71,6 +70,9 @@ public class Cell : MonoBehaviour
         return -1;
     }
 
+    /// <summary>
+    /// Return the binary code of all pieces on this cell.
+    /// </summary>
     public ushort PiecesToByte()
     {
         if (isEmpty) return 0;

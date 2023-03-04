@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -32,14 +30,13 @@ public class Board : MonoBehaviour
 
     public int LineCount => lineCount;
 
-    #region base
     private void Awake()
     {
         transform = base.transform;
+        // init board and teams
         BuildBoard();
         BuildTeams();
     }
-    #endregion
 
     #region build
     private void BuildBoard()
