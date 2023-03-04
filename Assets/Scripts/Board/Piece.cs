@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +12,7 @@ public class Piece : MonoBehaviour
     public new Transform transform { get; private set; }
     public MeshRenderer mainRenderer;
     public MeshRenderer[] SignRenderer;
+    public Vector3 endPosition { get; private set; }
 
     public PieceType type;
     public PieceType prey;
@@ -21,7 +21,6 @@ public class Piece : MonoBehaviour
 
     private Vector3 startPosition;
     private Quaternion startRotation;
-    public Vector3 endPosition { get; private set; }
     private Quaternion endRotation;
     private float startTime;
     private bool isJump;
@@ -31,24 +30,42 @@ public class Piece : MonoBehaviour
         transform = base.transform;
     }
 
-    public void InitMove(Cell cell, float rng, float y = float.NaN)
+
+    /// <summary>
+    /// Init piece's move from his current position to his new cell.
+    /// Applies a random offset to the destination position and rotation.
+    /// </summary>
+    /// <remarks>
+    /// Cell.pieces must be updated before using this function.
+    /// </remarks>
+    /// <param name="cell">The destination cell.</param>
+    /// <param name="rngPercent">Percent of rng applied to the destination position and rotation. Value between 0 and 1.</param>
+    /// <param name="y">(optional) Y component of the destination position. Used for stack and unstack.</param>
+    public void InitMove(Cell cell, float rngPercent, float y = float.NaN)
     {
         this.cell = cell;
         isJump = !float.IsNaN(y);
 
         Vector3 position = cell.pieces[0] != this ? cell.pieces[0].endPosition : cell.transform.position;
 
-        Vector2 randPosition = Random.insideUnitCircle * maxPositionOffset * rng;
+        Vector2 randPosition = Random.insideUnitCircle * maxPositionOffset * rngPercent;
         Vector3 positionOffset = new Vector3(randPosition.x, isJump ? y : transform.position.y, randPosition.y);
         float angleOffset = Mathf.Lerp(-maxRotationOffset, maxRotationOffset, Random.value);
 
         startPosition = transform.position;
         startRotation = transform.rotation;
         endPosition = position + positionOffset;
-        endRotation = Quaternion.Euler(Vector3.up * angleOffset * rng);
+        endRotation = Quaternion.Euler(Vector3.up * angleOffset * rngPercent);
         startTime = Time.time;
     }
 
+    /// <summary>
+    /// Update piece move.
+    /// </summary>
+    /// <returns><list type="table">
+    /// <item><term>True</term> the move isn't finished.</item>
+    /// <item><term>False</term> the move is finished.</item>
+    /// </list></returns>
     public bool UpdateMove()
     {
         if (startTime == 0f) return false;
@@ -66,73 +83,99 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    public void MoveTo(Cell cell, float rng, float y = 0f)
+    /// <summary>
+    /// Directly move this piece to the destination cell.
+    /// </summary>
+    /// <remarks></remarks>
+    /// <inheritdoc cref="InitMove(Cell, float, float)"/>
+    public void MoveTo(Cell cell, float rngPercent, float y = 0f)
     {
         this.cell = cell;
 
         Vector3 position = cell.pieces[0] != this ? cell.pieces[0].transform.position : cell.transform.position;
 
-        Vector2 randPosition    = Random.insideUnitCircle * maxPositionOffset * rng;
+        Vector2 randPosition    = Random.insideUnitCircle * maxPositionOffset * rngPercent;
         Vector3 positionOffset  = new Vector3(randPosition.x, y, randPosition.y);
         float angleOffset       = Mathf.Lerp(-maxRotationOffset, maxRotationOffset, Random.value);
 
         transform.position = position + positionOffset;
-        transform.rotation = Quaternion.Euler(Vector3.up * angleOffset * rng);
+        transform.rotation = Quaternion.Euler(Vector3.up * angleOffset * rngPercent);
         endPosition = transform.position;
     }
 
-    public virtual Dictionary<Cell, List<ActionType>> GetValidMoves(bool canMove, bool canStack)
+    /// <summary>
+    /// Return all possible moves with this piece.
+    /// </summary>
+    /// <param name="canMove"></param>
+    /// <param name="canStack"></param>
+    /// <returns>
+    /// Dictionary of :
+    /// <list type="bullet">
+    /// <item>Cell where at least one action can be perform.</item>
+    /// <item>Action List that can be perform on the cell.</item>
+    /// </list>
+    /// </returns>
+    public virtual Dictionary<Cell, List<ActionType>> GetLegalMoves(bool canMove, bool canStack)
     {
-        Dictionary<Cell, List<ActionType>> validMoves = new Dictionary<Cell, List<ActionType>>();
+        Dictionary<Cell, List<ActionType>> legalMoves = new Dictionary<Cell, List<ActionType>>();
 
+        // get leagal moves for nearby cells
         foreach (Cell near in cell.nears)
         {
             if (near == null) continue;
 
-            List<ActionType> validActions = new List<ActionType>();
+            List<ActionType> legalActions = new List<ActionType>();
 
+            // move/attack
             if (canMove)
             {
                 if (near.isEmpty)
-                    validActions.Add(ActionType.Move);
+                    legalActions.Add(ActionType.Move);
                 else if (near.pieces[0].team != team && near.lastPiece.type == prey)
-                    validActions.Add(ActionType.Attack);
+                    legalActions.Add(ActionType.Attack);
             }
 
+            // unstack/stack
             if (canStack)
             {
                 if (cell.isFull && (near.isEmpty || near.pieces[0].team != team && near.lastPiece.type == prey))
-                    validActions.Add(ActionType.Unstack);
+                    legalActions.Add(ActionType.Unstack);
                 else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team)
-                    validActions.Add(ActionType.Stack);
+                    legalActions.Add(ActionType.Stack);
             }
 
-            if (validActions.Count > 0)
-                validMoves.Add(near, validActions);
+            if (legalActions.Count > 0)
+                legalMoves.Add(near, legalActions);
         }
 
         if (!canMove)
-            return validMoves;
+            return legalMoves;
 
+        // get legal moves for far nearby cells
         for (int i = 0; i < 6; i++)
         {
             Cell farNear = cell.nears[i]?.nears[i];
             if (farNear == null || !cell.nears[i].isEmpty) continue;
 
-            List<ActionType> validActions = new List<ActionType>();
+            List<ActionType> legalActions = new List<ActionType>();
 
+            // move/attack
             if (farNear.isEmpty)
-                validActions.Add(ActionType.Move);
+                legalActions.Add(ActionType.Move);
             else if (farNear.pieces[0].team != team && farNear.lastPiece.type == prey)
-                validActions.Add(ActionType.Attack);
+                legalActions.Add(ActionType.Attack);
 
-            if (validActions.Count > 0)
-                validMoves.Add(farNear, validActions);
+            if (legalActions.Count > 0)
+                legalMoves.Add(farNear, legalActions);
         }
 
-        return validMoves;
+        return legalMoves;
     }
 
+    /// <summary>
+    /// Returns all cells containing a piece that can eliminate this piece if it is on the designated cell.
+    /// </summary>
+    /// <param name="cell">A cell where the piece can move through.</param>
     public virtual List<Cell> GetDangers(Cell cell)
     {
         List<Cell> result = new List<Cell>();
@@ -174,6 +217,10 @@ public class Piece : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Returns all cells containing a piece that can eliminate this piece if it is on any designated cells.
+    /// </summary>
+    /// <param name="cells">Cell list where the piece can move through.</param>
     public virtual Dictionary<Cell, List<Cell>> GetDangers(Cell[] cells)
     {
         Dictionary<Cell, List<Cell>> result = new Dictionary<Cell, List<Cell>>();
@@ -189,6 +236,9 @@ public class Piece : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Return the binary code of this piece.
+    /// </summary>
     public ushort ToByte()
     {
         ushort result = 1;

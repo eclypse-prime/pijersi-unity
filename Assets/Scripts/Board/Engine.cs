@@ -1,5 +1,3 @@
-using UnityEngine;
-
 class Engine : IEngine
 {
     private PijersiEngine.Board board;
@@ -10,6 +8,13 @@ class Engine : IEngine
         board.init();
     }
 
+    /// <summary>
+    /// Play a manual turn to the engine.
+    /// </summary>
+    /// <remarks>
+    /// The turn need to be legal.
+    /// </remarks>
+    /// <param name="move">Index array of cells used in the turn.</param>
     public void PlayManual(int[] move)
     {
         uint uintMove = (uint) move[0];
@@ -19,6 +24,11 @@ class Engine : IEngine
         board.playManual(uintMove);
     }
 
+    /// <summary>
+    /// Play a turn with the engine and return it.
+    /// </summary>
+    /// <param name="recursionDepth">Number of turns used to predict the turn.</param>
+    /// <returns>Index array of cells used in the turn.</returns>
     public int[] PlayAuto(int recursionDepth = 1)
     {
         uint uintMove = board.playDepth(recursionDepth);
@@ -30,19 +40,22 @@ class Engine : IEngine
         return move;
     }
 
-    public void SetState(byte[] newState)
+    /// <summary>
+    /// Set the board state of the engine.
+    /// </summary>
+    public void SetState(byte[] state)
     {
         PijersiEngine.byteArray arrayState = new PijersiEngine.byteArray(45);
         for (int k = 0; k < 45; k++)
         {
-            arrayState.setitem(k, newState[k]);
+            arrayState.setitem(k, state[k]);
         }
         board.setState(arrayState.cast());
     }
 
-    public void SetPlayer(byte colour)
+    public void SetPlayer(byte color)
     {
-        board.currentPlayer = colour;
+        board.currentPlayer = color;
     }
 
     public float Evaluate()

@@ -88,7 +88,7 @@ public class Save
             turn.cells.Add(board.cells[board.CoordsToIndex(turnData[3], turnData[4])]);
 
             int offset = 0;
-            // si la première action est une attaque
+            // if the first action is an attack
             if (turnData[5] == attackSign)
             {
                 if (turnData[2] == moveSign)
@@ -108,14 +108,14 @@ public class Save
                     turn.actions.Add(ActionType.StackMove);
             }
 
-            SimulateAction(board, turn.actions[0], turn.cells[0], turn.cells[1]);
+            SimulateAction(turn.actions[0], turn.cells[0], turn.cells[1]);
 
             // second action
             if (turnData.Length > 6)
             {
                 turn.cells.Add(board.cells[board.CoordsToIndex(turnData[6 + offset], turnData[7 + offset])]);
 
-                // si la second action est une attaque
+                // if the second action is an attack
                 if (turnData.Length == 8 + offset)
                 {
                     if (turnData[5 + offset] == moveSign)
@@ -133,7 +133,7 @@ public class Save
                         turn.actions.Add(ActionType.StackMove);
                 }
 
-                SimulateAction(board, turn.actions[1], turn.cells[1], turn.cells[2]);
+                SimulateAction(turn.actions[1], turn.cells[1], turn.cells[2]);
             }
 
             turns.Add(turn);
@@ -142,8 +142,8 @@ public class Save
 
         board.ResetBoard();
 
-        // simule l'action dans le board
-        static void SimulateAction(Board board, ActionType action, Cell start, Cell end)
+        // simulate an Action on the board
+        void SimulateAction(ActionType action, Cell start, Cell end)
         {
             switch (action)
             {
@@ -177,9 +177,11 @@ public class Save
         turns[turns.Count -1].Add(action, start, end);
     }
 
+    /// <summary>
+    /// Create a save file.
+    /// </summary>
     public void Write()
     {
-
         bool isLastColumn = true;
         string text = "";
         foreach (Turn turn in turns)
@@ -206,18 +208,22 @@ public class Save
         File.WriteAllText($"{path}\\{date.ToString("dd-MM-yyyy HH-mm-ss")}.txt", text);
     }
 
+    /// <summary>
+    /// Return an ordered fileInfo list of all valid saves present in the save folder.
+    /// </summary>
     public static FileInfo[] GetList()
     {
-        // Récupére les fichiers .txt du dossier
+        // get .txt files from save folder
         IEnumerable<FileInfo> files = new DirectoryInfo(savePath)
             .GetFiles("*.txt", SearchOption.TopDirectoryOnly);
 
-        // Tri les fichiers valides selon la date de dernière modification (du plus récent au plus ancien)
+        // sort valid files by date of the last modification (from newest to oldest)
         files = files.Where(f => IsValideData(f))
                     .OrderByDescending(f => f.LastWriteTime);
 
         return files.ToArray();
     
+        // check if the file data is valid
         static bool IsValideData(FileInfo info)
         {
             string data = info.OpenText().ReadToEnd();

@@ -1,56 +1,58 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Wise : Piece
 {
-    public override Dictionary<Cell, List<ActionType>> GetValidMoves(bool canMove, bool canStack)
+    public override Dictionary<Cell, List<ActionType>> GetLegalMoves(bool canMove, bool canStack)
     {
-        Dictionary<Cell, List<ActionType>> validMoves = new Dictionary<Cell, List<ActionType>>();
+        Dictionary<Cell, List<ActionType>> legalMoves = new Dictionary<Cell, List<ActionType>>();
 
+        // get legal moves for nearby cells
         foreach (Cell near in cell.nears)
         {
             if (near == null) continue;
 
-            List<ActionType> validActions = new List<ActionType>();
+            List<ActionType> legalActions = new List<ActionType>();
 
+            // move/attack
             if (canMove)
             {
                 if (near.isEmpty)
-                    validActions.Add(ActionType.Move);
+                    legalActions.Add(ActionType.Move);
             }
 
+            // unstack/stack
             if (canStack)
             {
                 if (cell.isFull && (near.isEmpty || near.pieces[0].team != team))
-                    validActions.Add(ActionType.Unstack);
+                    legalActions.Add(ActionType.Unstack);
                 else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team && near.pieces[0].type == PieceType.Wise)
-                    validActions.Add(ActionType.Stack);
+                    legalActions.Add(ActionType.Stack);
             }
 
-            if (validActions.Count > 0)
-                validMoves.Add(near, validActions);
+            if (legalActions.Count > 0)
+                legalMoves.Add(near, legalActions);
         }
 
         if (!canMove)
-            return validMoves;
+            return legalMoves;
 
-        foreach (Cell farNear in cell.GetFarNears())
+        // get legal moves for far nearby cells
+        for (int i = 0; i < 6; i++)
         {
-            if (farNear == null) continue;
+            Cell farNear = cell.nears[i]?.nears[i];
+            if (farNear == null || !cell.nears[i].isEmpty) continue;
 
-            List<ActionType> validActions = new List<ActionType>();
+            List<ActionType> legalActions = new List<ActionType>();
 
+            // move
             if (farNear.isEmpty)
-                validActions.Add(ActionType.Move);
-            else if (farNear.pieces[0].team != team && farNear.lastPiece.type == prey)
-                validActions.Add(ActionType.Attack);
+                legalActions.Add(ActionType.Move);
 
-            if (validActions.Count > 0)
-                validMoves.Add(farNear, validActions);
+            if (legalActions.Count > 0)
+                legalMoves.Add(farNear, legalActions);
         }
 
-        return validMoves;
+        return legalMoves;
     }
 
     public override List<Cell> GetDangers(Cell cell)

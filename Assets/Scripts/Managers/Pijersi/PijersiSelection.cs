@@ -6,7 +6,7 @@ public partial class Pijersi
     {
         replayState = ReplayState.None;
         selectedCell = pointedCell;
-        validMoves = selectedCell.lastPiece.GetValidMoves(canMove, canStack);
+        validMoves = selectedCell.lastPiece.GetLegalMoves(canMove, canStack);
 
         if (validMoves.Count == 0)
             SM.ChangeState(State.PlayerTurn);
