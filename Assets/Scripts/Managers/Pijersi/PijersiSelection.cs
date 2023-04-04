@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 
 public partial class Pijersi
 {
@@ -11,13 +11,13 @@ public partial class Pijersi
         if (validMoves.Count == 0)
             SM.ChangeState(State.PlayerTurn);
 
-        Cell[] cells = new Cell[validMoves.Keys.Count];
+        Cell[] cells = new Cell[validMoves.Keys.Count + 1];
         validMoves.Keys.CopyTo(cells, 0);
-        dangers = selectedCell.lastPiece.GetDangers(cells);
-        selectedCellDangers[0] = selectedCell.pieces[0].GetDangers(selectedCell);
-        selectedCellDangers[1] = selectedCell.pieces[1]?.GetDangers(selectedCell);
+        cells.Append(selectedCell);
+        dangers[0] = selectedCell.pieces[0].GetDangers(board.pieces, cells);
+        dangers[1] = selectedCell.pieces[1]?.GetDangers(board.pieces, cells);
         animation.NewSelection(selectedCell);
-        animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
+        animation.HighlightDangers(GetDangersFor(selectedCell, true));
         Tooltip.Instance.Set("CancelSelection");
     }
 
@@ -50,15 +50,15 @@ public partial class Pijersi
             if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
                 EndSelection();
+                return;
             }
+
+            if (pointedCell == lastPointedCell) return;
 
             // highlight/tooltip
             if (pointedCell == selectedCell) // when on selectedCell
             {
-                animation.HighlightDangers((selectedCellDangers[1] ?? selectedCellDangers[0])?.ToArray());
-
-                if (pointedCell == lastPointedCell) return;
-
+                animation.HighlightDangers(GetDangersFor(selectedCell, true));
                 lastPointedCell?.ResetColor();
 
                 if (canMove && canStack)
@@ -70,8 +70,6 @@ public partial class Pijersi
 
                 return;
             }
-
-            if (pointedCell == lastPointedCell) return;
 
             animation.UpdateHighlight(pointedCell);
             animation.HighlightDangers(null);
@@ -115,9 +113,7 @@ public partial class Pijersi
         // actions highlights/tooltip
         if (pointedCell != lastPointedCell)
         {
-            // highlights
-            if (pointedCell != selectedCell)
-                animation.UpdateHighlight(pointedCell, actions[actionId]);
+            ActionType mainActionType = actions[actionId];
 
             // tooltip
             string tooltipKey = actions[actionId].ToString();
@@ -125,22 +121,26 @@ public partial class Pijersi
             tooltipKey += alternateActions[actionId].ToString();
 
             Tooltip.Instance.Set(tooltipKey);
+
+            // highlights
+            if (pointedCell != selectedCell)
+                animation.UpdateHighlight(pointedCell, mainActionType == alternateActions[actionId]);
         }
 
-        if (this.dangers == null) return;
+        if (dangers[0] == null && dangers[1] == null) return;
 
         // dangers highlight
-        List<Cell> dangers = this.dangers.ContainsKey(pointedCell) ? this.dangers[pointedCell] : null;
-        if (!canMove) // add bottom piece dangers if can only unstack
+        if (validMoves[pointedCell].Contains(ActionType.Unstack))
         {
-            dangers?.AddRange(selectedCellDangers[0]);
-            dangers ??= selectedCellDangers[0];
-            animation.HighlightDangers(dangers?.ToArray());
+            animation.HighlightDangers(GetDangersFor(pointedCell, true), GetDangersFor(selectedCell, false), GetDangersFor(pointedCell, false));
             return;
         }
-
-        animation.HighlightDangers(dangers?.ToArray());
-
+        if (selectedCell.isFull && !selectedCell.nears.Contains(pointedCell))
+        {
+            animation.HighlightDangers(GetDangersFor(pointedCell, true), canStack ? GetDangersFor(pointedCell, false) : null);
+            return;
+        }
+        animation.HighlightDangers(GetDangersFor(pointedCell, true));
 
         // cancel or end the selection
         void EndSelection()
@@ -185,5 +185,19 @@ public partial class Pijersi
             replaySave = null;
             engine = null;
         }
+    }
+
+    private Cell[] GetDangersFor(Cell cell, bool isTopPiece)
+    {
+        if (isTopPiece)
+        {
+            if ((dangers[1] ?? dangers[0])?.ContainsKey(cell) != true) return null;
+            
+            return (dangers[1] ?? dangers[0])[cell];
+        }
+
+        if (!dangers[0].ContainsKey(cell)) return null;
+
+        return dangers[0][cell];
     }
 }
