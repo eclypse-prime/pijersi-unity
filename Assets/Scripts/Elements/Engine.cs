@@ -31,7 +31,7 @@ class Engine : IEngine
     /// <returns>Index array of cells used in the turn.</returns>
     public int[] PlayAuto(int recursionDepth = 1)
     {
-        uint uintMove = board.playDepth(recursionDepth);
+        uint uintMove = board.playDepth(recursionDepth, true);
         int[] move = new int[3];
         move[0] = (int)(uintMove & 0xFFU);
         move[1] = (int)((uintMove >> 8) & 0xFFU);
