@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    private const int columnCount       = 7;
-    private const int lineCount         = 7;
-    private const float columnStep      = 2f;
-    private const float lineStep        = 1.73f;
-    private const float PieceHeight     = 1f;
-    private readonly char[] letters     = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
+    private const int columnCount = 7;
+    private const int lineCount = 7;
+    private const float columnStep = 2f;
+    private const float lineStep = 1.73f;
+    private const float PieceHeight = 1f;
+    private readonly char[] letters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
     private readonly string[] darkCells = { "C3", "C4", "D3", "D5", "E3", "E4" };
 
     [SerializeField] private GameObject cellPrefab;
@@ -25,7 +25,7 @@ public class Board : MonoBehaviour
 
     private new Transform transform;
     public Cell[] cells { get; private set; }
-    private Piece[] pieces;
+    public Piece[] pieces { get; private set; }
     private List<Piece> deadPieces = new List<Piece>();
 
     public int LineCount => lineCount;
@@ -41,22 +41,22 @@ public class Board : MonoBehaviour
     #region build
     private void BuildBoard()
     {
-        float halfColumnStep    = columnStep / 2;
-        float columnStepOffset  = 0f;
-        int columnOffset        = 0;
+        float halfColumnStep = columnStep / 2;
+        float columnStepOffset = 0f;
+        int columnOffset = 0;
         List<Cell> cells = new List<Cell>();
         for (int i = lineCount - 1; i >= 0; i--) // line
         {
             columnStepOffset = halfColumnStep - columnStepOffset;
-            columnOffset     = -1 - columnOffset;
-            int lineSize     = columnCount + columnOffset;
+            columnOffset = -1 - columnOffset;
+            int lineSize = columnCount + columnOffset;
             for (int j = 0; j < lineSize; j++) // column
             {
                 Vector3 position = new Vector3(columnStep * j + columnStepOffset, 0f, lineStep * i);
-                Cell cell        = Instantiate(cellPrefab, position, Quaternion.identity, transform).GetComponent<Cell>();
-                cell.x           = lineCount - 1 - i;
-                cell.y           = j;
-                cell.name        = letters[i] + (j + 1).ToString();
+                Cell cell = Instantiate(cellPrefab, position, Quaternion.identity, transform).GetComponent<Cell>();
+                cell.x = lineCount - 1 - i;
+                cell.y = j;
+                cell.name = letters[i] + (j + 1).ToString();
 
                 if (i == 0 || i == lineCount - 1 || j == 0 || j == lineSize - 1 || IsDarkCell(cell.name))
                     cell.renderer.material = m_dark;
@@ -71,8 +71,8 @@ public class Board : MonoBehaviour
         for (int i = 0; i < lineCount; i++)
         {
             int nextLineSize = columnCount + columnOffset;
-            columnOffset     = -1 - columnOffset;
-            int lineSize     = columnCount + columnOffset;
+            columnOffset = -1 - columnOffset;
+            int lineSize = columnCount + columnOffset;
             for (int j = 0; j < lineSize; j++)
             {
                 Cell[] nears = new Cell[6];
@@ -131,8 +131,8 @@ public class Board : MonoBehaviour
                 for (int k = 0; k < pieceCounts[j]; k++) // copies
                 {
                     Vector2Int pos  = starter[pieceId];
-                    Piece piece     = Instantiate(piecePrefabs[j], Vector3.zero, Quaternion.identity, teams[i]).GetComponent<Piece>();
-                    piece.team      = i;
+                    Piece piece = Instantiate(piecePrefabs[j], Vector3.zero, Quaternion.identity, teams[i]).GetComponent<Piece>();
+                    piece.team = i;
 
                     pieces[pieceId] = piece;
                     Cell cell = cells[CoordsToIndex(pos.x, pos.y)];
@@ -196,29 +196,51 @@ public class Board : MonoBehaviour
     #endregion
 
     #region Action
-    public void Move(Cell start, Cell end)
+    public void Move(Cell start, Cell end, bool skipAnimation = false)
     {
         end.pieces   = start.pieces;
         start.pieces = new Piece[2];
+
+        if (skipAnimation)
+        {
+            end.pieces[0].MoveTo(end, PlacementRng);
+            end.pieces[1]?.MoveTo(end, PlacementRng);
+            
+            return;
+        }
 
         end.pieces[0].InitMove(end, PlacementRng);
         end.pieces[1]?.InitMove(end, PlacementRng);
     }
 
-    public void Stack(Cell start, Cell end)
+    public void Stack(Cell start, Cell end, bool skipAnimation = false)
     {
-        int startId   = start.isFull ? 1 : 0;
+        int startId = start.isFull ? 1 : 0;
         end.pieces[1] = start.pieces[startId];
         start.pieces[startId] = null;
+
+        if (skipAnimation)
+        {
+            end.pieces[1].MoveTo(end, PlacementRng, PieceHeight);
+            
+            return;
+        }
 
         end.pieces[1].InitMove(end, PlacementRng, PieceHeight);
     }
 
-    public void Unstack(Cell start, Cell end)
+    public void Unstack(Cell start, Cell end, bool skipAnimation = false)
     {
-        end.pieces[0]   = start.pieces[1];
-        end.pieces[1]   = null;
+        end.pieces[0] = start.pieces[1];
+        end.pieces[1] = null;
         start.pieces[1] = null;
+
+        if (skipAnimation)
+        {
+            end.pieces[0].MoveTo(end, PlacementRng, 0f);
+
+            return;
+        }
 
         end.pieces[0].InitMove(end, PlacementRng, 0f);
     }
