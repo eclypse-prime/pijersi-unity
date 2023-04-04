@@ -178,7 +178,7 @@ public class Save
     }
 
     /// <summary>
-    /// Create a save file.
+    /// Creates a save file.
     /// </summary>
     public void Write()
     {
@@ -209,7 +209,7 @@ public class Save
     }
 
     /// <summary>
-    /// Return an ordered fileInfo list of all valid saves present in the save folder.
+    /// Returns an ordered fileInfo list of all valid saves present in the save folder.
     /// </summary>
     public static FileInfo[] GetList()
     {

@@ -10,7 +10,7 @@ public partial class Pijersi
         StartCoroutine(PlayAuto());
     }
 
-    private void OnExitAiTurn() { }
+    private void OnExitAiTurn() {}
 
     private void OnUpdateAiTurn()
     {
@@ -26,7 +26,7 @@ public partial class Pijersi
             aiActionCells[1] = board.cells[playAuto[1]];
         aiActionCells[2] = board.cells[playAuto[2]];
 
-        // actions simples
+        // simple action
         if (aiActionCells[1] == null) // move
         {
             canStack = false;
@@ -48,7 +48,7 @@ public partial class Pijersi
             return;
         }
 
-        // actions compos�es
+        // compound action
         if (aiActionCells[1].pieces[0]?.team != aiActionCells[0].pieces[0].team) // move -> (un)stack
         {
             aiActionStates[0] = State.Move;
