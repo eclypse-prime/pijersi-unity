@@ -1,43 +1,67 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardAnimation : MonoBehaviour
 {
     [SerializeField] private Color highlightColor;
     [SerializeField] private Color selectionColor;
-    [SerializeField] private ActionType[] actions;
-    [SerializeField] private Color[] colors;
+    [SerializeField] private Color singleActionColor;
+    [SerializeField] private Color multipleActionColor;
+    [SerializeField] private Color[] dangerColors;
 
-    private Dictionary<ActionType, Color> actionColors = new Dictionary<ActionType, Color>();
     private Cell highlightedCell;
-    private Cell[] highlightedDangers = new Cell[0];
+    private Cell[][] highlightedDangers = new Cell[3][];
 
-    private void Awake()
+    /// <summary>
+    /// Shows dangerous pieces by changing the color of their cells.
+    /// </summary>
+    /// <param name="cells">Cells containing a piece that is dangerous for the selected top piece.</param>
+    /// <param name="cells1">[optional] Cells containing a piece that is dangerous for the selected bottom piece (if it unstack).</param>
+    /// <param name="cells2">[optional] Cells containing a piece that is dangerous for the selected bottom piece (if it stack move then unstack).</param>
+    public void HighlightDangers(Cell[] cells, Cell[] cells1 = null, Cell[] cells2 = null)
     {
-        for (int i = 0; i < actions.Length; i++)
-            actionColors.Add(actions[i], colors[i]);
-    }
+        if (cells == highlightedDangers[0] && cells1 == highlightedDangers[1] && cells2 == highlightedDangers[2]) return;
 
-    public void HighlightDangers(Cell[] cells = null)
-    {
-        if (cells == highlightedDangers) return;
+        // reset of all highlightedDangers
+        foreach (Cell[] dangers in highlightedDangers)
+        {
+            if (dangers == null) continue;
 
-        foreach (Cell danger in highlightedDangers)
-            danger.ResetColor();
+            foreach (Cell danger in dangers)
+                danger.ResetColor();
+        }
 
         if (cells == null)
         {
-            highlightedDangers = new Cell[0];
+            highlightedDangers = new Cell[3][];
             return;
         }
 
         foreach (Cell cell in cells)
-            cell.SetColor(actionColors[ActionType.Attack]);
+            cell.SetColor(dangerColors[0]);
+        highlightedDangers[0] = cells;
 
-        highlightedDangers = cells;
+        highlightedDangers[1] = null;
+        if (cells1 != null)
+        {
+            foreach (Cell cell in cells1)
+                cell.SetColor(dangerColors[1]);
+            highlightedDangers[1] = cells1;
+        }
+
+        if (cells2 == null)
+        {
+            highlightedDangers[2] = null;
+            return;
+        }
+
+        foreach (Cell cell in cells2)
+            cell.SetColor(dangerColors[2]);
+        highlightedDangers[2] = cells2;
     }
 
-    #region cell
+    /// <summary>
+    /// Changes the highlighted cell.
+    /// </summary>
     public void UpdateHighlight(Cell cell, Color color)
     {
         highlightedCell?.ResetColor();
@@ -46,26 +70,24 @@ public class BoardAnimation : MonoBehaviour
         highlightedCell.SetColor(color);
     }
 
+    /// <inheritdoc cref="UpdateHighlight(Cell, Color)"/>
     public void UpdateHighlight(Cell cell)
     {
         UpdateHighlight(cell, highlightColor);
     }
 
-    public void UpdateHighlight(Cell cell, ActionType type)
+    /// <inheritdoc cref="UpdateHighlight(Cell, Color)"/>
+    public void UpdateHighlight(Cell cell, bool isSingleAction)
     {
-        if (type == ActionType.None)
-        {
-            UpdateHighlight(cell);
-            return;
-        }
-
-        UpdateHighlight(cell, actionColors[type]);
+        UpdateHighlight(cell, isSingleAction ? singleActionColor : multipleActionColor);
     }
 
+    /// <summary>
+    /// Sets the cell color to the selection color.
+    /// </summary>
     public void NewSelection(Cell cell)
     {
         highlightedCell = null;
         cell.SetColor(selectionColor);
     }
-    #endregion
 }
