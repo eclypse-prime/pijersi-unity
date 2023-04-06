@@ -60,7 +60,7 @@ public partial class Pijersi
             {
                 manualPlay[1] = -1;
             }
-            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
+            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
 
             engine.PlayManual(manualPlay);
             return;
