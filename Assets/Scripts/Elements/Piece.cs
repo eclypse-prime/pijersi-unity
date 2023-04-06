@@ -212,8 +212,6 @@ public class Piece : MonoBehaviour
             // hostile pieces loop
             foreach (Piece hostilePiece in hostilePieces)
             {
-                if (cell == null) continue;
-
                 if (hostilePiece.CanAttack(this, cell))
                     dangers.Add(hostilePiece.cell);
             }
@@ -226,7 +224,7 @@ public class Piece : MonoBehaviour
     }
 
     /// <summary>
-    /// Defines if the piece can attack an other specified piece.
+    /// Defines if the piece can attack an other specified piece at a specified cell.
     /// </summary>
     protected virtual bool CanAttack(Piece targetPiece, Cell targetCell)
     {
