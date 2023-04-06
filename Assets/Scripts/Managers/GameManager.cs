@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager
+public static class GameManager
 {
     public static void LoadScene(string name)
     {
