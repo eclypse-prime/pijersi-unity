@@ -5,7 +5,7 @@ using UnityEngine.Localization.Settings;
 
 public class Tooltip : MonoBehaviour
 {
-    private const float DisplayDelay = 1f;
+    private const float DisplayDelay = .5f;
     private const int positionOffset = 11;
 
     [SerializeField] private RectTransform panel;
@@ -14,13 +14,19 @@ public class Tooltip : MonoBehaviour
     private RectTransform canvas;
     private BetterButton currentButton;
     private float showAt = Mathf.Infinity;
-    private int showTrigger = Animator.StringToHash("Show");
+    private readonly int showTrigger = Animator.StringToHash("Show");
     private LocalizedStringDatabase stringDatabase;
 
     public static Tooltip Instance { get; private set; }
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+
         canvas = GetComponent<RectTransform>();
         stringDatabase = LocalizationSettings.StringDatabase;
 
