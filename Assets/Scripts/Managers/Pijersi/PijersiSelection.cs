@@ -198,7 +198,7 @@ public partial class Pijersi
             return (dangers[1] ?? dangers[0])[cell];
         }
 
-        if (!dangers[0].ContainsKey(cell)) return null;
+        if (dangers[0]?.ContainsKey(cell) != true) return null;
 
         return dangers[0][cell];
     }
