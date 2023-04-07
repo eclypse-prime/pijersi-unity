@@ -13,7 +13,7 @@ public partial class Pijersi
 
         Cell[] cells = new Cell[validMoves.Keys.Count + 1];
         validMoves.Keys.CopyTo(cells, 0);
-        cells.Append(selectedCell);
+        cells[cells.Length - 1] = selectedCell;
         dangers[0] = selectedCell.pieces[0].GetDangers(board.pieces, cells);
         dangers[1] = selectedCell.pieces[1]?.GetDangers(board.pieces, cells);
         animation.NewSelection(selectedCell);
