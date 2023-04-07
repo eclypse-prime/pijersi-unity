@@ -14,6 +14,7 @@ public class NewPijersi : MonoBehaviour
         config.winMax = (int) winMax.value;
         config.partyData = null;
 
+        Tooltip.Instance.Hide();
         GameManager.LoadScene("Pijersi");
     }
 }
