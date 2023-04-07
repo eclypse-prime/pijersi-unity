@@ -36,7 +36,9 @@ public partial class Pijersi
         // cursor out of board
         if (!CheckPointedCell())
         {
-            if (lastPointedCell != null && lastPointedCell != selectedCell)
+            if (lastPointedCell == null) return;
+
+            if (lastPointedCell != selectedCell)
                 lastPointedCell.ResetColor();
             Tooltip.Instance.Hide();
 
