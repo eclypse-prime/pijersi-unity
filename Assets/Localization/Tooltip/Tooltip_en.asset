@@ -53,7 +53,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6393154662400
-    m_Localized: "\nTurn :\tLeft arrow\nAction :\tRight click, Control + Left arrow"
+    m_Localized: 'Turn : Left arrow
+
+      Action : Right click, Control + Left arrow'
     m_Metadata:
       m_Items: []
   - m_Id: 8171124322304
@@ -65,7 +67,10 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 8051012038656
-    m_Localized: "\nTurn :\tRight arrow\nAction :\tRight click, Control + Right arrow"
+    m_Localized: 'Turn : Right arrow
+
+      Action : Right click, Control + Right
+      arrow'
     m_Metadata:
       m_Items: []
   - m_Id: 11004380868608
@@ -122,6 +127,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 20828317446144
     m_Localized: Unstack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19590729688313856
+    m_Localized: End turn
     m_Metadata:
       m_Items: []
   references:

@@ -57,7 +57,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6393154662400
-    m_Localized: "\nTour :\tFl\xE8che gauche\nAction :\tClic-droit, Control + Fl\xE8che
+    m_Localized: "Tour : Fl\xE8che gauche\nAction : Clic-droit, Control + Fl\xE8che
       gauche"
     m_Metadata:
       m_Items: []
@@ -66,7 +66,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 8051012038656
-    m_Localized: "\nTour :\tFl\xE8che droite\nAction :\tClic-droit, Control + Fl\xE8che
+    m_Localized: "Tour : Fl\xE8che droite\nAction : Clic-droit, Control + Fl\xE8che
       droite"
     m_Metadata:
       m_Items: []
@@ -120,6 +120,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 20828317446144
     m_Localized: "D\xE9sempiler"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19590729688313856
+    m_Localized: Terminer le tour
     m_Metadata:
       m_Items: []
   references:

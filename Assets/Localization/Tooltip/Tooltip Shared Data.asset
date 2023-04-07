@@ -91,6 +91,10 @@ MonoBehaviour:
     m_Key: CancelSelection
     m_Metadata:
       m_Items: []
+  - m_Id: 19590729688313856
+    m_Key: EndTurn
+    m_Metadata:
+      m_Items: []
   - m_Id: 16886804148224
     m_Key: MoveMove
     m_Metadata:
