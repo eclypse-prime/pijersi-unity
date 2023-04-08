@@ -89,7 +89,7 @@ public class Save
 
             int offset = 0;
             // if the first action is an attack
-            if (turnData[5] == attackSign)
+            if (turnData.Length > 5 && turnData[5] == attackSign)
             {
                 if (turnData[2] == moveSign)
                     turn.actions.Add(turn.cells[0].isFull ? ActionType.UnstackAttack : ActionType.Attack);
@@ -116,7 +116,7 @@ public class Save
                 turn.cells.Add(board.cells[board.CoordsToIndex(turnData[6 + offset], turnData[7 + offset])]);
 
                 // if the second action is an attack
-                if (turnData.Length == 8 + offset)
+                if (turnData.Length == 9 + offset)
                 {
                     if (turnData[5 + offset] == moveSign)
                         turn.actions.Add(turn.cells[1].isFull ? ActionType.UnstackAttack : ActionType.Attack);
