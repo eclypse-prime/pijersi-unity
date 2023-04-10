@@ -76,7 +76,12 @@ public class BetterButton : Button
     {
         // right and left clicks have the same animations
         if (eventData.button == PointerEventData.InputButton.Right)
+        {
             eventData.button = PointerEventData.InputButton.Left;
+            base.OnPointerDown(eventData);
+            eventData.button = PointerEventData.InputButton.Right;
+            return;
+        }
 
         base.OnPointerDown(eventData);
     }
@@ -85,7 +90,12 @@ public class BetterButton : Button
     {
         // right and left clicks have the same animations
         if (eventData.button == PointerEventData.InputButton.Right)
+        {
             eventData.button = PointerEventData.InputButton.Left;
+            base.OnPointerUp(eventData);
+            eventData.button = PointerEventData.InputButton.Right;
+            return;
+        }
 
         base.OnPointerUp(eventData);
     }
