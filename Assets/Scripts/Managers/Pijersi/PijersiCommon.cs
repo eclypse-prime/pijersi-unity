@@ -19,22 +19,6 @@ public partial class Pijersi
         return true;
     }
 
-    //private bool CheckCamera()
-    //{
-    //    if (Keyboard.current.leftArrowKey.wasPressedThisFrame || Keyboard.current.rightArrowKey.wasPressedThisFrame)
-    //    {
-    //        cameraMovement.position = cameraMovement.position == CameraMovement.positionType.White ? CameraMovement.positionType.Black : CameraMovement.positionType.White;
-    //        return true;
-    //    }
-    //    if (Keyboard.current.upArrowKey.wasPressedThisFrame || Keyboard.current.downArrowKey.wasPressedThisFrame)
-    //    {
-    //        cameraMovement.position = cameraMovement.position != CameraMovement.positionType.Up ? CameraMovement.positionType.Up : CameraMovement.positionType.White;
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
-
     private bool IsWin(Cell cell)
     {
         if (cell.lastPiece.type == PieceType.Wise) return false;
