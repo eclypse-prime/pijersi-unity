@@ -51,7 +51,17 @@ public partial class Pijersi
             // player cancel or end the turn
             if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
             {
-                EndSelection();
+                // cancel selection
+                if (canMove && canStack)
+                {
+                    SM.ChangeState(State.PlayerTurn);
+                    return;
+                }
+
+                // end turn
+                UpdateUIAndReplay();
+                UpdateEngine();
+                SM.ChangeState(State.Turn);
                 return;
             }
 
@@ -93,6 +103,8 @@ public partial class Pijersi
             actionId = GetFirstValidActionId(alternateActions);
 
             SM.ChangeState(orderedState[actionId]);
+            if (!canMove && !canStack)
+                UpdateEngine();
 
             return;
         }
@@ -108,6 +120,8 @@ public partial class Pijersi
             orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
 
             SM.ChangeState(orderedState[actionId]);
+            if (!canMove && !canStack)
+                UpdateEngine();
 
             return;
         }
@@ -143,22 +157,6 @@ public partial class Pijersi
             return;
         }
         animation.HighlightDangers(GetDangersFor(pointedCell, true));
-
-        // cancel or end the selection
-        void EndSelection()
-        {
-            // cancel selection
-            if (canMove && canStack)
-            {
-                SM.ChangeState(State.PlayerTurn);
-                return;
-            }
-
-            // end turn
-            UpdateUIAndReplay();
-            SM.ChangeState(State.Turn);
-            return;
-        }
 
         // return the first action in common between valid moves and ordered Actions
         int GetFirstValidActionId(ActionType[] orderedActions)
@@ -201,5 +199,45 @@ public partial class Pijersi
         if (dangers[0]?.ContainsKey(cell) != true) return null;
 
         return dangers[0][cell];
+    }
+
+    private void UpdateEngine()
+    {
+        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+
+        if (engine == null)
+        {
+            engine = new Engine();
+            engine.SetState(board.GetState());
+            engine.SetPlayer((byte)(currentTeamId));
+        }
+
+        int[] manualPlay = new int[3];
+        Save.Turn lastTurn = save.turns[save.turns.Count - 1];
+        manualPlay[0] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
+
+        // actions simples
+        if (lastTurn.actions.Count < 2)
+        {
+            if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
+            {
+                manualPlay[1] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
+            }
+            else // move
+            {
+                manualPlay[1] = -1;
+            }
+            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
+            engine.PlayManual(manualPlay);
+            GetNextAiTurn();
+            return;
+        }
+
+        manualPlay[1] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
+        manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
+
+        engine.PlayManual(manualPlay);
+
+        GetNextAiTurn();
     }
 }

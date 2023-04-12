@@ -1,8 +1,20 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public partial class Pijersi
 {
+    private void GetNextAiTurn()
+    {
+        if (teams[1 - currentTeamId].Type == PlayerType.Human) return;
+
+        int recursionDepth = (int)config.playerTypes[1 - currentTeamId];
+        playAuto = Task.Run(() =>
+        {
+            return engine.PlayAuto(recursionDepth);
+        });
+    }
+
     private bool CheckPointedCell()
     {
         lastPointedCell = pointedCell;

@@ -4,8 +4,15 @@ public partial class Pijersi
 {
     public void ResetMatch()
     {
-        if (teams[0].Type != PlayerType.Human || teams[1].Type != PlayerType.Human)
+        // init engine
+        if (teams[0].Type != PlayerType.Human)
+        {
             engine = new Engine();
+            GetNextAiTurn();
+        }
+        else if (teams[1].Type != PlayerType.Human)
+            engine = new Engine();
+
         save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
 
         teams[0].score = 0;
