@@ -383,6 +383,7 @@ MonoBehaviour:
   cellLayer:
     serializedVersion: 2
     m_Bits: 8
+  ReplayAndAiDelay: 1
   mainAction:
     m_Name: Main
     m_Type: 1
