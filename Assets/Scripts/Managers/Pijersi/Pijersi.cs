@@ -1,6 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine;
 using FSM;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public partial class Pijersi : MonoBehaviour
@@ -11,10 +12,14 @@ public partial class Pijersi : MonoBehaviour
     [SerializeField] private Board board;
     [SerializeField] private new BoardAnimation animation;
     [SerializeField] private LayerMask cellLayer;
+    [SerializeField, Range(0f, 3f)] private float ReplayAndAiDelay;
 
     // inputs
     [SerializeField] private InputAction mainAction;
     [SerializeField] private InputAction secondaryAction;
+
+    private readonly Dictionary<Cell, Cell[]>[] dangers = new Dictionary<Cell, Cell[]>[2];
+    private readonly StateMachine<State> SM = new StateMachine<State>();
 
     private new Camera camera;
     private bool isPauseOn;
@@ -30,18 +35,17 @@ public partial class Pijersi : MonoBehaviour
     private bool canMove;
     private bool canStack;
     private Dictionary<Cell, List<ActionType>> validMoves;
-    private Dictionary<Cell, Cell[]>[] dangers = new Dictionary<Cell, Cell[]>[2];
-    private int[] playAuto;
+    private Task<int[]> playAuto;
     private State[] aiActionStates;
     private Cell[] aiActionCells;
     private (int, int) replayAt;
-
-    private StateMachine<State> SM = new StateMachine<State>();
+    private float continueAt;
 
     private struct Team
     {
         private PlayerType type;
         private int number;
+
         public int score;
 
         public PlayerType Type => type;
