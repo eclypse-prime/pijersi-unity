@@ -3,12 +3,12 @@ public partial class Pijersi
     private void OnEnterUnstack()
     {
         canStack = false;
+        canMove = false;
         ActionType action = pointedCell.isEmpty ? ActionType.Unstack : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(action, selectedCell, pointedCell);
         UI.UpdateRecord(selectedCell, pointedCell, action);
-        canMove = false;
     }
 
     private void OnExitUnstack() { }
