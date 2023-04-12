@@ -1,7 +1,7 @@
 public partial class Pijersi
 {
-    private void OnEnterPlayAuto() { }
-    private void OnExitPlayAuto() { }
+    private void OnEnterPlayAuto() {}
+    private void OnExitPlayAuto() {}
 
     private void OnUpdatePlayAuto()
     {
@@ -12,7 +12,7 @@ public partial class Pijersi
 
         if (aiActionStates.Length < 2) return;
 
-        // supprime l'action en cours
+        // removes current action
         aiActionCells  = new Cell[] { aiActionCells[1], aiActionCells[2] };
         aiActionStates = new State[] { aiActionStates[1] };
     }
