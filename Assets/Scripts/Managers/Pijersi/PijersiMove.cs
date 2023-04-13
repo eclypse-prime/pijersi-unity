@@ -3,6 +3,8 @@ public partial class Pijersi
     private void OnEnterMove()
     {
         canMove = false;
+        if (!selectedCell.isFull)
+            canStack = false;
         ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Move(selectedCell, pointedCell);
