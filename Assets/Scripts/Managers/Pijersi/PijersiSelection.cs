@@ -203,7 +203,7 @@ public partial class Pijersi
 
     private void UpdateEngine()
     {
-        if (save.turns.Count == 0 || config.playerTypes[currentTeamId] != PlayerType.Human || config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+        if (config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
 
         if (engine == null)
         {
@@ -228,6 +228,7 @@ public partial class Pijersi
                 manualPlay[1] = -1;
             }
             manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
+
             engine.PlayManual(manualPlay);
             GetNextAiTurn();
             return;
@@ -237,7 +238,6 @@ public partial class Pijersi
         manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
 
         engine.PlayManual(manualPlay);
-
         GetNextAiTurn();
     }
 }
