@@ -4,11 +4,11 @@ public class TooltipTrigger : MonoBehaviour
 {
     public void Set(BetterButton button)
     {
-        Tooltip.Instance.Set(button);
+        Tooltip.Set(button);
     }
 
     public void Hide()
     {
-        Tooltip.Instance.Hide();
+        Tooltip.Hide();
     }
 }

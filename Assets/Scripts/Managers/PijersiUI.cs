@@ -176,7 +176,7 @@ public class PijersiUI : MonoBehaviour
     public void MainMenu()
     {
         Time.timeScale = 1f;
-        Tooltip.Instance.Hide();
+        Tooltip.Hide();
         GameManager.LoadScene("Start");
     }
 

@@ -5,23 +5,29 @@ using UnityEngine.Localization.Settings;
 
 public class Tooltip : MonoBehaviour
 {
-    private const float DisplayDelay = .5f;
+    private const float displayDelay = .5f;
     private const int positionOffset = 11;
 
     [SerializeField] private RectTransform panel;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Animator animator;
+
+    private static Tooltip instance;
+    private readonly int showTrigger = Animator.StringToHash("Show");
+
     private RectTransform canvas;
     private BetterButton currentButton;
-    private float showAt = Mathf.Infinity;
-    private readonly int showTrigger = Animator.StringToHash("Show");
     private LocalizedStringDatabase stringDatabase;
+    private float showAt = Mathf.Infinity;
 
-    public static Tooltip Instance { get; private set; }
+    public static void Set(string key, float delay = displayDelay) => instance.LocalSet(key, delay);
+    public static void Set(BetterButton button) => instance.LocalSet(button);
+    public static void Hide() => instance.LocalHide();
+
 
     private void Awake()
     {
-        if (Instance != null)
+        if (instance != null)
         {
             Destroy(this);
             return;
@@ -30,7 +36,7 @@ public class Tooltip : MonoBehaviour
         canvas = GetComponent<RectTransform>();
         stringDatabase = LocalizationSettings.StringDatabase;
 
-        Instance = this;
+        instance = this;
 
         DontDestroyOnLoad(this);
     }
@@ -60,13 +66,13 @@ public class Tooltip : MonoBehaviour
     private void SetPosition()
     {
         Vector3 position = Mouse.current.position.ReadValue();
-        position.x = position.x + positionOffset;
+        position.x += positionOffset;
         
         Vector2 pivot = Vector2.up;
         Vector2 scale = canvas.localScale;
         if (position.x + panel.rect.width * scale.x > canvas.rect.width * scale.x)
         {
-            position.x = position.x - positionOffset;
+            position.x -= positionOffset;
             pivot.x = 1f;
         }
         if (position.y - panel.rect.height * scale.y < 0)
@@ -76,7 +82,7 @@ public class Tooltip : MonoBehaviour
         panel.pivot = pivot;
     }
 
-    public void Set(string key, float delay = DisplayDelay)
+    private void LocalSet(string key, float delay)
     {
         panel.gameObject.SetActive(false);
         showAt = Time.unscaledTime + delay;
@@ -84,14 +90,14 @@ public class Tooltip : MonoBehaviour
         text.text = stringDatabase.GetLocalizedString("Tooltip", key);
     }
 
-    public void Set(BetterButton button)
+    private void LocalSet(BetterButton button)
     {
         currentButton = button;
         
         Set(button.name);
     }
 
-    public void Hide()
+    private void LocalHide()
     {
         panel.gameObject.SetActive(false);
         showAt = Mathf.Infinity;

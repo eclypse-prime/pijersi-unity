@@ -9,7 +9,7 @@ public class LoadPijersi : MonoBehaviour
         config.playerTypes = new PlayerType[] { PlayerType.Human, PlayerType.Human };
         config.partyData = saveButton.SaveName;
 
-        Tooltip.Instance.Hide();
+        Tooltip.Hide();
         GameManager.LoadScene("Pijersi");
     }
 }

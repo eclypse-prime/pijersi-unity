@@ -18,7 +18,7 @@ public partial class Pijersi
         dangers[1] = selectedCell.pieces[1]?.GetDangers(board.pieces, cells);
         animation.NewSelection(selectedCell);
         animation.HighlightDangers(GetDangersFor(selectedCell, true));
-        Tooltip.Instance.Set("CancelSelection");
+        Tooltip.Set("CancelSelection");
     }
 
     private void OnExitSelection()
@@ -28,7 +28,7 @@ public partial class Pijersi
         pointedCell?.ResetColor();
         lastPointedCell?.ResetColor();
         animation.HighlightDangers(null);
-        Tooltip.Instance.Hide();
+        Tooltip.Hide();
     }
 
     private void OnUpdateSelection()
@@ -40,7 +40,7 @@ public partial class Pijersi
 
             if (lastPointedCell != selectedCell)
                 lastPointedCell.ResetColor();
-            Tooltip.Instance.Hide();
+            Tooltip.Hide();
 
             return;
         }
@@ -75,17 +75,17 @@ public partial class Pijersi
 
                 if (canMove && canStack)
                 {
-                    Tooltip.Instance.Set("CancelSelection");
+                    Tooltip.Set("CancelSelection");
                     return;
                 }
-                Tooltip.Instance.Set("EndTurn");
+                Tooltip.Set("EndTurn");
 
                 return;
             }
 
             animation.UpdateHighlight(pointedCell);
             animation.HighlightDangers(null);
-            Tooltip.Instance.Hide();
+            Tooltip.Hide();
 
             return;
         }
@@ -136,7 +136,7 @@ public partial class Pijersi
             actionId = GetFirstValidActionId(alternateActions);
             tooltipKey += alternateActions[actionId].ToString();
 
-            Tooltip.Instance.Set(tooltipKey);
+            Tooltip.Set(tooltipKey);
 
             // highlights
             if (pointedCell != selectedCell)
