@@ -39,7 +39,7 @@ public partial class Pijersi
         currentTeamId = 1;
 
         board.ResetBoard();
-        UI.ResetUI((teams[0].score, teams[1].score));
+        UI.ResetUI(teams[0].score, teams[1].score);
         UI.replayButtons["Play"].interactable = true;
         cameraMovement.position = CameraMovement.positionType.White;
 

@@ -54,7 +54,7 @@ public partial class Pijersi
         if (actionId == 0)
             turn.cells.RemoveAt(actionId);
 
-        UI.UndoRecord();
+        UI.UndoRecord(currentTeamId, actionId == 0);
     }
 
     private void OnUpdateBack()

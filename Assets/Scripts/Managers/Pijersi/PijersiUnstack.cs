@@ -8,7 +8,7 @@ public partial class Pijersi
         board.KillPieces(pointedCell);
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(action, selectedCell, pointedCell);
-        UI.UpdateRecord(selectedCell, pointedCell, action);
+        UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, action);
     }
 
     private void OnExitUnstack() { }

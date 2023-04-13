@@ -13,7 +13,7 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private PijersiConfig config;
     [Header("Overlay :")]
     [SerializeField] private TextMeshProUGUI gameState;
-    [SerializeField] private TextMeshProUGUI record;
+    [SerializeField] private TextMeshProUGUI[] recordDisplays;
     [SerializeField] private GameObject replay;
     [SerializeField] private Button[] overlayButtons;
     [Header("Pause Menu :")]
@@ -29,7 +29,7 @@ public class PijersiUI : MonoBehaviour
 
     private LocalizedStringDatabase stringDatabase;
     private bool isFirstAction = true;
-    private List<string> records = new List<string>();
+    private List<string>[] records = new List<string>[2];
 
     public Dictionary<string, BetterButton> replayButtons { get; private set; }
 
@@ -55,29 +55,29 @@ public class PijersiUI : MonoBehaviour
         return $"{type} {number}";
     }
 
-    public void ResetUI((int, int) scores)
+    public void ResetUI(int score1, int score2)
     {
         ResetOverlay();
 
         if (!config.isBestOf)
         {
-            endScore.text = "";
-            pauseScore.text = "";
+            endScore.text = pauseScore.text = "";
             return;
         }
-        pauseScore.text = $"{scores.Item1} - {scores.Item2} / {config.winMax}";
+        pauseScore.text = $"{score1} - {score2} / {config.winMax}";
     }
 
     public void ResetUI()
     {
-        ResetUI((0, 0));
+        ResetUI(0, 0);
     }
 
     public void ResetOverlay()
     {
-        record.text = "";
+        recordDisplays[0].text = recordDisplays[1].text = "";
+        records[0] = new();
+        records[1] = new();
         isFirstAction = true;
-        records.Clear();
         SetActiveOverlayButtons(true);
         SetReplayButtonsInteractable(false);
     }
@@ -92,8 +92,7 @@ public class PijersiUI : MonoBehaviour
         if (config.isBestOf)
         {
             string score = $"{teamWinCounts[0]} - {teamWinCounts[1]} / {maxWinRound}";
-            endScore.text = score;
-            pauseScore.text = score;
+            endScore.text = pauseScore.text = score;
         }
 
         if (teamWinCounts[winTeamId] == maxWinRound)
@@ -127,7 +126,7 @@ public class PijersiUI : MonoBehaviour
         gameState.text = $"{color} : {GetTeamName(teamType, teamNumber)}";
     }
 
-    public void UpdateRecord(Cell start, Cell end, ActionType action)
+    public void UpdateRecord(int teamId, Cell start, Cell end, ActionType action)
     {
         string newRecord = isFirstAction ? start.name : "";
 
@@ -141,36 +140,32 @@ public class PijersiUI : MonoBehaviour
         if (action == ActionType.Attack)
             newRecord += attackSign;
 
-        record.text  += newRecord;
+        recordDisplays[teamId].text  += newRecord;
         isFirstAction = false;
-        records.Add(newRecord);
+        records[teamId].Add(newRecord);
     }
 
     public void AddRecordColumnLine(int teamId)
     {
-        if (record.text.Length == 0) return;
-
-        string newRecord = "\n";
-        if (teamId > 0)
-            newRecord = records[records.Count - 1].Length == 5 ? "\t\t" : "\t";
-        
-        record.text += newRecord;
         isFirstAction = true;
-        records[records.Count -1] += newRecord;
+
+        if (recordDisplays[teamId].text.Length == 0) return;
+
+        recordDisplays[teamId].text += "\n";
+        records[teamId][^1] += "\n";
     }
 
-    public void UndoRecord()
+    public void UndoRecord(int teamId, bool isFirstAction)
     {
-        int newRecordSize = records.Count - 1;
-        records.RemoveAt(newRecordSize);
-        if (newRecordSize == 0)
-            isFirstAction = true;
+        this.isFirstAction = isFirstAction;
+        int newRecordSize = records[teamId].Count - 1;
+        records[teamId].RemoveAt(newRecordSize);
 
         string newRecord = "";
-        foreach (string record in records)
+        foreach (string record in records[teamId])
             newRecord += record;
 
-        record.text = newRecord;
+        recordDisplays[teamId].text = newRecord;
     }
 
     public void MainMenu()
