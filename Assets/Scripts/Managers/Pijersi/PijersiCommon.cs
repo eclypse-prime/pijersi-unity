@@ -6,9 +6,9 @@ public partial class Pijersi
 {
     private void GetNextAiTurn()
     {
-        if (teams[1 - currentTeamId].Type == PlayerType.Human) return;
+        if (OtherTeam.Type == PlayerType.Human) return;
 
-        int recursionDepth = (int)config.playerTypes[1 - currentTeamId];
+        int recursionDepth = (int)OtherTeam.Type;
         playAuto = Task.Run(() =>
         {
             return engine.PlayAuto(recursionDepth);
@@ -42,7 +42,7 @@ public partial class Pijersi
 
     private void NextActionState()
     {
-        if (config.playerTypes[currentTeamId] == PlayerType.Human)
+        if (CurrentTeam.Type == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
             return;
@@ -66,7 +66,7 @@ public partial class Pijersi
 
         UI.replayButtons["Next"].interactable = true;
 
-        if (replayState != ReplayState.Play && (canMove || canStack) && config.playerTypes[currentTeamId] == PlayerType.Human)
+        if (replayState != ReplayState.Play && (canMove || canStack) && CurrentTeam.Type == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
             return true;
@@ -80,7 +80,7 @@ public partial class Pijersi
             if (replaySave.turns[turnId + 1].actions.Count == 0)
                 UI.replayButtons["Next"].interactable = false;
 
-            if (replayState != ReplayState.Play && config.playerTypes[currentTeamId] == PlayerType.Human)
+            if (replayState != ReplayState.Play && CurrentTeam.Type == PlayerType.Human)
             {
                 SM.ChangeState(State.PlayerTurn);
                 return true;
@@ -89,5 +89,16 @@ public partial class Pijersi
 
         SM.ChangeState(State.Replay);
         return true;
+    }
+
+    private void InitEngine()
+    {
+        if (teams[0].Type != PlayerType.Human)
+        {
+            engine = new Engine();
+            GetNextAiTurn();
+        }
+        else if (teams[1].Type != PlayerType.Human)
+            engine = new Engine();
     }
 }

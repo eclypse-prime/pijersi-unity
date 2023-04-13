@@ -4,7 +4,7 @@ public partial class Pijersi
     {
         teams[currentTeamId].score++;
         int[] scores = { teams[0].score, teams[1].score };
-        UI.ShowEnd(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number, scores, config.winMax);
+        UI.ShowEnd(currentTeamId, CurrentTeam.Type, CurrentTeam.Number, scores, config.winMax);
         TogglePause();
         replayState = ReplayState.None;
     }
@@ -15,15 +15,11 @@ public partial class Pijersi
 
     private void OnUpdateEnd()
     {
-        if (config.playerTypes[0] != PlayerType.Human || config.playerTypes[1] != PlayerType.Human)
-            engine = new Engine();
+        InitEngine();
         replayState = ReplayState.None;
 
         // inversion des équipes
-        Team firstTeam = teams[0];
-        teams[0] = teams[1];
-        teams[1] = firstTeam;
-
+        (teams[0], teams[1]) = (teams[1], teams[0]);
         save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
         currentTeamId = 1;
         board.ResetBoard();

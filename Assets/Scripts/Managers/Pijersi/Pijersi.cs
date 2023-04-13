@@ -19,7 +19,7 @@ public partial class Pijersi : MonoBehaviour
     [SerializeField] private InputAction secondaryAction;
 
     private readonly Dictionary<Cell, Cell[]>[] dangers = new Dictionary<Cell, Cell[]>[2];
-    private readonly StateMachine<State> SM = new StateMachine<State>();
+    private readonly StateMachine<State> SM = new();
 
     private new Camera camera;
     private bool isPauseOn;
@@ -40,6 +40,9 @@ public partial class Pijersi : MonoBehaviour
     private Cell[] aiActionCells;
     private (int, int) replayAt;
     private float continueAt;
+
+    private Team CurrentTeam => teams[currentTeamId];
+    private Team OtherTeam => teams[1 - currentTeamId];
 
     private struct Team
     {

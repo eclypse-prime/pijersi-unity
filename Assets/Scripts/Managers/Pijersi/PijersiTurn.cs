@@ -12,7 +12,7 @@ public partial class Pijersi
 
     private void OnExitTurn()
     {
-        UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
+        UI.SetGameState(currentTeamId, CurrentTeam.Type, CurrentTeam.Number);
         UI.AddRecordColumnLine(currentTeamId);
     }
 
@@ -24,7 +24,7 @@ public partial class Pijersi
             return;
         }
 
-        if (config.playerTypes[currentTeamId] == PlayerType.Human)
+        if (CurrentTeam.Type == PlayerType.Human)
         {
             SM.ChangeState(State.PlayerTurn);
             return;

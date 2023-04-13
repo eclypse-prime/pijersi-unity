@@ -4,14 +4,7 @@ public partial class Pijersi
 {
     public void ResetMatch()
     {
-        // init engine
-        if (teams[0].Type != PlayerType.Human)
-        {
-            engine = new Engine();
-            GetNextAiTurn();
-        }
-        else if (teams[1].Type != PlayerType.Human)
-            engine = new Engine();
+        InitEngine();
 
         save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
 
@@ -42,7 +35,7 @@ public partial class Pijersi
         replaySave = new Save(save);
         save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
         replayState = ReplayState.Play;
-        teams[currentTeamId].score = Mathf.Min(0, teams[currentTeamId].score - 1);
+        teams[currentTeamId].score = Mathf.Min(0, CurrentTeam.score - 1);
         currentTeamId = 1;
 
         board.ResetBoard();

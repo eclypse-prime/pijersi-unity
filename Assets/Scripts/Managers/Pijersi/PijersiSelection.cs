@@ -203,7 +203,7 @@ public partial class Pijersi
 
     private void UpdateEngine()
     {
-        if (config.playerTypes[1 - currentTeamId] == PlayerType.Human) return;
+        if (OtherTeam.Type == PlayerType.Human) return;
 
         if (engine == null)
         {

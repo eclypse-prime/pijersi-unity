@@ -21,7 +21,7 @@ public partial class Pijersi
                 canMove = true;
                 canStack = true;
             }
-            UI.SetGameState(currentTeamId, teams[currentTeamId].Type, teams[currentTeamId].Number);
+            UI.SetGameState(currentTeamId, CurrentTeam.Type, CurrentTeam.Number);
             cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
         }
 
