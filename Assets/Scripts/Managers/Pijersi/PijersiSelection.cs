@@ -112,7 +112,7 @@ public partial class Pijersi
         ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
         actionId = GetFirstValidActionId(actions);
 
-        // action (défaut)
+        // action (dï¿½faut)
         if (mainAction.WasPressedThisFrame())
         {
             UpdateUIAndReplay();
@@ -225,7 +225,7 @@ public partial class Pijersi
             }
             else // move
             {
-                manualPlay[1] = -1;
+                manualPlay[1] = 255;
             }
             manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
 
