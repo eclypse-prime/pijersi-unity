@@ -209,14 +209,14 @@ public partial class Pijersi
         {
             engine = new Engine();
             engine.SetState(board.GetState());
-            engine.SetPlayer((byte)(currentTeamId));
+            engine.SetPlayer((byte)currentTeamId);
         }
 
         int[] manualPlay = new int[3];
-        Save.Turn lastTurn = save.turns[save.turns.Count - 1];
+        Save.Turn lastTurn = save.turns[^1];
         manualPlay[0] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
 
-        // actions simples
+        // simple action
         if (lastTurn.actions.Count < 2)
         {
             if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
