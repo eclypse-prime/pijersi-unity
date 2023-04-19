@@ -7,11 +7,12 @@ public class SaveButton : MonoBehaviour
     [SerializeField] private TMP_Text saveName;
     [SerializeField] private TMP_Text saveDate;
 
-    public string SaveName => saveName.text;
+    public string SaveFullName { get; private set; }
 
-    public void SetData(string name, string date)
+    public void SetData(string name, string fullName, string date)
     {
         saveName.text = name;
+        SaveFullName = fullName;
         saveDate.text = date;
     }
 }

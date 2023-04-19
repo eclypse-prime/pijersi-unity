@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ public class SaveList : MonoBehaviour
         rect = GetComponent<RectTransform>();
 
         linePrefab.SetActive(false);
-        lines = new List<SaveButton>();
+        lines = new();
         lineHeight = linePrefab.GetComponent<RectTransform>().rect.height;
         lines.Add(linePrefab.GetComponent<SaveButton>());
     }
@@ -37,14 +38,15 @@ public class SaveList : MonoBehaviour
     private void DoUpdate()
     {
         FileInfo[] files = Save.GetList();
-        rect.sizeDelta = Vector2.up * lineHeight * Mathf.Max(lines.Count, files.Length);
+        rect.sizeDelta = lineHeight * Mathf.Max(lines.Count, files.Length) * Vector2.up;
 
         int i = 0;
         // Edite les boutons déjà existants
         for (; i < Mathf.Min(lines.Count, files.Length); i++)
         {
             lines[i].gameObject.SetActive(true);
-            lines[i].SetData(files[i].Name.Substring(0, files[i].Name.Length - 4), files[i].CreationTime.ToString());
+            string name = Regex.Split(files[i].Name, " - ")[0];
+            lines[i].SetData(name, files[i].Name, files[i].CreationTime.ToString());
         }
         // désactive les boutons en trop
         for (; i < lines.Count; i++)
@@ -55,10 +57,11 @@ public class SaveList : MonoBehaviour
         for (; i < files.Length; i++)
         {
             GameObject line = Instantiate(linePrefab, transform);
-            line.GetComponent<RectTransform>().localPosition = Vector3.down * lineHeight * i;
+            line.GetComponent<RectTransform>().localPosition = lineHeight * i * Vector3.down;
 
             SaveButton button = line.GetComponent<SaveButton>();
-            button.SetData(files[i].Name.Substring(0, files[i].Name.Length - 4), files[i].CreationTime.ToString());
+            string name = Regex.Split(files[i].Name, " - ")[0];
+            button.SetData(name, files[i].Name, files[i].CreationTime.ToString());
             lines.Add(button);
         }
     }
