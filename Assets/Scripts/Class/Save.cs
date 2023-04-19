@@ -10,10 +10,11 @@ public class Save
     private const char moveSign = '-';
     private const char stackMoveSign = '=';
     private const char attackSign = '!';
+    private const string validNamePattern = ".* .* - .*";
     private const string validPattern = "[a-g][1-7]((-|=)[a-g][1-7]!?){1,2}";
-    private static string validSavePattern = $"([^a-z0-9]*{validPattern}){{3,}}";
-    private static string savePath = $"{Application.dataPath}\\Saves\\";
-
+    private static readonly string validSavePattern = $"([^a-z0-9]*{validPattern}){{3,}}";
+    private static readonly string savePath = $"{Application.dataPath}\\..\\Saves\\";
+    
     public struct Turn
     {
         public List<Cell> cells;
@@ -22,16 +23,16 @@ public class Save
 
         public Turn(object nope = null)
         {
-            cells = new List<Cell>();
-            actions = new List<ActionType>();
-            isStackMoves = new List<bool>();
+            cells = new();
+            actions = new();
+            isStackMoves = new();
         }
 
         public Turn(List<Cell> cells, List<ActionType> actions, List<bool> isStackMoves)
         {
-            this.cells = new List<Cell>(cells);
-            this.actions = new List<ActionType>(actions);
-            this.isStackMoves = new List<bool>(isStackMoves);
+            this.cells = new(cells);
+            this.actions = new(actions);
+            this.isStackMoves = new(isStackMoves);
         }
 
         public void Add(ActionType action, Cell start, Cell end)
@@ -63,18 +64,29 @@ public class Save
     public Save(PlayerType[] playerTypes)
     {
         this.playerTypes = playerTypes;
-        turns = new List<Turn>();
+        turns = new();
         date = DateTime.Now;
     }
 
     public Save(Board board, string saveName)
     {
         playerTypes = new PlayerType[] { PlayerType.Human, PlayerType.Human };
-        turns = new List<Turn>();
+        Regex nameSyntax = new(validNamePattern, RegexOptions.IgnoreCase);
+        if (nameSyntax.IsMatch(saveName))
+        {
+            string[] matches = Regex.Split(saveName, " - ")[0].Split(' ');
+            if (matches.Length == 2)
+            {
+                Enum.TryParse(matches[0], out playerTypes[0]);
+                Enum.TryParse(matches[1], out playerTypes[1]);
+            }
+        }
+
+        turns = new();
         date = DateTime.Now;
 
         // load save data
-        string data = new StreamReader(savePath + saveName + ".txt").ReadToEnd();
+        string data = new StreamReader(savePath + saveName).ReadToEnd();
 
         MatchCollection turnMatches = Regex.Matches(data, validPattern, RegexOptions.IgnoreCase);
         foreach (Match turnMatch in turnMatches)
@@ -83,7 +95,7 @@ public class Save
 
             string turnData = turnMatch.Value;
 
-            Turn turn = new Turn(null);
+            Turn turn = new(null);
             turn.cells.Add(board.cells[board.CoordsToIndex(turnData[0], turnData[1])]);
             turn.cells.Add(board.cells[board.CoordsToIndex(turnData[3], turnData[4])]);
 
@@ -169,12 +181,12 @@ public class Save
 
     public void AddTurn()
     {
-        turns.Add(new Turn(null));
+        turns.Add(new(null));
     }
 
     public void AddAction(ActionType action, Cell start, Cell end)
     {
-        turns[turns.Count -1].Add(action, start, end);
+        turns[^1].Add(action, start, end);
     }
 
     /// <summary>
@@ -201,11 +213,13 @@ public class Save
             text += isLastColumn ? "\n" : "\t";
         }
 
-        string path = $"{Application.dataPath}\\Saves";
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path);
+        string[] nameArgs = { savePath, playerTypes[0].ToString(), playerTypes[1].ToString(), date.ToString("dd-MM-yyyy HH-mm-ss") };
+        string fileName = string.Format("{0}\\{1} {2} - {3}.txt", nameArgs);
 
-        File.WriteAllText($"{path}\\{date.ToString("dd-MM-yyyy HH-mm-ss")}.txt", text);
+        if (!Directory.Exists(savePath))
+            Directory.CreateDirectory(savePath);
+
+        File.WriteAllText(fileName, text);
     }
 
     /// <summary>
@@ -227,7 +241,7 @@ public class Save
         static bool IsValideData(FileInfo info)
         {
             string data = info.OpenText().ReadToEnd();
-            Regex validSyntax = new Regex(validSavePattern, RegexOptions.IgnoreCase);
+            Regex validSyntax = new(validSavePattern, RegexOptions.IgnoreCase);
 
             return validSyntax.IsMatch(data);
         }
