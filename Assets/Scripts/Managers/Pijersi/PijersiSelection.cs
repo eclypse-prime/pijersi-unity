@@ -230,7 +230,7 @@ public partial class Pijersi
             manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
 
             engine.PlayManual(manualPlay);
-            GetNextAiTurn();
+            GetNextAiTurn(OtherTeam.Type);
             return;
         }
 
@@ -238,6 +238,6 @@ public partial class Pijersi
         manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
 
         engine.PlayManual(manualPlay);
-        GetNextAiTurn();
+        GetNextAiTurn(OtherTeam.Type);
     }
 }

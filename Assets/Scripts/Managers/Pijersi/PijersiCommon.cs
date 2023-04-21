@@ -4,11 +4,9 @@ using UnityEngine.InputSystem;
 
 public partial class Pijersi
 {
-    private void GetNextAiTurn()
+    private void GetNextAiTurn(PlayerType nextTeamType)
     {
-        if (OtherTeam.Type == PlayerType.Human) return;
-
-        int recursionDepth = (int)OtherTeam.Type;
+        int recursionDepth = (int)nextTeamType;
         playAuto = Task.Run(() =>
         {
             return engine.PlayAuto(recursionDepth);
@@ -96,7 +94,7 @@ public partial class Pijersi
         if (teams[0].Type != PlayerType.Human)
         {
             engine = new Engine();
-            GetNextAiTurn();
+            GetNextAiTurn(teams[0].Type);
         }
         else if (teams[1].Type != PlayerType.Human)
             engine = new Engine();

@@ -25,8 +25,8 @@ public partial class Pijersi
             aiActionCells[1] = board.cells[playAuto.Result[1]];
         aiActionCells[2] = board.cells[playAuto.Result[2]];
 
-        if (teams[1 - currentTeamId].Type != PlayerType.Human)
-            GetNextAiTurn();
+        if (OtherTeam.Type != PlayerType.Human)
+            GetNextAiTurn(OtherTeam.Type);
 
         // simple action
         if (aiActionCells[1] == null) // move
