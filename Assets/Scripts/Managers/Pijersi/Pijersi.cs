@@ -47,7 +47,7 @@ public partial class Pijersi : MonoBehaviour
     private struct Team
     {
         private PlayerType type;
-        private int number;
+        private readonly int number;
 
         public int score;
 
