@@ -34,6 +34,9 @@ public partial class Pijersi
         switch (turn.actions[actionId])
         {
             case ActionType.Move:
+            case ActionType.StackMove:
+            case ActionType.Attack:
+            case ActionType.StackAttack:
                 board.Move(selectedCell, pointedCell);
                 canMove = true;
                 break;
@@ -42,6 +45,7 @@ public partial class Pijersi
                 canStack = true;
                 break;
             case ActionType.Unstack:
+            case ActionType.UnstackAttack:
                 board.Stack(selectedCell, pointedCell);
                 canStack = true;
                 break;
