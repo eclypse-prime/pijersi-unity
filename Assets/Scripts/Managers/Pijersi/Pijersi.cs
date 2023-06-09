@@ -75,7 +75,8 @@ public partial class Pijersi : MonoBehaviour
         End,
         Back,
         Next,
-        Replay
+        Replay,
+        AfterReplay
     }
 
     private enum ReplayState
@@ -98,7 +99,8 @@ public partial class Pijersi : MonoBehaviour
         SM.Add(new State<State>(State.End, OnEnterEnd, OnExitEnd, OnUpdateEnd));
         SM.Add(new State<State>(State.Next, OnEnterNext, null, OnUpdateNext));
         SM.Add(new State<State>(State.Back, OnEnterBack, null, OnUpdateBack));
-        SM.Add(new State<State>(State.Replay, OnEnterReplay, OnExitReplay, OnUpdateReplay));
+        SM.Add(new State<State>(State.Replay, null, onUpdate: OnUpdateReplay));
+        SM.Add(new State<State>(State.AfterReplay, OnEnterAfterReplay, OnExitAfterReplay));
 
         camera = Camera.main;
     }
@@ -118,16 +120,19 @@ public partial class Pijersi : MonoBehaviour
     private void Start()
     {
         cameraMovement.SetCenter(board.cells[22].transform.position);
-        InitTeams();
 
         // Dans le cas d'un chargement de partie
         if (config.partyData != null)
         {
             save = new Save(board, config.partyData);
+            config.playerTypes = save.playerTypes;
+
+            InitTeams();
             Replay();
             return;
         }
 
+        InitTeams();
         ResetMatch();
     }
 

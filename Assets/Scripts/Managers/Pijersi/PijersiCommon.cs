@@ -51,6 +51,14 @@ public partial class Pijersi
 
     private bool CheckReplayState()
     {
+        if (replaySave == null)
+        {
+            if (config.partyData == null || replayState != ReplayState.Play) return false;
+
+            SM.ChangeState(State.AfterReplay);
+            return true;
+        }
+
         if (replaySave == null) return false;
 
         // Next suivant

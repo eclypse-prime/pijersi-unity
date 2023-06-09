@@ -26,6 +26,11 @@ public class PijersiUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI endScore;
     [SerializeField] private Button endResume;
     [SerializeField] private Button save;
+    [Header("After Replay Menu :")]
+    [SerializeField] private GameObject afterReplay;
+    [SerializeField] private TMP_Dropdown[] replayPlayerTypes;
+    [SerializeField] private Button replayContinue;
+
 
     private LocalizedStringDatabase stringDatabase;
     private bool isFirstAction = true;
@@ -106,6 +111,19 @@ public class PijersiUI : MonoBehaviour
         }
 
         endResume.Select();
+    }
+
+    public void ShowAfterReplayMenu(PlayerType team1, PlayerType team2)
+    {
+        afterReplay.SetActive(true);
+        replayPlayerTypes[0].value = (int)team1;
+        replayPlayerTypes[1].value = (int)team2;
+        replayContinue.Select();
+    }
+
+    public PlayerType[] GetReplayPlayerTypes()
+    {
+        return new PlayerType[] { (PlayerType)replayPlayerTypes[0].value, (PlayerType)replayPlayerTypes[1].value };
     }
 
     public void SetActiveOverlayButtons(bool value)

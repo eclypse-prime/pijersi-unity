@@ -82,4 +82,9 @@ public partial class Pijersi
 
         SM.ChangeState(State.Next);
     }
+
+    public void AfterReplay()
+    {
+        SM.ChangeState(State.Turn);
+    }
 }
