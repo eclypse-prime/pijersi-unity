@@ -12,4 +12,16 @@ public class LoadPijersi : MonoBehaviour
         Tooltip.Hide();
         GameManager.LoadScene("Pijersi");
     }
+
+    public void LoadFromClipboard()
+    {
+        string buffer = GUIUtility.systemCopyBuffer;
+
+        if (!Save.IsValidData(buffer)) return;
+
+        config.partyData = buffer;
+
+        Tooltip.Hide();
+        GameManager.LoadScene("Pijersi");
+    }
 }

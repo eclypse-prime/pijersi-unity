@@ -232,18 +232,24 @@ public class Save
             .GetFiles("*.txt", SearchOption.TopDirectoryOnly);
 
         // sort valid files by date of the last modification (from newest to oldest)
-        files = files.Where(f => IsValideData(f))
+        files = files.Where(f => IsValidFile(f))
                     .OrderByDescending(f => f.LastWriteTime);
 
         return files.ToArray();
     
         // check if the file data is valid
-        static bool IsValideData(FileInfo info)
+        static bool IsValidFile(FileInfo info)
         {
             string data = info.OpenText().ReadToEnd();
-            Regex validSyntax = new(validSavePattern, RegexOptions.IgnoreCase);
 
-            return validSyntax.IsMatch(data);
+            return Save.IsValidData(data);
         }
+    }
+
+    public static bool IsValidData(string data)
+    {
+        Regex validSyntax = new(validSavePattern, RegexOptions.IgnoreCase);
+
+        return validSyntax.IsMatch(data);
     }
 }
