@@ -46,13 +46,10 @@ public partial class Pijersi : MonoBehaviour
 
     private struct Team
     {
-        private PlayerType type;
-        private readonly int number;
+        public readonly PlayerType type;
+        public readonly int number;
 
         public int score;
-
-        public PlayerType Type => type;
-        public int Number => number;
 
         public Team(PlayerType type, int number)
         {
@@ -86,25 +83,6 @@ public partial class Pijersi : MonoBehaviour
         Play
     }
 
-    private void Awake()
-    {
-        SM.Add(new State<State>(State.Turn, OnEnterTurn, OnExitTurn, OnUpdateTurn));
-        SM.Add(new State<State>(State.PlayerTurn, OnEnterPlayerTurn, OnExitPlayerTurn, OnUpdatePlayerTurn));
-        SM.Add(new State<State>(State.AiTurn, OnEnterAiTurn, OnExitAiTurn, OnUpdateAiTurn));
-        SM.Add(new State<State>(State.Selection, OnEnterSelection, OnExitSelection, OnUpdateSelection));
-        SM.Add(new State<State>(State.PlayAuto, OnEnterPlayAuto, OnExitPlayAuto, OnUpdatePlayAuto));
-        SM.Add(new State<State>(State.Move, OnEnterMove, OnExitMove, OnUpdateMove));
-        SM.Add(new State<State>(State.Stack, OnEnterStack, OnExitStack, OnUpdateStack));
-        SM.Add(new State<State>(State.Unstack, OnEnterUnstack, OnExitUnstack, OnUpdateUnstack));
-        SM.Add(new State<State>(State.End, OnEnterEnd, OnExitEnd, OnUpdateEnd));
-        SM.Add(new State<State>(State.Next, OnEnterNext, null, OnUpdateNext));
-        SM.Add(new State<State>(State.Back, OnEnterBack, null, OnUpdateBack));
-        SM.Add(new State<State>(State.Replay, null, onUpdate: OnUpdateReplay));
-        SM.Add(new State<State>(State.AfterReplay, OnEnterAfterReplay, OnExitAfterReplay));
-
-        camera = Camera.main;
-    }
-
     private void OnEnable()
     {
         mainAction.Enable();
@@ -117,11 +95,39 @@ public partial class Pijersi : MonoBehaviour
         secondaryAction.Disable();
     }
 
-    private void Start()
-    {
-        cameraMovement.SetCenter(board.cells[22].transform.position);
+    private void Awake() => Init();
+    private void Start() => StartLevel();
 
-        // Dans le cas d'un chargement de partie
+    private void Update()
+    {
+        if (isPauseOn) return;
+
+        SM.Update();
+    }
+
+    private void Init()
+    {
+        SM.Add(new State<State>(State.Turn, OnEnterTurn, OnExitTurn, OnUpdateTurn));
+        SM.Add(new State<State>(State.PlayerTurn, OnEnterPlayerTurn, null, OnUpdatePlayerTurn));
+        SM.Add(new State<State>(State.AiTurn, OnEnterAiTurn, null, OnUpdateAiTurn));
+        SM.Add(new State<State>(State.Selection, OnEnterSelection, OnExitSelection, OnUpdateSelection));
+        SM.Add(new State<State>(State.PlayAuto, null, onUpdate: OnUpdatePlayAuto));
+        SM.Add(new State<State>(State.Move, OnEnterMove, null, OnUpdateMove));
+        SM.Add(new State<State>(State.Stack, OnEnterStack, null, OnUpdateStack));
+        SM.Add(new State<State>(State.Unstack, OnEnterUnstack, null, OnUpdateUnstack));
+        SM.Add(new State<State>(State.End, OnEnterEnd, null, OnUpdateEnd));
+        SM.Add(new State<State>(State.Next, OnEnterNext));
+        SM.Add(new State<State>(State.Back, OnEnterBack, null, OnUpdateBack));
+        SM.Add(new State<State>(State.Replay, null, onUpdate: OnUpdateReplay));
+        SM.Add(new State<State>(State.AfterReplay, OnEnterAfterReplay, OnExitAfterReplay));
+
+        camera = Camera.main;
+    }
+
+    private void StartLevel()
+    {
+        cameraMovement.SetCenter(board.Cells[22].Transform.position);
+
         if (config.partyData != null)
         {
             save = new Save(board, config.partyData);
@@ -134,13 +140,6 @@ public partial class Pijersi : MonoBehaviour
 
         InitTeams();
         ResetMatch();
-    }
-
-    private void Update()
-    {
-        if (isPauseOn) return;
-
-        SM.Update();
     }
 
     private void InitTeams()

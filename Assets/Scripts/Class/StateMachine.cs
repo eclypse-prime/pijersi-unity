@@ -5,27 +5,14 @@ namespace FSM
     public class StateMachine<T>
     {
         protected Dictionary<T, State<T>> states;
-        public State<T> currentState { get; protected set; }
+        public State<T> CurrentState { get; protected set; }
 
-        public StateMachine()
-        {
-            states = new Dictionary<T, State<T>>();
-        }
+        public StateMachine() => states = new Dictionary<T, State<T>>();
 
-        public void Add(State<T> state)
-        {
-            states.Add(state.id, state);
-        }
+        public void Add(State<T> state) => states.Add(state.Id, state);
+        public void Add(T stateId, State<T> state) => states.Add(stateId, state);
 
-        public void Add(T stateId, State<T> state)
-        {
-            states.Add(stateId, state);
-        }
-
-        public State<T> GetState(T stateId)
-        {
-            return states.ContainsKey(stateId) ? states[stateId] : null;
-        }
+        public State<T> GetState(T stateId) => states.ContainsKey(stateId) ? states[stateId] : null;
 
         public void ChangeState(T stateId)
         {
@@ -35,19 +22,12 @@ namespace FSM
 
         public void ChangeState(State<T> state)
         {
-            currentState?.Exit();
-            currentState = state;
-            currentState?.Enter();
+            CurrentState?.Exit();
+            CurrentState = state;
+            CurrentState?.Enter();
         }
 
-        public void Update()
-        {
-            currentState?.Update();
-        }
-
-        public void FixedUpdate()
-        {
-            currentState?.FixedUpdate();
-        }
+        public void Update() => CurrentState?.Update();
+        public void FixedUpdate() => CurrentState?.FixedUpdate();
     }
 }

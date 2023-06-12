@@ -3,20 +3,23 @@ public partial class Pijersi
     private void OnEnterAfterReplay()
     {
         replayState = ReplayState.None;
-        UI.ShowAfterReplayMenu(teams[0].Type, teams[1].Type);
+        UI.ShowAfterReplayMenu(teams[0].type, teams[1].type);
     }
 
     private void OnExitAfterReplay()
     {
         config.playerTypes = UI.GetReplayPlayerTypes();
         InitTeams();
+        InitEngine();
 
-        if (CurrentTeam.Type != PlayerType.Human)
+        void InitEngine()
         {
+            if (CurrentTeam.type == PlayerType.Human) return;
+
             engine = new Engine();
             engine.SetState(board.GetState());
             engine.SetPlayer((byte)(1 - currentTeamId));
-            GetNextAiTurn(CurrentTeam.Type);
+            GetNextAiTurn(CurrentTeam.type);
         }
     }
 }

@@ -3,16 +3,16 @@ public partial class Pijersi
     private void OnEnterTurn()
     {
         currentTeamId = 1 - currentTeamId;
-        canMove       = true;
-        canStack      = true;
-        selectedCell  = null;
-        pointedCell   = null;
+        canMove = true;
+        canStack = true;
+        selectedCell = null;
+        pointedCell = null;
         save.AddTurn();
     }
 
     private void OnExitTurn()
     {
-        UI.SetGameState(currentTeamId, CurrentTeam.Type, CurrentTeam.Number);
+        UI.SetGameState(currentTeamId, CurrentTeam.type, CurrentTeam.number);
         UI.AddRecordColumnLine(currentTeamId);
     }
 
@@ -24,7 +24,7 @@ public partial class Pijersi
             return;
         }
 
-        if (CurrentTeam.Type == PlayerType.Human)
+        if (CurrentTeam.type == PlayerType.Human)
         {
             SM.ChangeState(State.PlayerTurn);
             return;

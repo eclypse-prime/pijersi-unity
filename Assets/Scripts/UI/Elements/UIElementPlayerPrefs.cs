@@ -17,37 +17,36 @@ public class UIElementPlayerPrefs : MonoBehaviour
     private Toggle toggle;
     private TMP_Dropdown TmpDropdown;
 
-    private void Awake()
+    private void Awake() => Init();
+    private void Start() => GetPref();
+    private void OnDestroy() => SetPref();
+
+    private void Init()
     {
-        if (TryGetComponent(out slider))
-        {
-            set = SliderToPref;
-            get = PrefToSlider;
-            isEqual = IsSliderEqualPref;
-        }
-        else if (TryGetComponent(out dropdown))
-        {
-            set = DropdownToPref;
-            get = PrefToDropdown;
-            isEqual = IsDropdownEqualPref;
-        }
-        else if (TryGetComponent(out toggle))
-        {
-            set = ToggleToPref;
-            get = PrefToToggle;
-            isEqual = IsToggleEqualPref;
-        }
-        else if (TryGetComponent(out TmpDropdown))
-        {
-            set = TmpDropdownToPref;
-            get = PrefToTmpDropdown;
-            isEqual = IsTmpDropdownEqualPref;
-        }
-        else
-            Debug.LogError($"Can find valid selectable on '{name}'.");
+        if (TryInitWith(out slider, SliderToPref, PrefToSlider, IsSliderEqualPref))
+            return;
+        if (TryInitWith(out dropdown, DropdownToPref, PrefToDropdown, IsDropdownEqualPref))
+            return;
+        if (TryInitWith(out toggle, ToggleToPref, PrefToToggle, IsToggleEqualPref))
+            return;
+        if (TryInitWith(out TmpDropdown, TmpDropdownToPref, PrefToTmpDropdown, IsTmpDropdownEqualPref))
+            return;
+
+        Debug.LogError($"Can find valid selectable on '{name}'.");
     }
 
-    private void Start()
+    private bool TryInitWith<T>(out T component, SimpleDelegate set, SimpleDelegate get, BoolDelegate isEqual) where T : Component
+    {
+        if (!TryGetComponent(out component)) return false;
+
+        this.set = set;
+        this.get = get;
+        this.isEqual = isEqual;
+
+        return true;
+    }
+
+    private void GetPref()
     {
         if (!PlayerPrefs.HasKey(name))
         {
@@ -58,7 +57,7 @@ public class UIElementPlayerPrefs : MonoBehaviour
         get.Invoke();
     }
 
-    private void OnDestroy()
+    private void SetPref()
     {
         if (isEqual.Invoke()) return;
 

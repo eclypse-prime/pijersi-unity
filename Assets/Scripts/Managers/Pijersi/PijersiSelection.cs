@@ -6,7 +6,7 @@ public partial class Pijersi
     {
         replayState = ReplayState.None;
         selectedCell = pointedCell;
-        validMoves = selectedCell.lastPiece.GetLegalMoves(canMove, canStack);
+        validMoves = selectedCell.LastPiece.GetLegalMoves(canMove, canStack);
 
         if (validMoves.Count == 0)
             SM.ChangeState(State.PlayerTurn);
@@ -14,8 +14,8 @@ public partial class Pijersi
         Cell[] cells = new Cell[validMoves.Keys.Count + 1];
         validMoves.Keys.CopyTo(cells, 0);
         cells[cells.Length - 1] = selectedCell;
-        dangers[0] = selectedCell.pieces[0].GetDangers(board.pieces, cells);
-        dangers[1] = selectedCell.pieces[1]?.GetDangers(board.pieces, cells);
+        dangers[0] = selectedCell.pieces[0].GetDangers(board.Pieces, cells);
+        dangers[1] = selectedCell.pieces[1]?.GetDangers(board.Pieces, cells);
         animation.NewSelection(selectedCell);
         animation.HighlightDangers(GetDangersFor(selectedCell, true));
         Tooltip.Set("CancelSelection");
@@ -33,42 +33,70 @@ public partial class Pijersi
 
     private void OnUpdateSelection()
     {
-        // cursor out of board
         if (!CheckPointedCell())
+        {
+            CheckOutOfBoard();
+            return;
+        }
+
+        if (TryOnInvalidTargetOrSelectedCell()) return;
+
+        State[] orderedState;
+        int actionId;
+        ActionType[] alternateActions = { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
+
+        if (TryAlternativeAction()) return;
+
+        ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
+        actionId = GetFirstValidActionId(actions);
+
+        if (TryDefaultAction()) return;
+        TooltipAndActionHighlight();
+        HighlightDangers();
+
+        void CheckOutOfBoard()
         {
             if (lastPointedCell == null) return;
 
             if (lastPointedCell != selectedCell)
                 lastPointedCell.ResetColor();
             Tooltip.Hide();
-
-            return;
         }
 
-        // cursor on invalid target cell or on selectedCell
-        if (!validMoves.ContainsKey(pointedCell) || validMoves[pointedCell].Count == 0)
+        bool TryOnInvalidTargetOrSelectedCell()
         {
-            // player cancel or end the turn
-            if (mainAction.WasPressedThisFrame() || secondaryAction.WasPressedThisFrame())
-            {
-                // cancel selection
-                if (canMove && canStack)
-                {
-                    SM.ChangeState(State.PlayerTurn);
-                    return;
-                }
+            if (validMoves.ContainsKey(pointedCell) && validMoves[pointedCell].Count != 0) 
+                return false;
 
-                // end turn
-                UpdateUIAndReplay();
-                UpdateEngine();
-                SM.ChangeState(State.Turn);
-                return;
+            if (TryPlayerCancelOrEndTurn()) return true;
+
+            if (pointedCell == lastPointedCell) return true;
+
+            HighlightTooltip();
+
+            return true;
+        }
+
+        bool TryPlayerCancelOrEndTurn()
+        {
+            if (!mainAction.WasPressedThisFrame() && !secondaryAction.WasPressedThisFrame())
+                return false;
+            
+            if (canMove && canStack)
+            {
+                SM.ChangeState(State.PlayerTurn);
+                return true;
             }
 
-            if (pointedCell == lastPointedCell) return;
+            UpdateUIAndReplay();
+            UpdateEngine();
+            SM.ChangeState(State.Turn);
+            return true;
+        }
 
-            // highlight/tooltip
-            if (pointedCell == selectedCell) // when on selectedCell
+        void HighlightTooltip()
+        {
+            if (pointedCell == selectedCell)
             {
                 animation.HighlightDangers(GetDangersFor(selectedCell, true));
                 lastPointedCell?.ResetColor();
@@ -82,83 +110,72 @@ public partial class Pijersi
 
                 return;
             }
-
             animation.UpdateHighlight(pointedCell);
             animation.HighlightDangers(null);
             Tooltip.Hide();
-
-            return;
         }
 
-        State[] orderedState;
-        int actionId;
-        ActionType[] alternateActions = { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
-
-        // action (alternative)
-        if (secondaryAction.WasPressedThisFrame())
+        bool TryAlternativeAction()
         {
+            if (!secondaryAction.WasPressedThisFrame()) return false;
+
             UpdateUIAndReplay();
 
             orderedState = new State[] { State.Stack, State.Unstack, State.Move, State.Move };
             actionId = GetFirstValidActionId(alternateActions);
-
             SM.ChangeState(orderedState[actionId]);
             if (!canMove && !canStack)
                 UpdateEngine();
 
-            return;
+            return true;
         }
 
-        ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
-        actionId = GetFirstValidActionId(actions);
-
-        // action (d�faut)
-        if (mainAction.WasPressedThisFrame())
+        bool TryDefaultAction()
         {
+            if (!mainAction.WasPressedThisFrame()) return false;
+            
             UpdateUIAndReplay();
 
             orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
-
             SM.ChangeState(orderedState[actionId]);
             if (!canMove && !canStack)
                 UpdateEngine();
 
-            return;
+            return true;
         }
 
-        // actions highlights/tooltip
-        if (pointedCell != lastPointedCell)
+        void TooltipAndActionHighlight()
         {
+            if (pointedCell == lastPointedCell) return;
+
             ActionType mainActionType = actions[actionId];
 
-            // tooltip
             string tooltipKey = actions[actionId].ToString();
             actionId = GetFirstValidActionId(alternateActions);
             tooltipKey += alternateActions[actionId].ToString();
-
             Tooltip.Set(tooltipKey);
 
-            // highlights
             if (pointedCell != selectedCell)
                 animation.UpdateHighlight(pointedCell, mainActionType == alternateActions[actionId]);
         }
 
-        if (dangers[0] == null && dangers[1] == null) return;
-
-        // dangers highlight
-        if (validMoves[pointedCell].Contains(ActionType.Unstack))
+        void HighlightDangers()
         {
-            animation.HighlightDangers(GetDangersFor(pointedCell, true), GetDangersFor(selectedCell, false), GetDangersFor(pointedCell, false));
-            return;
-        }
-        if (selectedCell.isFull && !selectedCell.nears.Contains(pointedCell))
-        {
-            animation.HighlightDangers(GetDangersFor(pointedCell, true), canStack ? GetDangersFor(pointedCell, false) : null);
-            return;
-        }
-        animation.HighlightDangers(GetDangersFor(pointedCell, true));
+            if (dangers[0] == null && dangers[1] == null) return;
 
-        // return the first action in common between valid moves and ordered Actions
+            if (validMoves[pointedCell].Contains(ActionType.Unstack))
+            {
+                animation.HighlightDangers(GetDangersFor(pointedCell, true), GetDangersFor(selectedCell, false), GetDangersFor(pointedCell, false));
+                return;
+            }
+            if (selectedCell.IsFull && !selectedCell.Nears.Contains(pointedCell))
+            {
+                animation.HighlightDangers(GetDangersFor(pointedCell, true), canStack ? GetDangersFor(pointedCell, false) : null);
+                return;
+            }
+            animation.HighlightDangers(GetDangersFor(pointedCell, true));
+        }
+
         int GetFirstValidActionId(ActionType[] orderedActions)
         {
             int actionId = -1;
@@ -176,9 +193,9 @@ public partial class Pijersi
 
         void UpdateUIAndReplay()
         {
-            UI.replayButtons["Back"].interactable = true;
-            UI.replayButtons["Play"].interactable = false;
-            UI.replayButtons["Next"].interactable = false;
+            UI.ReplayButtons["Back"].interactable = true;
+            UI.ReplayButtons["Play"].interactable = false;
+            UI.ReplayButtons["Next"].interactable = false;
 
             if (replaySave == null) return;
 
@@ -203,7 +220,7 @@ public partial class Pijersi
 
     private void UpdateEngine()
     {
-        if (OtherTeam.Type == PlayerType.Human) return;
+        if (OtherTeam.type == PlayerType.Human) return;
 
         if (engine == null)
         {
@@ -216,28 +233,26 @@ public partial class Pijersi
         Save.Turn lastTurn = save.turns[^1];
         manualPlay[0] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
 
-        // simple action
-        if (lastTurn.actions.Count < 2)
-        {
-            if (lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack) // (un)stack
-            {
-                manualPlay[1] = board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y);
-            }
-            else // move
-            {
-                manualPlay[1] = 255;
-            }
-            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
-
-            engine.PlayManual(manualPlay);
-            GetNextAiTurn(OtherTeam.Type);
-            return;
-        }
+        if (TryGetSimpleAction()) return;
 
         manualPlay[1] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
         manualPlay[2] = board.CoordsToIndex(lastTurn.cells[2].x, lastTurn.cells[2].y);
 
         engine.PlayManual(manualPlay);
-        GetNextAiTurn(OtherTeam.Type);
+        GetNextAiTurn(OtherTeam.type);
+
+        bool TryGetSimpleAction()
+        {
+            if (lastTurn.actions.Count >= 2) return false;
+
+            bool isUnstack = lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack;
+
+            manualPlay[1] = isUnstack ? board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y) : 255;
+            manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
+
+            engine.PlayManual(manualPlay);
+            GetNextAiTurn(OtherTeam.type);
+            return true;
+        }
     }
 }

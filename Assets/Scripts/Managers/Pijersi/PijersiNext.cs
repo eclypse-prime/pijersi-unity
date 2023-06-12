@@ -30,12 +30,13 @@ public partial class Pijersi
                 break;
         }
 
-        if (replayAt.Item1 == turnId && replayAt.Item2 == save.turns[turnId].actions.Count - 1)
+        bool isReplayActionEnd = replayAt.Item1 == turnId && replayAt.Item2 == save.turns[turnId].actions.Count - 1;
+        if (isReplayActionEnd)
         {
-            if (replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[turnId].actions.Count - 1)
+            bool isReplayEnd = replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[turnId].actions.Count - 1;
+            if (isReplayEnd)
                 replaySave = null;
             replayAt   = (-1, -1);
         }
     }
-    private void OnUpdateNext() {}
 }

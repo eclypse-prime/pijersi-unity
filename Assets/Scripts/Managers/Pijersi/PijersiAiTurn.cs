@@ -9,60 +9,68 @@ public partial class Pijersi
         aiActionCells = new Cell[3];
     }
 
-    private void OnExitAiTurn() {}
-
     private void OnUpdateAiTurn()
     {
         if (continueAt > Time.time || !playAuto.IsCompleted) return;
 
-        UI.replayButtons["Back"].interactable = true;
-        UI.replayButtons["Play"].interactable = false;
-        UI.replayButtons["Next"].interactable = false;
+        UI.ReplayButtons["Back"].interactable = true;
+        UI.ReplayButtons["Play"].interactable = false;
+        UI.ReplayButtons["Next"].interactable = false;
 
-        aiActionCells[0] = board.cells[playAuto.Result[0]];
+        aiActionCells[0] = board.Cells[playAuto.Result[0]];
         // 0xFFU represents a null action
         if (playAuto.Result[1] != 0xFFU)
-            aiActionCells[1] = board.cells[playAuto.Result[1]];
-        aiActionCells[2] = board.cells[playAuto.Result[2]];
+            aiActionCells[1] = board.Cells[playAuto.Result[1]];
+        aiActionCells[2] = board.Cells[playAuto.Result[2]];
 
-        if (OtherTeam.Type != PlayerType.Human)
-            GetNextAiTurn(OtherTeam.Type);
+        if (OtherTeam.type != PlayerType.Human)
+            GetNextAiTurn(OtherTeam.type);
 
-        // simple action
-        if (aiActionCells[1] == null) // move
+        if (TryGetSimpleAction()) return;
+
+        GetCompoundAction();
+
+        bool TryGetSimpleAction()
         {
-            canStack = false;
-            aiActionStates = new State[] { State.Move };
-            aiActionCells = new Cell[] { aiActionCells[0], aiActionCells[2] };
+            if (aiActionCells[1] == null)
+            {
+                canStack = false;
+                aiActionStates = new State[] { State.Move };
+                aiActionCells = new Cell[] { aiActionCells[0], aiActionCells[2] };
 
-            SM.ChangeState(State.PlayAuto);
-            return;
+                SM.ChangeState(State.PlayAuto);
+                return true;
+            }
+
+            if (aiActionCells[1] == aiActionCells[0])
+            {
+                canMove = false;
+                State newState = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
+                aiActionStates = new State[] { newState };
+                aiActionCells = new Cell[] { aiActionCells[0], aiActionCells[2] };
+
+                SM.ChangeState(State.PlayAuto);
+                return true;
+            }
+
+            return false;
         }
 
-        if (aiActionCells[1] == aiActionCells[0]) // (un)stack
+        void GetCompoundAction()
         {
-            canMove = false;
-            State newState = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team ? State.Stack : State.Unstack;
-            aiActionStates = new State[] { newState };
-            aiActionCells = new Cell[] { aiActionCells[0], aiActionCells[2] };
+            if (aiActionCells[1].pieces[0]?.team != aiActionCells[0].pieces[0].team)
+            {
+                aiActionStates[0] = State.Move;
+                aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team && aiActionCells[2] != aiActionCells[0] ? State.Stack : State.Unstack;
+
+                SM.ChangeState(State.PlayAuto);
+                return;
+            }
+
+            aiActionStates[0] = State.Stack;
+            aiActionStates[1] = State.Move;
 
             SM.ChangeState(State.PlayAuto);
-            return;
         }
-
-        // compound action
-        if (aiActionCells[1].pieces[0]?.team != aiActionCells[0].pieces[0].team) // move -> (un)stack
-        {
-            aiActionStates[0] = State.Move;
-            aiActionStates[1] = aiActionCells[2].pieces[0]?.team == aiActionCells[0].pieces[0].team && aiActionCells[2] != aiActionCells[0] ? State.Stack : State.Unstack;
-            
-            SM.ChangeState(State.PlayAuto);
-            return;
-        }
-
-        aiActionStates[0] = State.Stack;
-        aiActionStates[1] = State.Move;
-
-        SM.ChangeState(State.PlayAuto);
     }
 }

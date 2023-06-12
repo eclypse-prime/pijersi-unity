@@ -4,14 +4,12 @@ public partial class Pijersi
     {
         canStack = false;
         canMove = false;
-        ActionType action = pointedCell.isEmpty ? ActionType.Unstack : ActionType.Attack;
+        ActionType action = pointedCell.IsEmpty ? ActionType.Unstack : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Unstack(selectedCell, pointedCell);
         save.AddAction(action, selectedCell, pointedCell);
         UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, action);
     }
-
-    private void OnExitUnstack() { }
 
     private void OnUpdateUnstack()
     {
@@ -23,7 +21,7 @@ public partial class Pijersi
             return;
         }
 
-        if (CheckReplayState()) return;
+        if (TryReplayState()) return;
 
         SM.ChangeState(State.Turn);
     }

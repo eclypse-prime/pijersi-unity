@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour
+public partial class Board : MonoBehaviour
 {
     private const int columnCount = 7;
     private const int lineCount = 7;
@@ -24,27 +24,32 @@ public class Board : MonoBehaviour
     [SerializeField] private Material m_white;
 
     private new Transform transform;
-    public Cell[] cells { get; private set; }
-    public Piece[] pieces { get; private set; }
-    private List<Piece> deadPieces = new List<Piece>();
+    private readonly List<Piece> deadPieces = new();
 
+    public Cell[] Cells { get; private set; }
+    public Piece[] Pieces { get; private set; }
     public int LineCount => lineCount;
 
     private void Awake()
     {
         transform = base.transform;
-        // init board and teams
+        
         BuildBoard();
         BuildTeams();
     }
 
-    #region build
     private void BuildBoard()
     {
+        SpawnCells();
+        SetNeighboursCells();
+    }
+
+    private void SpawnCells()
+    {
+        List<Cell> cells = new();
+        int columnOffset = 0;
         float halfColumnStep = columnStep / 2;
         float columnStepOffset = 0f;
-        int columnOffset = 0;
-        List<Cell> cells = new List<Cell>();
         for (int i = lineCount - 1; i >= 0; i--) // line
         {
             columnStepOffset = halfColumnStep - columnStepOffset;
@@ -65,109 +70,112 @@ public class Board : MonoBehaviour
             }
         }
 
-        // set cells neighbours
-        columnOffset = 0;
+        Cells = cells.ToArray();
+    }
+
+    private void SetNeighboursCells()
+    {
+        int columnOffset = 0;
         int cellId = 0;
+        bool isAfterFirstLine = false;
         for (int i = 0; i < lineCount; i++)
         {
             int nextLineSize = columnCount + columnOffset;
             columnOffset = -1 - columnOffset;
             int lineSize = columnCount + columnOffset;
+            bool isBeforeLastLine = i < lineCount - 1;
+            bool isAfterLineStart = false;
+            bool isLongLine = lineSize > nextLineSize;
             for (int j = 0; j < lineSize; j++)
             {
+                bool isBeforeLineEnd = j < lineSize - 1;
+                bool isNextLineEnd = j < nextLineSize;
+                bool isBeforeNextLineEnd = j < nextLineSize - 1;
                 Cell[] nears = new Cell[6];
-                if (j > 0)
-                    nears[2] = cells[CoordsToIndex(i, j - 1)];
-                if (j < lineSize - 1)
-                    nears[3] = cells[CoordsToIndex(i, j + 1)];
-                if (lineSize > nextLineSize)
+                if (isAfterLineStart)
+                    nears[2] = Cells[CoordsToIndex(i, j - 1)];
+                if (isBeforeLineEnd)
+                    nears[3] = Cells[CoordsToIndex(i, j + 1)];
+                if (isLongLine)
                 {
-                    if (i > 0)
+                    if (isAfterFirstLine)
                     {
-                        if (j > 0)
-                            nears[0] = cells[CoordsToIndex(i - 1, j - 1)];
-                        if (j < nextLineSize)
-                            nears[1] = cells[CoordsToIndex(i - 1, j)];
+                        if (isAfterLineStart)
+                            nears[0] = Cells[CoordsToIndex(i - 1, j - 1)];
+                        if (isNextLineEnd)
+                            nears[1] = Cells[CoordsToIndex(i - 1, j)];
                     }
-                    if (i < lineCount - 1)
+                    if (isBeforeLastLine)
                     {
-                        if (j > 0)
-                            nears[4] = cells[CoordsToIndex(i + 1, j - 1)];
-                        if (j < nextLineSize)
-                            nears[5] = cells[CoordsToIndex(i + 1, j)];
+                        if (isAfterLineStart)
+                            nears[4] = Cells[CoordsToIndex(i + 1, j - 1)];
+                        if (isNextLineEnd)
+                            nears[5] = Cells[CoordsToIndex(i + 1, j)];
                     }
+
+                    Cells[cellId++].SetNears(nears);
+                    isAfterLineStart = true;
+                    continue;
                 }
-                else
+                if (isAfterFirstLine)
                 {
-                    if (i > 0)
-                    {
-                        nears[0] = cells[CoordsToIndex(i - 1, j)];
-                        if (j < nextLineSize - 1)
-                            nears[1] = cells[CoordsToIndex(i - 1, j + 1)];
-                    }
-                    if (i < lineCount - 1)
-                    {
-                        nears[4] = cells[CoordsToIndex(i + 1, j)];
-                        if (j < nextLineSize - 1)
-                            nears[5] = cells[CoordsToIndex(i + 1, j + 1)];
-                    }
+                    nears[0] = Cells[CoordsToIndex(i - 1, j)];
+                    if (isBeforeNextLineEnd)
+                        nears[1] = Cells[CoordsToIndex(i - 1, j + 1)];
+                }
+                if (isBeforeLastLine)
+                {
+                    nears[4] = Cells[CoordsToIndex(i + 1, j)];
+                    if (isBeforeNextLineEnd)
+                        nears[5] = Cells[CoordsToIndex(i + 1, j + 1)];
                 }
 
-                cells[cellId++].SetNears(nears);
+                Cells[cellId++].SetNears(nears);
+                isAfterLineStart = true;
             }
+            isAfterFirstLine = true;
         }
-
-        this.cells = cells.ToArray();
     }
 
     private void BuildTeams()
     {
-        pieces = new Piece[starter.Length];
+        Pieces = new Piece[starter.Length];
         int pieceId = 0;
-        for (int i = 0; i < teams.Length; i++) // équipes
+        for (int i = 0; i < teams.Length; i++) // teams
         {
             for (int j = 0; j < piecePrefabs.Length; j++) // types
             {
                 for (int k = 0; k < pieceCounts[j]; k++) // copies
-                {
-                    Vector2Int pos  = starter[pieceId];
-                    Piece piece = Instantiate(piecePrefabs[j], Vector3.zero, Quaternion.identity, teams[i]).GetComponent<Piece>();
-                    piece.team = i;
-
-                    pieces[pieceId] = piece;
-                    Cell cell = cells[CoordsToIndex(pos.x, pos.y)];
-
-                    MovePieceToCell(piece, cell);
-
-                    if (i > 0)
-                    {
-                        piece.mainRenderer.material = m_black;
-                        foreach (MeshRenderer sign in piece.SignRenderer)
-                            sign.material = m_white;
-                    }
-
-                    pieceId++;
-                }
+                    SpawnPiece(i, j);
             }
         }
-    }
 
-    public void ResetBoard()
-    {
-        foreach (Piece piece in pieces)
+        void SpawnPiece(int i, int j)
         {
-            piece.cell.pieces = new Piece[2];
-            piece.gameObject.SetActive(true);
-        }
+            Vector2Int pos = starter[pieceId];
+            Piece piece = Instantiate(piecePrefabs[j], Vector3.zero, Quaternion.identity, teams[i]).GetComponent<Piece>();
+            piece.team = i;
 
-        for (int i = 0; i < pieces.Length; i++)
-            MovePieceToCell(pieces[i], cells[CoordsToIndex(starter[i].x, starter[i].y)]);
+            Pieces[pieceId] = piece;
+            Cell cell = Cells[CoordsToIndex(pos.x, pos.y)];
+
+            MovePieceToCell(piece, cell);
+
+            if (i > 0)
+            {
+                piece.mainRenderer.material = m_black;
+                foreach (MeshRenderer sign in piece.SignRenderer)
+                    sign.material = m_white;
+            }
+
+            pieceId++;
+        }
     }
 
     private void MovePieceToCell(Piece piece, Cell cell)
     {
-        cell.pieces[cell.isEmpty ? 0 : 1] = piece;
-        piece.MoveTo(cell, PlacementRng, cell.isFull ? PieceHeight : 0);
+        cell.pieces[cell.IsEmpty ? 0 : 1] = piece;
+        piece.MoveTo(cell, PlacementRng, cell.IsFull ? PieceHeight : 0);
     }
 
     private bool IsDarkCell(string name)
@@ -179,122 +187,5 @@ public class Board : MonoBehaviour
         }
 
         return false;
-    }
-
-    public int CoordsToIndex(int x, int y)
-    {
-        if (x % 2 == 0)
-            return (columnCount * 2 - 1) * x / 2 + y;
-
-        return (columnCount * 2 - 1) * (x - 1) / 2 + columnCount - 1 + y;
-    }
-
-    public int CoordsToIndex(char x, char y)
-    {
-        return CoordsToIndex(lineCount - Array.FindIndex(letters, l => l == x) - 1, (int) char.GetNumericValue(y) - 1);
-    }
-    #endregion
-
-    #region Action
-    public void Move(Cell start, Cell end, bool skipAnimation = false)
-    {
-        end.pieces   = start.pieces;
-        start.pieces = new Piece[2];
-
-        if (skipAnimation)
-        {
-            end.pieces[0].MoveTo(end, PlacementRng);
-            end.pieces[1]?.MoveTo(end, PlacementRng);
-            
-            return;
-        }
-
-        end.pieces[0].InitMove(end, PlacementRng);
-        end.pieces[1]?.InitMove(end, PlacementRng);
-    }
-
-    public void Stack(Cell start, Cell end, bool skipAnimation = false)
-    {
-        int startId = start.isFull ? 1 : 0;
-        end.pieces[1] = start.pieces[startId];
-        start.pieces[startId] = null;
-
-        if (skipAnimation)
-        {
-            end.pieces[1].MoveTo(end, PlacementRng, PieceHeight);
-            
-            return;
-        }
-
-        end.pieces[1].InitMove(end, PlacementRng, PieceHeight);
-    }
-
-    public void Unstack(Cell start, Cell end, bool skipAnimation = false)
-    {
-        end.pieces[0] = start.pieces[1];
-        end.pieces[1] = null;
-        start.pieces[1] = null;
-
-        if (skipAnimation)
-        {
-            end.pieces[0].MoveTo(end, PlacementRng, 0f);
-
-            return;
-        }
-
-        end.pieces[0].InitMove(end, PlacementRng, 0f);
-    }
-
-    public bool UpdateMove(Cell cell)
-    {
-        bool firstUpdate = cell.pieces[0].UpdateMove();
-        bool secondUpdate = cell.pieces[1]?.UpdateMove() == true;
-        return firstUpdate || secondUpdate;
-    }
-
-    public void KillPieces(Cell cell)
-    {
-        if (cell.isEmpty) return;
-
-        cell.pieces[0].gameObject.SetActive(false);
-        deadPieces.Add(cell.pieces[0]);
-
-        if (!cell.isFull) return;
-
-        cell.pieces[1].gameObject.SetActive(false);
-        deadPieces.Add(cell.pieces[1]);
-    }
-
-    public void ReviveLastPieces(Cell cell)
-    {
-        if (deadPieces.Count == 0) return;
-
-        int lastId = deadPieces.Count - 1;
-
-        Piece piece = deadPieces[lastId];
-        if (piece.cell != cell) return;
-
-        cell.pieces[0] = piece;
-        piece.gameObject.SetActive(true);
-        deadPieces.RemoveAt(lastId);
-
-        if (lastId < 1 || deadPieces[lastId - 1].cell != cell) return;
-
-        piece = deadPieces[lastId - 1];
-        cell.pieces[1] = cell.pieces[0];
-        cell.pieces[0] = piece;
-        piece.gameObject.SetActive(true);
-        deadPieces.RemoveAt(lastId - 1);
-    }
-    #endregion
-
-    public byte[] GetState()
-    {
-        byte[] state = new byte[45];
-
-        for (int i = 0; i < 45; i++)
-            state[i] = (byte) cells[i].PiecesToByte();
-
-        return state;
     }
 }

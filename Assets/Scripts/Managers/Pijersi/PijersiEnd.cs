@@ -4,13 +4,9 @@ public partial class Pijersi
     {
         teams[currentTeamId].score++;
         int[] scores = { teams[0].score, teams[1].score };
-        UI.ShowEnd(currentTeamId, CurrentTeam.Type, CurrentTeam.Number, scores, config.winMax);
+        UI.ShowEnd(currentTeamId, CurrentTeam.type, CurrentTeam.number, scores, config.winMax);
         TogglePause();
         replayState = ReplayState.None;
-    }
-
-    private void OnExitEnd()
-    {
     }
 
     private void OnUpdateEnd()
@@ -18,9 +14,8 @@ public partial class Pijersi
         InitEngine();
         replayState = ReplayState.None;
 
-        // inversion des équipes
         (teams[0], teams[1]) = (teams[1], teams[0]);
-        save = new Save(new PlayerType[] { teams[0].Type, teams[1].Type });
+        save = new Save(new PlayerType[] { teams[0].type, teams[1].type });
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetOverlay();

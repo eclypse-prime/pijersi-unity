@@ -17,9 +17,8 @@ public partial class Pijersi
     {
         lastPointedCell = pointedCell;
 
-        RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (!Physics.Raycast(ray, out hit, 50f, cellLayer))
+        if (!Physics.Raycast(ray, out RaycastHit hit, 50f, cellLayer))
         {
             pointedCell = null;
             return false;
@@ -31,7 +30,7 @@ public partial class Pijersi
 
     private bool IsWin(Cell cell)
     {
-        if (cell.lastPiece.type == PieceType.Wise) return false;
+        if (cell.LastPiece.type == PieceType.Wise) return false;
         if (cell.x == 0 && cell.pieces[0].team == 0 || cell.x == board.LineCount - 1 && cell.pieces[0].team == 1)
             return true;
 
@@ -40,7 +39,7 @@ public partial class Pijersi
 
     private void NextActionState()
     {
-        if (CurrentTeam.Type == PlayerType.Human)
+        if (CurrentTeam.type == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
             return;
@@ -49,7 +48,7 @@ public partial class Pijersi
         SM.ChangeState(State.PlayAuto);
     }
 
-    private bool CheckReplayState()
+    private bool TryReplayState()
     {
         if (replaySave == null)
         {
@@ -59,9 +58,6 @@ public partial class Pijersi
             return true;
         }
 
-        if (replaySave == null) return false;
-
-        // Next suivant
         if (replayAt != (-1, -1))
         {
             SM.ChangeState(State.Next);
@@ -70,41 +66,46 @@ public partial class Pijersi
 
         int turnId = save.turns.Count - 1;
 
-        UI.replayButtons["Next"].interactable = true;
+        UI.ReplayButtons["Next"].interactable = true;
 
-        if (replayState != ReplayState.Play && (canMove || canStack) && CurrentTeam.Type == PlayerType.Human)
+        if (replayState != ReplayState.Play && (canMove || canStack) && CurrentTeam.type == PlayerType.Human)
         {
             SM.ChangeState(State.Selection);
             return true;
         }
 
-        // fin de tour
-        if (save.turns[turnId].actions.Count == replaySave.turns[turnId].actions.Count)
+        if (TryEndTurn()) return true;
+
+        SM.ChangeState(State.Replay);
+        return true;
+
+        bool TryEndTurn()
         {
+            if (save.turns[turnId].actions.Count != replaySave.turns[turnId].actions.Count)
+                return false;
+
             SM.ChangeState(State.Turn);
 
             if (replaySave.turns[turnId + 1].actions.Count == 0)
-                UI.replayButtons["Next"].interactable = false;
+                UI.ReplayButtons["Next"].interactable = false;
 
-            if (replayState != ReplayState.Play && CurrentTeam.Type == PlayerType.Human)
+            if (replayState != ReplayState.Play && CurrentTeam.type == PlayerType.Human)
             {
                 SM.ChangeState(State.PlayerTurn);
                 return true;
             }
+            return false;
         }
-
-        SM.ChangeState(State.Replay);
-        return true;
     }
 
     private void InitEngine()
     {
-        if (teams[0].Type != PlayerType.Human)
+        if (teams[0].type != PlayerType.Human)
         {
             engine = new Engine();
-            GetNextAiTurn(teams[0].Type);
+            GetNextAiTurn(teams[0].type);
         }
-        else if (teams[1].Type != PlayerType.Human)
+        else if (teams[1].type != PlayerType.Human)
             engine = new Engine();
     }
 }

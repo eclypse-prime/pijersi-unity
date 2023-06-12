@@ -3,16 +3,14 @@ public partial class Pijersi
     private void OnEnterMove()
     {
         canMove = false;
-        if (!selectedCell.isFull)
+        if (!selectedCell.IsFull)
             canStack = false;
-        ActionType action = pointedCell.isEmpty ? ActionType.Move : ActionType.Attack;
+        ActionType action = pointedCell.IsEmpty ? ActionType.Move : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Move(selectedCell, pointedCell);
         save.AddAction(action, selectedCell, pointedCell);
         UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, action);
     }
-
-    private void OnExitMove() { }
 
     private void OnUpdateMove()
     {
@@ -24,10 +22,9 @@ public partial class Pijersi
             return;
         }
 
-        // prochaine action
-        if (CheckReplayState()) return;
+        if (TryReplayState()) return;
 
-        if (canStack && pointedCell.isFull)
+        if (canStack && pointedCell.IsFull)
         {
             NextActionState();
             return;

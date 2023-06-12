@@ -2,8 +2,8 @@ namespace FSM
 {
     public class State<T>
     {
-        public string name { get; private set; }
-        public T id { get; private set; }
+        public string Name { get; private set; }
+        public T Id { get; private set; }
 
         public delegate void SimpleDelegate();
 
@@ -12,16 +12,8 @@ namespace FSM
         public SimpleDelegate OnUpdate;
         public SimpleDelegate OnFixedUpdate;
 
-        public State(T id)
-        {
-            this.id = id;
-        }
-
-        public State(T id, string name) : this(id)
-        {
-            this.name = name;
-        }
-
+        public State(T id) => Id = id;
+        public State(T id, string name) : this(id) => Name = name;
         public State(T id,
             SimpleDelegate onEnter,
             SimpleDelegate onExit = null,
@@ -46,23 +38,9 @@ namespace FSM
             OnFixedUpdate = onFixedUpdate;
         }
 
-        virtual public void Enter()
-        {
-            OnEnter?.Invoke();
-        }
-
-        virtual public void Exit()
-        {
-            OnExit?.Invoke();
-        }
-        virtual public void Update()
-        {
-            OnUpdate?.Invoke();
-        }
-
-        virtual public void FixedUpdate()
-        {
-            OnFixedUpdate?.Invoke();
-        }
+        virtual public void Enter() => OnEnter?.Invoke();
+        virtual public void Exit() => OnExit?.Invoke();
+        virtual public void Update() => OnUpdate?.Invoke();
+        virtual public void FixedUpdate() => OnFixedUpdate?.Invoke();
     }
 }

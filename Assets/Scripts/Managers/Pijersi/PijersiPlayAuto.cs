@@ -1,8 +1,5 @@
 public partial class Pijersi
 {
-    private void OnEnterPlayAuto() {}
-    private void OnExitPlayAuto() {}
-
     private void OnUpdatePlayAuto()
     {
         selectedCell = aiActionCells[0];

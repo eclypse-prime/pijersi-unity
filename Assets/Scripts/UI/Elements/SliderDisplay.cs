@@ -7,10 +7,7 @@ public class SliderDisplay : MonoBehaviour
 
     public float Text
     {
-        set
-        {
-            text.text = value.ToString();
-        }
+        set => text.text = value.ToString();
     }
 
     private void Awake()

@@ -9,8 +9,7 @@ public class LoadPijersi : MonoBehaviour
         config.playerTypes = new PlayerType[] { PlayerType.Human, PlayerType.Human };
         config.partyData = saveButton.SaveFullName;
 
-        Tooltip.Hide();
-        GameManager.LoadScene("Pijersi");
+        LoadScene();
     }
 
     public void LoadFromClipboard()
@@ -20,7 +19,11 @@ public class LoadPijersi : MonoBehaviour
         if (!Save.IsValidData(buffer)) return;
 
         config.partyData = buffer;
+        LoadScene();
+    }
 
+    private static void LoadScene()
+    {
         Tooltip.Hide();
         GameManager.LoadScene("Pijersi");
     }

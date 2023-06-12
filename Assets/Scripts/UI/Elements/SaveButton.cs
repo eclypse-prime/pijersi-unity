@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SaveButton : MonoBehaviour
 {
-    [SerializeField] public BetterButton button { get; private set; }
+    [SerializeField] public BetterButton Button { get; private set; }
     [SerializeField] private TMP_Text saveName;
     [SerializeField] private TMP_Text saveDate;
 

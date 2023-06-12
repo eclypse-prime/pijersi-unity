@@ -9,7 +9,7 @@ public class BoardAnimation : MonoBehaviour
     [SerializeField] private Color[] dangerColors;
 
     private Cell highlightedCell;
-    private Cell[][] highlightedDangers = new Cell[3][];
+    private readonly Cell[][] highlightedDangers = new Cell[3][];
 
     /// <summary>
     /// Shows dangerous pieces by changing the color of their cells.
@@ -21,66 +21,48 @@ public class BoardAnimation : MonoBehaviour
     {
         if (cells == highlightedDangers[0] && cells1 == highlightedDangers[1] && cells2 == highlightedDangers[2]) return;
 
-        // reset of all highlightedDangers
-        foreach (Cell[] dangers in highlightedDangers)
+        ResetHighlights();
+
+        Highlight(cells, 0);
+        Highlight(cells1, 1);
+        Highlight(cells2, 2);
+
+        void ResetHighlights()
         {
-            if (dangers == null) continue;
+            foreach (Cell[] dangers in highlightedDangers)
+            {
+                if (dangers == null) continue;
+
+                foreach (Cell danger in dangers)
+                    danger.ResetColor();
+            }
+        }
+
+        void Highlight(Cell[] dangers, int id)
+        {
+            if (dangers == null)
+            {
+                highlightedDangers[id] = null;
+                return;
+            }
 
             foreach (Cell danger in dangers)
-                danger.ResetColor();
+                danger.SetColor(dangerColors[id]);
+            highlightedDangers[id] = dangers;
         }
-
-        if (cells == null)
-        {
-            highlightedDangers = new Cell[3][];
-            return;
-        }
-
-        foreach (Cell cell in cells)
-            cell.SetColor(dangerColors[0]);
-        highlightedDangers[0] = cells;
-
-        highlightedDangers[1] = null;
-        if (cells1 != null)
-        {
-            foreach (Cell cell in cells1)
-                cell.SetColor(dangerColors[1]);
-            highlightedDangers[1] = cells1;
-        }
-
-        if (cells2 == null)
-        {
-            highlightedDangers[2] = null;
-            return;
-        }
-
-        foreach (Cell cell in cells2)
-            cell.SetColor(dangerColors[2]);
-        highlightedDangers[2] = cells2;
     }
 
-    /// <summary>
-    /// Changes the highlighted cell.
-    /// </summary>
     public void UpdateHighlight(Cell cell, Color color)
     {
         highlightedCell?.ResetColor();
-
         highlightedCell = cell;
         highlightedCell.SetColor(color);
     }
 
-    /// <inheritdoc cref="UpdateHighlight(Cell, Color)"/>
-    public void UpdateHighlight(Cell cell)
-    {
+    public void UpdateHighlight(Cell cell) => 
         UpdateHighlight(cell, highlightColor);
-    }
-
-    /// <inheritdoc cref="UpdateHighlight(Cell, Color)"/>
-    public void UpdateHighlight(Cell cell, bool isSingleAction)
-    {
+    public void UpdateHighlight(Cell cell, bool isSingleAction) => 
         UpdateHighlight(cell, isSingleAction ? singleActionColor : multipleActionColor);
-    }
 
     /// <summary>
     /// Sets the cell color to the selection color.

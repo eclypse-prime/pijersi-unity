@@ -8,17 +8,17 @@ public class CameraMovement : MonoBehaviour
 
     private new Transform transform;
     private Vector3 center;
-    private Dictionary<positionType, Vector3> positions;
+    private Dictionary<PositionType, Vector3> positions;
 
-    private positionType currentPosition;
+    private PositionType currentPosition;
 
-    public positionType position
+    public PositionType position
     {
         get => currentPosition;
         set => SetPosition(value);
     }
 
-    public enum positionType
+    public enum PositionType
     {
         Black,
         White
@@ -32,16 +32,16 @@ public class CameraMovement : MonoBehaviour
     public void SetCenter(Vector3 position)
     {
         center = position;
-        positions = new Dictionary<positionType, Vector3>
+        positions = new Dictionary<PositionType, Vector3>
         {
-            { positionType.White, position + new Vector3(0f, 1f, -1f).normalized * distance },
-            { positionType.Black, position + new Vector3(0f, 1f, 1f).normalized * distance }
+            { PositionType.White, position + new Vector3(0f, 1f, -1f).normalized * distance },
+            { PositionType.Black, position + new Vector3(0f, 1f, 1f).normalized * distance }
         };
 
-        SetPosition(positionType.White);
+        SetPosition(PositionType.White);
     }
 
-    private void SetPosition(positionType type)
+    private void SetPosition(PositionType type)
     {
         currentPosition = type;
         transform.position = positions[type];

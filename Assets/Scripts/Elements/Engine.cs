@@ -1,10 +1,10 @@
 class Engine : IEngine
 {
-    private PijersiEngine.Board board;
+    private readonly PijersiEngine.Board board;
 
     public Engine()
     {
-        board = new PijersiEngine.Board();
+        board = new();
         board.init();
     }
 
@@ -45,31 +45,14 @@ class Engine : IEngine
     /// </summary>
     public void SetState(byte[] state)
     {
-        PijersiEngine.byteArray arrayState = new PijersiEngine.byteArray(45);
+        PijersiEngine.byteArray arrayState = new(45);
         for (int k = 0; k < 45; k++)
-        {
             arrayState.setitem(k, state[k]);
-        }
         board.setState(arrayState.cast());
     }
 
-    public void SetPlayer(byte color)
-    {
-        board.currentPlayer = color;
-    }
-
-    public float Evaluate()
-    {
-        return board.evaluate();
-    }
-
-    public bool CheckWin()
-    {
-        return board.checkWin();
-    }
-
-    public override string ToString()
-    {
-        return board.toString();
-    }
+    public void SetPlayer(byte color) => board.currentPlayer = color;
+    public float Evaluate() => board.evaluate();
+    public bool CheckWin() => board.checkWin();
+    public override string ToString() => board.toString();
 }

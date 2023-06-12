@@ -2,9 +2,8 @@ public partial class Pijersi
 {
     private void OnEnterPlayerTurn()
     {
-        cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
+        cameraMovement.position = currentTeamId == 0 ? CameraMovement.PositionType.White : CameraMovement.PositionType.Black;
     }
-    private void OnExitPlayerTurn() { }
 
     private void OnUpdatePlayerTurn()
     {

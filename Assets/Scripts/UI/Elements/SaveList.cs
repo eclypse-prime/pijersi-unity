@@ -14,15 +14,8 @@ public class SaveList : MonoBehaviour
     private List<SaveButton> lines;
     private float lineHeight;
 
-    private void Awake()
-    {
-        Init();
-    }
-
-    private void OnEnable()
-    {
-        DoUpdate();
-    }
+    private void Awake() => Init();
+    private void OnEnable() => DoUpdate();
 
     private void Init()
     {
@@ -41,20 +34,26 @@ public class SaveList : MonoBehaviour
         rect.sizeDelta = lineHeight * Mathf.Max(lines.Count, files.Length) * Vector2.up;
 
         int i = 0;
-        // Edite les boutons déjà existants
         for (; i < Mathf.Min(lines.Count, files.Length); i++)
+            EditExistingButtons();
+        for (; i < lines.Count; i++)
+            DisableRemainingButtons();
+        for (; i < files.Length; i++)
+            AddMissingButtons();
+
+        void EditExistingButtons()
         {
             lines[i].gameObject.SetActive(true);
             string name = Regex.Split(files[i].Name, " - ")[0];
             lines[i].SetData(name, files[i].Name, files[i].CreationTime.ToString());
         }
-        // désactive les boutons en trop
-        for (; i < lines.Count; i++)
+
+        void DisableRemainingButtons()
         {
             lines[i].gameObject.SetActive(false);
         }
-        // ajoute les boutons manquant
-        for (; i < files.Length; i++)
+
+        void AddMissingButtons()
         {
             GameObject line = Instantiate(linePrefab, transform);
             line.GetComponent<RectTransform>().localPosition = lineHeight * i * Vector3.down;

@@ -11,18 +11,11 @@ public partial class Pijersi
             save.turns.RemoveAt(turnId);
             turnId--;
             currentTeamId = 1 - currentTeamId;
-            if (save.turns[turnId].actions.Count > 1)
-            {
-                canMove = false;
-                canStack = false;
-            }
-            else
-            {
-                canMove = true;
-                canStack = true;
-            }
-            UI.SetGameState(currentTeamId, CurrentTeam.Type, CurrentTeam.Number);
-            cameraMovement.position = currentTeamId == 0 ? CameraMovement.positionType.White : CameraMovement.positionType.Black;
+            bool IsActionPossible = save.turns[turnId].actions.Count == 1;
+            canMove = IsActionPossible;
+            canStack = IsActionPossible;
+            UI.SetGameState(currentTeamId, CurrentTeam.type, CurrentTeam.number);
+            cameraMovement.position = currentTeamId == 0 ? CameraMovement.PositionType.White : CameraMovement.PositionType.Black;
         }
 
         Save.Turn turn = save.turns[turnId];
@@ -79,7 +72,7 @@ public partial class Pijersi
         replayAt = (-1, -1);
 
         if (turnId > 0 || actionId > -1)
-            UI.replayButtons["Back"].interactable = true;
+            UI.ReplayButtons["Back"].interactable = true;
 
         if (config.playerTypes[currentTeamId] == PlayerType.Human)
         {

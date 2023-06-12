@@ -8,13 +8,11 @@ public partial class Pijersi
         UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, ActionType.Stack);
     }
 
-    private void OnExitStack() { }
-
     private void OnUpdateStack()
     {
         if (board.UpdateMove(pointedCell)) return;
 
-        if (CheckReplayState()) return;
+        if (TryReplayState()) return;
 
         if (canMove)
         {

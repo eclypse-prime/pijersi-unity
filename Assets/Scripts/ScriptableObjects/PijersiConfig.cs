@@ -7,5 +7,5 @@ public class PijersiConfig : ScriptableObject
     public string partyData;
     public int winMax;
 
-    public bool isBestOf => winMax > 1;
+    public bool IsBestOf => winMax > 1;
 }

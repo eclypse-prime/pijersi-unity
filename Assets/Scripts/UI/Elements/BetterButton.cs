@@ -3,12 +3,13 @@ using UnityEngine.UI;
 using UnityEngine.Serialization;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System;
 
 [AddComponentMenu("UI/BetterButton", 30)]
 public class BetterButton : Button
 {
     [FormerlySerializedAs("onRightClick")]
-    [SerializeField] private ButtonClickedEvent m_onRightClick = new ButtonClickedEvent();
+    [SerializeField] private ButtonClickedEvent m_onRightClick = new();
     [SerializeField] private InputAction pressAction;
     [SerializeField] private InputAction alternativePressAction;
 
@@ -72,33 +73,11 @@ public class BetterButton : Button
         Press();
     }
 
-    public override void OnPointerDown(PointerEventData eventData)
-    {
-        // right and left clicks have the same animations
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            eventData.button = PointerEventData.InputButton.Left;
-            base.OnPointerDown(eventData);
-            eventData.button = PointerEventData.InputButton.Right;
-            return;
-        }
+    public override void OnPointerDown(PointerEventData eventData) =>
+        OnPointerLeftOrRight(eventData, base.OnPointerUp);
 
-        base.OnPointerDown(eventData);
-    }
-
-    public override void OnPointerUp(PointerEventData eventData)
-    {
-        // right and left clicks have the same animations
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            eventData.button = PointerEventData.InputButton.Left;
-            base.OnPointerUp(eventData);
-            eventData.button = PointerEventData.InputButton.Right;
-            return;
-        }
-
-        base.OnPointerUp(eventData);
-    }
+    public override void OnPointerUp(PointerEventData eventData) =>
+        OnPointerLeftOrRight(eventData, base.OnPointerUp);
 
     // Reload inputActions (for inputs localization)
     public void ReloadInputAction()
@@ -109,5 +88,18 @@ public class BetterButton : Button
         alternativePressAction.Dispose();
         pressAction.Enable();
         alternativePressAction.Enable();
+    }
+
+    private void OnPointerLeftOrRight(PointerEventData eventData, Action<PointerEventData> baseAction)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            eventData.button = PointerEventData.InputButton.Left;
+            baseAction(eventData);
+            eventData.button = PointerEventData.InputButton.Right;
+            return;
+        }
+
+        baseAction(eventData);
     }
 }

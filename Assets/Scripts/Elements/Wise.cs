@@ -2,71 +2,31 @@ using System.Collections.Generic;
 
 public class Wise : Piece
 {
-    public override Dictionary<Cell, List<ActionType>> GetLegalMoves(bool canMove, bool canStack)
+    protected override void GetNearMoveAttack(Cell near, bool canMove, ref List<ActionType> legalActions)
     {
-        Dictionary<Cell, List<ActionType>> legalMoves = new Dictionary<Cell, List<ActionType>>();
+        if (!canMove && !near.IsEmpty) return;
 
-        // get legal moves for nearby cells
-        foreach (Cell near in cell.nears)
-        {
-            if (near == null) continue;
-
-            List<ActionType> legalActions = new List<ActionType>();
-
-            // move/attack
-            if (canMove)
-            {
-                if (near.isEmpty)
-                    legalActions.Add(ActionType.Move);
-            }
-
-            // unstack/stack
-            if (canStack)
-            {
-                if (cell.isFull && (near.isEmpty || near.pieces[0].team != team))
-                    legalActions.Add(ActionType.Unstack);
-                else if (!near.isEmpty && !near.isFull && near.pieces[0].team == team && near.pieces[0].type == PieceType.Wise)
-                    legalActions.Add(ActionType.Stack);
-            }
-
-            if (legalActions.Count > 0)
-                legalMoves.Add(near, legalActions);
-        }
-
-        if (!canMove)
-            return legalMoves;
-
-        // get legal moves for far nearby cells
-        for (int i = 0; i < 6; i++)
-        {
-            Cell farNear = cell.nears[i]?.nears[i];
-            if (farNear == null || !cell.nears[i].isEmpty) continue;
-
-            List<ActionType> legalActions = new List<ActionType>();
-
-            // move
-            if (farNear.isEmpty)
-                legalActions.Add(ActionType.Move);
-
-            if (legalActions.Count > 0)
-                legalMoves.Add(farNear, legalActions);
-        }
-
-        return legalMoves;
+        legalActions.Add(ActionType.Move);
     }
 
-    public override Cell[] GetDangers(Piece[] pieces, Cell cell)
+    protected override void GetNearUnstackStack(Cell near, bool canStack, ref List<ActionType> legalActions)
     {
-        return null;
+        if (!canStack) return;
+
+        if (cell.IsFull && near.IsEmpty)
+            legalActions.Add(ActionType.Unstack);
+        else if (!near.IsEmpty && !near.IsFull && near.pieces[0].team == team && near.pieces[0].type == PieceType.Wise)
+            legalActions.Add(ActionType.Stack);
     }
 
-    public override Dictionary<Cell, Cell[]> GetDangers(Piece[] pieces, Cell[] cells)
+    protected override void GetfarMoveAttack(Cell farNear, ref List<ActionType> legalActions)
     {
-        return null;
+        if (!farNear.IsEmpty) return;
+        
+        legalActions.Add(ActionType.Move);
     }
 
-    protected override bool CanAttack(Piece targetPiece, Cell targetCell)
-    {
-        return false;
-    }
+    public override Cell[] GetDangers(Piece[] pieces, Cell cell) => null;
+    public override Dictionary<Cell, Cell[]> GetDangers(Piece[] pieces, Cell[] cells) => null;
+    protected override bool CanAttack(Piece targetPiece, Cell targetCell) => false;
 }

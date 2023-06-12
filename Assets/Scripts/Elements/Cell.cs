@@ -8,20 +8,20 @@ public class Cell : MonoBehaviour
 
     private Color baseColor;
 
-    public new Transform transform { get; private set; }
+    public Transform Transform { get; private set; }
     [HideInInspector] public int x;
     [HideInInspector] public int y;
-    public Cell[] nears { get; private set; }
+    public Cell[] Nears { get; private set; }
     [HideInInspector] public Piece[] pieces = new Piece[2];
 
-    public bool isEmpty => pieces[0] == null;
-    public bool isFull => pieces[1] != null;
-    public Piece lastPiece => isFull ? pieces[1] : pieces[0];
+    public bool IsEmpty => pieces[0] == null;
+    public bool IsFull => pieces[1] != null;
+    public Piece LastPiece => IsFull ? pieces[1] : pieces[0];
 
 
     private void Awake()
     {
-        transform   = base.transform;
+        Transform = transform;
     }
 
     private void Start()
@@ -29,20 +29,9 @@ public class Cell : MonoBehaviour
         baseColor = renderer.material.color;
     }
 
-    public void SetNears(Cell[] cells)
-    {
-        nears = cells;
-    }
-
-    public void SetColor(Color color)
-    {
-        renderer.material.color = color;
-    }
-
-    public void ResetColor()
-    {
-        SetColor(baseColor);
-    }
+    public void SetNears(Cell[] cells) => Nears = cells;
+    public void SetColor(Color color) => renderer.material.color = color;
+    public void ResetColor() => SetColor(baseColor);
 
     /// <summary>
     /// Returns all cells that are aligned to the cell and its nears.
@@ -50,10 +39,10 @@ public class Cell : MonoBehaviour
     public Cell[] GetDirectFarNears()
     {
         List<Cell> farNears = new();
-        for (int i = 0; i < nears.Length; i++)
+        for (int i = 0; i < Nears.Length; i++)
         {
-            if (nears[i]?.nears[i] != null)
-                farNears.Add(nears[i].nears[i]);
+            if (Nears[i]?.Nears[i] != null)
+                farNears.Add(Nears[i].Nears[i]);
         }
 
         return farNears.ToArray();
@@ -64,9 +53,9 @@ public class Cell : MonoBehaviour
     /// </summary>
     public ushort PiecesToByte()
     {
-        if (isEmpty) return 0;
+        if (IsEmpty) return 0;
 
-        if (!isFull) return pieces[0].ToByte();
+        if (!IsFull) return pieces[0].ToByte();
 
         return (ushort)(pieces[0].ToByte() + (pieces[1].ToByte() << 4));
     }
