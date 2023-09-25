@@ -51,12 +51,12 @@ public class Cell : MonoBehaviour
     /// <summary>
     /// Returns the binary code of all pieces on this cell.
     /// </summary>
-    public ushort PiecesToByte()
+    public byte PiecesToByte()
     {
         if (IsEmpty) return 0;
 
         if (!IsFull) return pieces[0].ToByte();
 
-        return (ushort)(pieces[0].ToByte() + (pieces[1].ToByte() << 4));
+        return (byte)((pieces[0].ToByte() << 4) + pieces[1].ToByte());
     }
 }
