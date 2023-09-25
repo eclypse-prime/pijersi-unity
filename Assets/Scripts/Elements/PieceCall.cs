@@ -127,9 +127,9 @@ public partial class Piece
     /// <summary>
     /// Returns the binary code of this piece.
     /// </summary>
-    public ushort ToByte()
+    public byte ToByte()
     {
-        ushort result = 1;
+        byte result = 1;
         if (team == 1)
             result += 2;
         switch (type)
