@@ -123,4 +123,45 @@ public partial class Board
 
         return state;
     }
+
+    public override string ToString()
+    {
+        string[] pieceTypeLetters = new string[] { "r", "p", "s", "w" };
+
+        string state = "";
+        (int current, int other) lineSizes = (6, 7);
+        int offset = 0;
+        for (int i = 0; i < LineCount; i++)
+        {
+            for (int j = 0; j < lineSizes.current; j++)
+            {
+                Cell cell = Cells[j + offset];
+                if (!cell.IsEmpty)
+                {
+                    string cellContent = pieceTypeLetters[(int)cell.pieces[0].type] + (cell.IsFull ? pieceTypeLetters[(int)cell.pieces[1].type] : '-');
+                    state += cell.pieces[0].team == 0 ? cellContent.ToUpper() : cellContent;
+                    continue;
+                }
+
+                state += ". ";
+            }
+
+            state += "\n";
+            offset += lineSizes.current;
+            lineSizes = (lineSizes.other, lineSizes.current);
+        }
+        return state;
+    }
+
+    public byte[] ToBytes()
+    {
+        byte[] cells = new byte[45];
+
+        for (int i = 0; i < 45; i++)
+        {
+            Cell cell = Cells[i];
+            cells[i] = cell.PiecesToByte();
+        }
+        return cells;
+    }
 }
