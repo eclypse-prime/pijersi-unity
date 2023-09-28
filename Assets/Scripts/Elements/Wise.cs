@@ -4,7 +4,7 @@ public class Wise : Piece
 {
     protected override void GetNearMoveAttack(Cell near, bool canMove, ref List<ActionType> legalActions)
     {
-        if (!canMove && !near.IsEmpty) return;
+        if (!canMove || !near.IsEmpty) return;
 
         legalActions.Add(ActionType.Move);
     }
