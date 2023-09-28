@@ -87,6 +87,10 @@ MonoBehaviour:
     m_Key: RulesReturn
     m_Metadata:
       m_Items: []
+  - m_Id: 82909748876701696
+    m_Key: Continue
+    m_Metadata:
+      m_Items: []
   - m_Id: 18210199334912
     m_Key: CancelSelection
     m_Metadata:

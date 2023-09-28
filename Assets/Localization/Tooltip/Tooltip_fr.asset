@@ -126,6 +126,10 @@ MonoBehaviour:
     m_Localized: Terminer le tour
     m_Metadata:
       m_Items: []
+  - m_Id: 82909748876701696
+    m_Localized: C
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
