@@ -27,6 +27,7 @@ public partial class Pijersi : MonoBehaviour
     private IEngine engine;
     private Save save;
     private Save replaySave;
+    private Save loadedSave;
     private Team[] teams;
     private int currentTeamId;
     private Cell pointedCell;
@@ -130,12 +131,8 @@ public partial class Pijersi : MonoBehaviour
 
         if (config.partyData != null)
         {
-            save = new Save(board, config.partyData);
-            config.playerTypes = save.playerTypes;
-
-            InitTeams();
-            Replay();
-            return;
+            loadedSave = new Save(board, config.partyData);
+            config.playerTypes = loadedSave.playerTypes;
         }
 
         InitTeams();

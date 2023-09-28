@@ -4,6 +4,15 @@ public partial class Pijersi
 {
     public void ResetMatch()
     {
+        if (config.partyData != null)
+        {
+            save = new(loadedSave);
+            config.playerTypes = save.playerTypes;
+            Replay();
+
+            return;
+        }
+
         InitEngine();
         save = new Save(new PlayerType[] { teams[0].type, teams[1].type });
         teams[0].score = 0;
