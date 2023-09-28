@@ -149,4 +149,12 @@ public partial class Pijersi : MonoBehaviour
         teams[0] = new Team(config.playerTypes[0], 1 * offset);
         teams[1] = new Team(config.playerTypes[1], 2 * offset);
     }
+
+    private void DebugEngine()
+    {
+        if (engine == null) return;
+
+        Debug.Log(("Engine :\n", engine.ToString()));
+        Debug.Log(("Board :\n", board.ToString()));
+    }
 }
