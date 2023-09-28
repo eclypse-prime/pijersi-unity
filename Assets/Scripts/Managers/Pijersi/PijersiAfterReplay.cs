@@ -18,8 +18,8 @@ public partial class Pijersi
 
             engine = new Engine();
             engine.SetState(board.GetState());
-            engine.SetPlayer((byte)(1 - currentTeamId));
-            GetNextAiTurn(CurrentTeam.type);
+            engine.SetPlayer((byte)(1-currentTeamId));
+            GetNextAiTurn(OtherTeam.type);
         }
     }
 }

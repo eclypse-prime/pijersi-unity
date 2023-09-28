@@ -100,12 +100,9 @@ public partial class Pijersi
 
     private void InitEngine()
     {
-        if (teams[0].type != PlayerType.Human)
-        {
-            engine = new Engine();
-            GetNextAiTurn(teams[0].type);
-        }
-        else if (teams[1].type != PlayerType.Human)
-            engine = new Engine();
+        if (teams[0].type == PlayerType.Human) return;
+
+        engine = new Engine();
+        GetNextAiTurn(teams[0].type);
     }
 }
