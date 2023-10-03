@@ -66,9 +66,7 @@ public class Overlay : MonoBehaviour
             newRecord += moveSign;
 
         newRecord += end.name;
-
-        if (action == ActionType.Attack)
-            newRecord += attackSign;
+        newRecord += action == ActionType.Attack ? attackSign : " ";
 
         recordDisplays[teamId].text += newRecord;
         isFirstAction = false;
