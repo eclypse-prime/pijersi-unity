@@ -8,8 +8,6 @@ public partial class Pijersi
         selectedCell = null;
         pointedCell = null;
         save.AddTurn();
-
-        //DebugEngine();
     }
 
     private void OnExitTurn()

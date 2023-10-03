@@ -9,7 +9,7 @@ public partial class Pijersi
         if (teams[0].type != PlayerType.Human || teams[1].type != PlayerType.Human) 
             return;
 
-        cameraMovement.position = (CameraMovement.PositionType) currentTeamId;
+        cameraMovement.position = (CameraMovement.PositionType)currentTeamId;
     }
 
     private void GetNextAiTurn(PlayerType nextTeamType)
