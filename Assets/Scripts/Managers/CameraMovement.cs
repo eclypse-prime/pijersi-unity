@@ -41,6 +41,8 @@ public class CameraMovement : MonoBehaviour
         SetPosition(PositionType.White);
     }
 
+    public void ResetPosition() => SetPosition(PositionType.White);
+
     private void SetPosition(PositionType type)
     {
         currentPosition = type;
