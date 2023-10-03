@@ -20,8 +20,8 @@ public class CameraMovement : MonoBehaviour
 
     public enum PositionType
     {
-        Black,
-        White
+        White,
+        Black
     }
 
     private void Awake()
