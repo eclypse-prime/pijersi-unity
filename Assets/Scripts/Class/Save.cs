@@ -106,14 +106,14 @@ public partial class Save
             turn.cells.Add(board.Cells[board.CoordsToIndex(turnData[0], turnData[1])]);
             turn.cells.Add(board.Cells[board.CoordsToIndex(turnData[3], turnData[4])]);
 
-            int offset = FirstAction(turnData, turn);
-            SecondAction(turnData, turn, offset);
+            int offset = FirstAction(turnData, ref turn);
+            SecondAction(turnData, ref turn, offset);
 
             turns.Add(turn);
         }
         board.ResetBoard();
 
-        int FirstAction(string turnData, Turn turn)
+        int FirstAction(string turnData, ref Turn turn)
         {
             bool isAttackAction = turnData.Length > 5 && turnData[5] == attackSign;
             if (isAttackAction)
@@ -138,7 +138,7 @@ public partial class Save
             return 0;
         }
 
-        void SecondAction(string turnData, Turn turn, int offset)
+        void SecondAction(string turnData, ref Turn turn, int offset)
         {
             if (turnData.Length <= 6) return;
 
