@@ -137,6 +137,18 @@ MonoBehaviour:
     m_Localized: C
     m_Metadata:
       m_Items: []
+  - m_Id: 85433451770441728
+    m_Localized: Move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85434181319290880
+    m_Localized: Attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85434463688224768
+    m_Localized: Unstack attack
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

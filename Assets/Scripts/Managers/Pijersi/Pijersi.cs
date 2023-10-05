@@ -41,6 +41,7 @@ public partial class Pijersi : MonoBehaviour
     private Cell[] aiActionCells;
     private (int, int) replayAt;
     private float continueAt;
+    private ActionType currentAction;
 
     private Team CurrentTeam => teams[currentTeamId];
     private Team OtherTeam => teams[1 - currentTeamId];

@@ -48,9 +48,9 @@ public partial class Piece
         if (!canMove) return;
 
         if (near.IsEmpty)
-            legalActions.Add(ActionType.Move);
+            legalActions.Add(cell.IsFull ? ActionType.StackMove : ActionType.Move);
         else if (near.pieces[0].team != team && near.LastPiece.type == prey)
-            legalActions.Add(ActionType.Attack);
+            legalActions.Add(cell.IsFull ? ActionType.StackAttack : ActionType.Attack);
     }
 
     protected virtual void GetNearUnstackStack(Cell near, bool canStack, ref List<ActionType> legalActions)
@@ -58,7 +58,7 @@ public partial class Piece
         if (!canStack) return;
 
         if (cell.IsFull && (near.IsEmpty || near.pieces[0].team != team && near.LastPiece.type == prey))
-            legalActions.Add(ActionType.Unstack);
+            legalActions.Add(near.IsEmpty ? ActionType.Unstack : ActionType.UnstackAttack);
         else if (!near.IsEmpty && !near.IsFull && near.pieces[0].team == team)
             legalActions.Add(ActionType.Stack);
     }
@@ -83,8 +83,8 @@ public partial class Piece
     protected virtual void GetfarMoveAttack(Cell farNear, ref List<ActionType> legalActions)
     {
         if (farNear.IsEmpty)
-            legalActions.Add(ActionType.Move);
+            legalActions.Add(ActionType.StackMove);
         else if (farNear.pieces[0].team != team && farNear.LastPiece.type == prey)
-            legalActions.Add(ActionType.Attack);
+            legalActions.Add(ActionType.StackAttack);
     }
 }

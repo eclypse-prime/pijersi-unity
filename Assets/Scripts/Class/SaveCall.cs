@@ -49,10 +49,10 @@ public partial class Save
 
             for (int i = 0; i < turn.actions.Count; i++)
             {
-                text += turn.isStackMoves[i] ? stackMoveSign : moveSign;
+                text += turn.actions[i].IsStack() ? stackMoveSign : moveSign;
                 text += turn.cells[i + 1].name;
 
-                if (turn.actions[i] == ActionType.Attack)
+                if (turn.actions[i].IsAttack())
                     text += attackSign;
             }
 

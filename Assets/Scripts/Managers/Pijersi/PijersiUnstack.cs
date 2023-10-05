@@ -4,11 +4,10 @@ public partial class Pijersi
     {
         canStack = false;
         canMove = false;
-        ActionType action = pointedCell.IsEmpty ? ActionType.Unstack : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Unstack(selectedCell, pointedCell);
-        save.AddAction(action, selectedCell, pointedCell);
-        UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, action);
+        save.AddAction(currentAction, selectedCell, pointedCell);
+        UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, currentAction);
     }
 
     private void OnUpdateUnstack()

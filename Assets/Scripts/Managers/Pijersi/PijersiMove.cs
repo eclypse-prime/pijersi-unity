@@ -5,11 +5,10 @@ public partial class Pijersi
         canMove = false;
         if (!selectedCell.IsFull)
             canStack = false;
-        ActionType action = pointedCell.IsEmpty ? ActionType.Move : ActionType.Attack;
         board.KillPieces(pointedCell);
         board.Move(selectedCell, pointedCell);
-        save.AddAction(action, selectedCell, pointedCell);
-        UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, action);
+        save.AddAction(currentAction, selectedCell, pointedCell);
+        UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, currentAction);
     }
 
     private void OnUpdateMove()

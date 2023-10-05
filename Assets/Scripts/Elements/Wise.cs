@@ -6,7 +6,7 @@ public class Wise : Piece
     {
         if (!canMove || !near.IsEmpty) return;
 
-        legalActions.Add(ActionType.Move);
+        legalActions.Add(cell.IsFull ? ActionType.StackMove : ActionType.Move);
     }
 
     protected override void GetNearUnstackStack(Cell near, bool canStack, ref List<ActionType> legalActions)
@@ -23,7 +23,7 @@ public class Wise : Piece
     {
         if (!farNear.IsEmpty) return;
         
-        legalActions.Add(ActionType.Move);
+        legalActions.Add(ActionType.StackMove);
     }
 
     public override Cell[] GetDangers(Piece[] pieces, Cell cell) => null;
