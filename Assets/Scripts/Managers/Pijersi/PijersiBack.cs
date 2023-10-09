@@ -15,7 +15,7 @@ public partial class Pijersi
             canMove = IsActionPossible;
             canStack = IsActionPossible;
             UI.SetGameState(currentTeamId, CurrentTeam.type, CurrentTeam.number);
-            cameraMovement.position = currentTeamId == 0 ? CameraMovement.PositionType.White : CameraMovement.PositionType.Black;
+            UpdateCameraPosition();
         }
 
         Save.Turn turn = save.turns[turnId];

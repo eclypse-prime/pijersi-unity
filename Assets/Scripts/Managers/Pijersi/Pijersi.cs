@@ -27,6 +27,7 @@ public partial class Pijersi : MonoBehaviour
     private IEngine engine;
     private Save save;
     private Save replaySave;
+    private Save loadedSave;
     private Team[] teams;
     private int currentTeamId;
     private Cell pointedCell;
@@ -40,6 +41,7 @@ public partial class Pijersi : MonoBehaviour
     private Cell[] aiActionCells;
     private (int, int) replayAt;
     private float continueAt;
+    private ActionType currentAction;
 
     private Team CurrentTeam => teams[currentTeamId];
     private Team OtherTeam => teams[1 - currentTeamId];
@@ -130,12 +132,8 @@ public partial class Pijersi : MonoBehaviour
 
         if (config.partyData != null)
         {
-            save = new Save(board, config.partyData);
-            config.playerTypes = save.playerTypes;
-
-            InitTeams();
-            Replay();
-            return;
+            loadedSave = new Save(board, config.partyData);
+            config.playerTypes = loadedSave.playerTypes;
         }
 
         InitTeams();
@@ -148,5 +146,13 @@ public partial class Pijersi : MonoBehaviour
         int offset = config.playerTypes[0] == config.playerTypes[1] ? 1 : 0;
         teams[0] = new Team(config.playerTypes[0], 1 * offset);
         teams[1] = new Team(config.playerTypes[1], 2 * offset);
+    }
+
+    private void DebugEngine()
+    {
+        if (engine == null) return;
+
+        Debug.Log(("Engine :\n", engine.ToString()));
+        Debug.Log(("Board :\n", board.ToString()));
     }
 }

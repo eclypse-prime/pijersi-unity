@@ -41,13 +41,12 @@ public partial class Pijersi
 
         if (TryOnInvalidTargetOrSelectedCell()) return;
 
-        State[] orderedState;
         int actionId;
-        ActionType[] alternateActions = { ActionType.Stack, ActionType.Unstack, ActionType.Move, ActionType.Attack };
+        ActionType[] alternateActions = GetAlternateActions(out State[] orderedState);
 
         if (TryAlternativeAction()) return;
 
-        ActionType[] actions = new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack, ActionType.Unstack };
+        ActionType[] actions = GetActions(ref orderedState);
         actionId = GetFirstValidActionId(actions);
 
         if (TryDefaultAction()) return;
@@ -94,6 +93,30 @@ public partial class Pijersi
             return true;
         }
 
+        ActionType[] GetAlternateActions(out State[] orderedState)
+        {
+            if (selectedCell.IsFull)
+            {
+                orderedState = new State[] { State.Stack, State.Unstack, State.Unstack, State.Move, State.Move };
+                return new ActionType[] { ActionType.Stack, ActionType.Unstack, ActionType.UnstackAttack, ActionType.StackMove, ActionType.StackAttack };
+            }
+
+            orderedState = new State[] { State.Stack, State.Move, State.Move };
+            return new ActionType[] { ActionType.Stack, ActionType.Move, ActionType.Attack };
+        }
+
+        ActionType[] GetActions(ref State[] orderedState)
+        {
+            if (selectedCell.IsFull)
+            {
+                orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack, State.Unstack };
+                return new ActionType[] { ActionType.StackMove, ActionType.StackAttack, ActionType.Stack, ActionType.Unstack, ActionType.UnstackAttack };
+            }
+
+            orderedState = new State[] { State.Move, State.Move, State.Stack };
+            return new ActionType[] { ActionType.Move, ActionType.Attack, ActionType.Stack };
+        }
+
         void HighlightTooltip()
         {
             if (pointedCell == selectedCell)
@@ -121,8 +144,9 @@ public partial class Pijersi
 
             UpdateUIAndReplay();
 
-            orderedState = new State[] { State.Stack, State.Unstack, State.Move, State.Move };
             actionId = GetFirstValidActionId(alternateActions);
+            currentAction = alternateActions[actionId];
+
             SM.ChangeState(orderedState[actionId]);
             if (!canMove && !canStack)
                 UpdateEngine();
@@ -135,8 +159,8 @@ public partial class Pijersi
             if (!mainAction.WasPressedThisFrame()) return false;
             
             UpdateUIAndReplay();
+            currentAction = actions[actionId];
 
-            orderedState = new State[] { State.Move, State.Move, State.Stack, State.Unstack };
             SM.ChangeState(orderedState[actionId]);
             if (!canMove && !canStack)
                 UpdateEngine();
@@ -148,22 +172,20 @@ public partial class Pijersi
         {
             if (pointedCell == lastPointedCell) return;
 
-            ActionType mainActionType = actions[actionId];
-
             string tooltipKey = actions[actionId].ToString();
             actionId = GetFirstValidActionId(alternateActions);
             tooltipKey += alternateActions[actionId].ToString();
             Tooltip.Set(tooltipKey);
 
             if (pointedCell != selectedCell)
-                animation.UpdateHighlight(pointedCell, mainActionType == alternateActions[actionId]);
+                animation.UpdateHighlight(pointedCell, actions[actionId] == alternateActions[actionId]);
         }
 
         void HighlightDangers()
         {
             if (dangers[0] == null && dangers[1] == null) return;
 
-            if (validMoves[pointedCell].Contains(ActionType.Unstack))
+            if (validMoves[pointedCell].Contains(ActionType.Unstack) || validMoves[pointedCell].Contains(ActionType.UnstackAttack))
             {
                 animation.HighlightDangers(GetDangersFor(pointedCell, true), GetDangersFor(selectedCell, false), GetDangersFor(pointedCell, false));
                 return;
@@ -226,7 +248,9 @@ public partial class Pijersi
         {
             engine = new Engine();
             engine.SetState(board.GetState());
-            engine.SetPlayer((byte)currentTeamId);
+            engine.SetPlayer((byte)(1-currentTeamId));
+            GetNextAiTurn(OtherTeam.type);
+            return;
         }
 
         int[] manualPlay = new int[3];
@@ -245,9 +269,7 @@ public partial class Pijersi
         {
             if (lastTurn.actions.Count >= 2) return false;
 
-            bool isUnstack = lastTurn.actions[0] == ActionType.Unstack || lastTurn.actions[0] == ActionType.Stack;
-
-            manualPlay[1] = isUnstack ? board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y) : 255;
+            manualPlay[1] = lastTurn.actions[0].IsStackUnstack() ? board.CoordsToIndex(lastTurn.cells[0].x, lastTurn.cells[0].y) : 255;
             manualPlay[2] = board.CoordsToIndex(lastTurn.cells[1].x, lastTurn.cells[1].y);
 
             engine.PlayManual(manualPlay);

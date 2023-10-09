@@ -60,15 +60,9 @@ public class Overlay : MonoBehaviour
     {
         string newRecord = isFirstAction ? start.name : "";
 
-        if (action == ActionType.Move || action == ActionType.Attack)
-            newRecord += end.IsFull ? stackMoveSign : moveSign;
-        else
-            newRecord += moveSign;
-
+        newRecord += action.IsStack() ? stackMoveSign : moveSign;
         newRecord += end.name;
-
-        if (action == ActionType.Attack)
-            newRecord += attackSign;
+        newRecord += action.IsAttack() ? attackSign : " ";
 
         recordDisplays[teamId].text += newRecord;
         isFirstAction = false;

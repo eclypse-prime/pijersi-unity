@@ -22,20 +22,17 @@ public partial class Save
     {
         public List<Cell> cells;
         public List<ActionType> actions;
-        public List<bool> isStackMoves;
 
         public Turn(object _ = null)
         {
             cells = new();
             actions = new();
-            isStackMoves = new();
         }
 
-        public Turn(List<Cell> cells, List<ActionType> actions, List<bool> isStackMoves)
+        public Turn(List<Cell> cells, List<ActionType> actions)
         {
             this.cells = new(cells);
             this.actions = new(actions);
-            this.isStackMoves = new(isStackMoves);
         }
 
         public readonly void Add(ActionType action, Cell start, Cell end)
@@ -44,19 +41,13 @@ public partial class Save
                 cells.Add(start);
             cells.Add(end);
             actions.Add(action);
-            if ((action == ActionType.Move || action == ActionType.Attack) && end.IsFull)
-            {
-                isStackMoves.Add(true);
-                return;
-            }
-            isStackMoves.Add(false);
         }
     }
 
     public Save(Save save)
     {
         playerTypes = save.playerTypes;
-        turns = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions, turn.isStackMoves));
+        turns = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions));
         date = new DateTime(save.date.Ticks);
     }
 
@@ -106,14 +97,14 @@ public partial class Save
             turn.cells.Add(board.Cells[board.CoordsToIndex(turnData[0], turnData[1])]);
             turn.cells.Add(board.Cells[board.CoordsToIndex(turnData[3], turnData[4])]);
 
-            int offset = FirstAction(turnData, turn);
-            SecondAction(turnData, turn, offset);
+            int offset = FirstAction(turnData, ref turn);
+            SecondAction(turnData, ref turn, offset);
 
             turns.Add(turn);
         }
         board.ResetBoard();
 
-        int FirstAction(string turnData, Turn turn)
+        int FirstAction(string turnData, ref Turn turn)
         {
             bool isAttackAction = turnData.Length > 5 && turnData[5] == attackSign;
             if (isAttackAction)
@@ -138,7 +129,7 @@ public partial class Save
             return 0;
         }
 
-        void SecondAction(string turnData, Turn turn, int offset)
+        void SecondAction(string turnData, ref Turn turn, int offset)
         {
             if (turnData.Length <= 6) return;
 

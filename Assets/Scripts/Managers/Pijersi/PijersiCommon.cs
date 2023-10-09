@@ -4,6 +4,14 @@ using UnityEngine.InputSystem;
 
 public partial class Pijersi
 {
+    private void UpdateCameraPosition()
+    {
+        if (teams[0].type != PlayerType.Human || teams[1].type != PlayerType.Human) 
+            return;
+
+        cameraMovement.position = (CameraMovement.PositionType)currentTeamId;
+    }
+
     private void GetNextAiTurn(PlayerType nextTeamType)
     {
         int recursionDepth = (int)nextTeamType;
@@ -100,12 +108,10 @@ public partial class Pijersi
 
     private void InitEngine()
     {
-        if (teams[0].type != PlayerType.Human)
-        {
-            engine = new Engine();
-            GetNextAiTurn(teams[0].type);
-        }
-        else if (teams[1].type != PlayerType.Human)
-            engine = new Engine();
+        engine = new Engine();
+
+        if (teams[0].type == PlayerType.Human) return;
+
+        GetNextAiTurn(teams[0].type);
     }
 }

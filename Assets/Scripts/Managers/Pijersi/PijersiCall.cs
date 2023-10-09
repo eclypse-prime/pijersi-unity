@@ -4,6 +4,15 @@ public partial class Pijersi
 {
     public void ResetMatch()
     {
+        if (config.partyData != null)
+        {
+            save = new(loadedSave);
+            config.playerTypes = save.playerTypes;
+            Replay();
+
+            return;
+        }
+
         InitEngine();
         save = new Save(new PlayerType[] { teams[0].type, teams[1].type });
         teams[0].score = 0;
@@ -12,7 +21,7 @@ public partial class Pijersi
         currentTeamId = 1;
         board.ResetBoard();
         UI.ResetUI();
-        cameraMovement.position = CameraMovement.PositionType.White;
+        cameraMovement.ResetPosition();
 
         SM.ChangeState(State.Turn);
     }
@@ -33,7 +42,7 @@ public partial class Pijersi
         board.ResetBoard();
         UI.ResetUI(teams[0].score, teams[1].score);
         UI.ReplayButtons["Play"].interactable = true;
-        cameraMovement.position = CameraMovement.PositionType.White;
+        cameraMovement.ResetPosition();
 
         SM.ChangeState(State.Turn);
     }

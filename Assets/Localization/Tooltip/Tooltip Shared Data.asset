@@ -87,6 +87,10 @@ MonoBehaviour:
     m_Key: RulesReturn
     m_Metadata:
       m_Items: []
+  - m_Id: 82909748876701696
+    m_Key: Continue
+    m_Metadata:
+      m_Items: []
   - m_Id: 18210199334912
     m_Key: CancelSelection
     m_Metadata:
@@ -99,8 +103,16 @@ MonoBehaviour:
     m_Key: MoveMove
     m_Metadata:
       m_Items: []
+  - m_Id: 85433451770441728
+    m_Key: StackMoveStackMove
+    m_Metadata:
+      m_Items: []
   - m_Id: 20820822224896
     m_Key: AttackAttack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85434181319290880
+    m_Key: StackAttackStackAttack
     m_Metadata:
       m_Items: []
   - m_Id: 18369855516672
@@ -111,12 +123,16 @@ MonoBehaviour:
     m_Key: UnstackUnstack
     m_Metadata:
       m_Items: []
+  - m_Id: 85434463688224768
+    m_Key: UnstackAttackUnstackAttack
+    m_Metadata:
+      m_Items: []
   - m_Id: 18849126051840
-    m_Key: MoveUnstack
+    m_Key: StackMoveUnstack
     m_Metadata:
       m_Items: []
   - m_Id: 18936799588352
-    m_Key: AttackUnstack
+    m_Key: StackAttackUnstack
     m_Metadata:
       m_Items: []
   m_Metadata:

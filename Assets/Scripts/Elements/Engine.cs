@@ -1,5 +1,3 @@
-using UnityEngine;
-
 class Engine : IEngine
 {
     private readonly PijersiEngine.Board board;
@@ -22,8 +20,8 @@ class Engine : IEngine
         uint uintMove = (uint) move[0];
         uintMove |= (uint)move[1] << 8;
         uintMove |= (uint)move[2] << 16;
-        Debug.Log(board.toString());
-        Debug.Log($"PL: {PijersiEngine.PijersiCore.moveToString(uintMove, board.getState())}");
+        //UnityEngine.Debug.Log(board.toString());
+        //UnityEngine.Debug.Log($"PL: {PijersiEngine.PijersiCore.moveToString(uintMove, board.getState())}");
 
         board.playManual(uintMove);
     }
@@ -36,8 +34,8 @@ class Engine : IEngine
     public int[] PlayAuto(int recursionDepth = 1)
     {
         uint uintMove = board.searchDepth(recursionDepth, true);
-        Debug.Log(board.toString());
-        Debug.Log($"IA: {PijersiEngine.PijersiCore.moveToString(uintMove, board.getState())}");
+        //UnityEngine.Debug.Log(board.toString());
+        //UnityEngine.Debug.Log($"IA: {PijersiEngine.PijersiCore.moveToString(uintMove, board.getState())}");
         board.playManual(uintMove);
         int[] move = new int[3];
         move[0] = (int)(uintMove & 0xFFU);
