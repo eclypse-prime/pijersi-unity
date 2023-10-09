@@ -82,5 +82,7 @@ crashlytics-build.properties
 # Test Scenes
 /[Aa]ssets/[Ss]cenes/[Tt]est*
 
+TextMesh Pro
+
 # Game Saves
 /[Ss]aves
