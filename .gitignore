@@ -83,6 +83,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]cenes/[Tt]est*
 
 TextMesh Pro
+AddressableAssetsData
 
 # Game Saves
 /[Ss]aves
