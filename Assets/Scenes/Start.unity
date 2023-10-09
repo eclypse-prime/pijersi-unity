@@ -1308,6 +1308,58 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &709737678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6605668871450865572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a98125502f715b4b83cfb77b434e436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+--- !u!114 &709737679 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2682212149848749303, guid: a92a47ce172684046a4b092258217adf, type: 3}
+  m_PrefabInstance: {fileID: 6605668871450865569}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6605668871450865572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9832325ab74e9a746b51e1cac5ba9d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &771234524
 GameObject:
   m_ObjectHideFlags: 0
@@ -3004,7 +3056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 63208ad6672b2b743a20c88776f45cc4, type: 2}
-  winMax: {fileID: 6605668871450865571}
+  winMax: {fileID: 709737679}
   PlayerTypes:
   - {fileID: 615001655305508006}
   - {fileID: 1781048006}
@@ -5654,17 +5706,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7027379480675737033, guid: a92a47ce172684046a4b092258217adf, type: 3}
   m_PrefabInstance: {fileID: 6605668871450865569}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6605668871450865571 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6922871234966272561, guid: a92a47ce172684046a4b092258217adf, type: 3}
-  m_PrefabInstance: {fileID: 6605668871450865569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605668871450865572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6605668871450865572 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7112780754119745750, guid: a92a47ce172684046a4b092258217adf, type: 3}
