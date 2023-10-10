@@ -1,3 +1,4 @@
+using Sirenix.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,8 @@ public partial class Save
     {
         playerTypes = save.playerTypes;
         turns = save.turns.ConvertAll(turn => new Turn(turn.cells, turn.actions));
+        if (turns[^1].actions.IsNullOrEmpty())
+            turns.RemoveAt(turns.Count - 1);
         date = new DateTime(save.date.Ticks);
     }
 

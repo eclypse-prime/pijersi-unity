@@ -35,8 +35,11 @@ public partial class Pijersi
         {
             bool isReplayEnd = replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[turnId].actions.Count - 1;
             if (isReplayEnd)
+            {
                 replaySave = null;
-            replayAt   = (-1, -1);
+                replayState = ReplayState.None;
+            }
+            replayAt = (-1, -1);
         }
     }
 }
