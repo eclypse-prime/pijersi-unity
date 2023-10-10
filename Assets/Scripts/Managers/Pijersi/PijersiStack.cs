@@ -4,7 +4,7 @@ public partial class Pijersi
     {
         canStack = false;
         board.Stack(selectedCell, pointedCell);
-        save.AddAction(currentAction, selectedCell, pointedCell);
+        save.AddAction(ActionType.Stack, selectedCell, pointedCell);
         UI.UpdateRecord(currentTeamId, selectedCell, pointedCell, currentAction);
     }
 
