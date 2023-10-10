@@ -1,13 +1,13 @@
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BetterSlider : Slider
 {
-    protected override void OnEnable()
+    protected override void Start()
     {
+        base.Start();
         base.OnEnable();
-
-        SetValueWithoutNotify(maxValue);
     }
 
     public override void OnPointerDown(PointerEventData eventData)
