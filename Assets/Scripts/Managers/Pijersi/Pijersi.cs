@@ -39,7 +39,7 @@ public partial class Pijersi : MonoBehaviour
     private Task<int[]> playAuto;
     private State[] aiActionStates;
     private Cell[] aiActionCells;
-    private (int, int) replayAt;
+    private (int turnId, int actionId) replayTo;
     private float continueAt;
     private ActionType currentAction;
 

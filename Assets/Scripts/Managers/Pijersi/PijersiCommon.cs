@@ -66,7 +66,7 @@ public partial class Pijersi
             return true;
         }
 
-        if (replayAt != (-1, -1))
+        if (replayTo != (-1, -1))
         {
             SM.ChangeState(State.Next);
             return true;

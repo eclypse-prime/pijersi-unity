@@ -63,13 +63,13 @@ public partial class Pijersi
         int turnId = save.turns.Count - 1;
         int actionId = save.turns[turnId].actions.Count - 1;
 
-        if (replayAt.Item1 <= turnId && replayAt.Item2 <= actionId)
+        if (replayTo.turnId <= turnId && replayTo.actionId <= actionId)
         {
             SM.ChangeState(State.Back);
             return;
         }
 
-        replayAt = (-1, -1);
+        replayTo = (-1, -1);
 
         if (turnId > 0 || actionId > -1)
             UI.ReplayButtons["Back"].interactable = true;

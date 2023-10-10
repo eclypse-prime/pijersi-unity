@@ -58,11 +58,11 @@ public partial class Pijersi
     {
         replayState = ReplayState.Pause;
 
-        replayAt.Item1 = save.turns.Count - 1;
-        if (save.turns[replayAt.Item1].actions.Count == 0)
-            replayAt.Item1--;
+        replayTo.turnId = save.turns.Count - 1;
+        if (save.turns[replayTo.turnId].actions.Count == 0)
+            replayTo.turnId--;
 
-        replayAt.Item2 = isTurn ? 0 : save.turns[replayAt.Item1].actions.Count - 1;
+        replayTo.actionId = isTurn ? 0 : save.turns[replayTo.turnId].actions.Count - 1;
 
         UI.ReplayButtons["Back"].interactable = false;
         UI.ReplayButtons["Play"].interactable = true;
@@ -73,11 +73,11 @@ public partial class Pijersi
     
     public void Next(bool isTurn)
     {
-        replayAt.Item1 = save.turns.Count - 1;
-        replayAt.Item2 = isTurn ? replaySave.turns[replayAt.Item1].actions.Count - 1 : save.turns[replayAt.Item1].actions.Count;
+        replayTo.turnId = save.turns.Count - 1;
+        replayTo.actionId = isTurn ? replaySave.turns[replayTo.turnId].actions.Count - 1 : save.turns[replayTo.turnId].actions.Count;
 
         UI.ReplayButtons["Back"].interactable = true;
-        if (replayAt.Item1 == replaySave.turns.Count - 1 && replayAt.Item2 == replaySave.turns[replayAt.Item1].actions.Count - 1)
+        if (replayTo.turnId == replaySave.turns.Count - 1 && replayTo.actionId == replaySave.turns[replayTo.turnId].actions.Count - 1)
             UI.ReplayButtons["Play"].interactable = false;
         UI.ReplayButtons["Next"].interactable = false;
 
