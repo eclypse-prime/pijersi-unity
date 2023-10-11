@@ -66,6 +66,8 @@ public partial class Piece
 
     protected virtual void GetLegalFarMoves(ref Dictionary<Cell, List<ActionType>> legalMoves)
     {
+        if (!cell.IsFull) return;
+
         List<ActionType> legalActions;
         for (int i = 0; i < 6; i++)
         {
