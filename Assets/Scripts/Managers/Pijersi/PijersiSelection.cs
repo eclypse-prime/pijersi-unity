@@ -40,7 +40,7 @@ public partial class Pijersi
         }
 
         if (TryOnInvalidTargetOrSelectedCell()) return;
-
+        
         int actionId;
         ActionType[] alternateActions = GetAlternateActions(out State[] orderedState);
 
@@ -50,6 +50,7 @@ public partial class Pijersi
         actionId = GetFirstValidActionId(actions);
 
         if (TryDefaultAction()) return;
+
         TooltipAndActionHighlight();
         HighlightDangers();
 
@@ -64,7 +65,7 @@ public partial class Pijersi
 
         bool TryOnInvalidTargetOrSelectedCell()
         {
-            if (validMoves.ContainsKey(pointedCell) && validMoves[pointedCell].Count != 0) 
+            if (validMoves.ContainsKey(pointedCell) && validMoves[pointedCell].Count > 0) 
                 return false;
 
             if (TryPlayerCancelOrEndTurn()) return true;
@@ -171,7 +172,7 @@ public partial class Pijersi
         void TooltipAndActionHighlight()
         {
             if (pointedCell == lastPointedCell) return;
-
+            
             string tooltipKey = actions[actionId].ToString();
             actionId = GetFirstValidActionId(alternateActions);
             tooltipKey += alternateActions[actionId].ToString();
